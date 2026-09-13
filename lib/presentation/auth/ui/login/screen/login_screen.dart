@@ -7,8 +7,8 @@ import 'package:mye_commerce/global/custom_text.dart';
 import '../../../../../global/custom_text_field.dart';
 import '../../../controller/auth_controller.dart';
 
-class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +21,8 @@ class RegisterScreen extends StatelessWidget {
         height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             colors: [
               AppColor.drawerGradient1,
               AppColor.drawerGradient2,
@@ -37,16 +37,17 @@ class RegisterScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const Icon(Icons.shopping_bag_outlined, size: 80, color: AppColor.primary),
                   const Gap(20),
                   CustomText(
-                    text: "Create Account",
+                    text: "Welcome Back",
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: AppColor.text,
                   ),
                   const Gap(10),
                   CustomText(
-                    text: "Get connected with us by creating an account",
+                    text: "Login to your account",
                     fontSize: 16,
                     color: AppColor.secondaryText,
                   ),
@@ -62,19 +63,8 @@ class RegisterScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         CustomTextField(
-                          hintText: "First Name",
-                          prefixIcon: const Icon(Icons.person_outline, color: AppColor.secondaryText),
-                        ),
-                        const Gap(20),
-
-                        CustomTextField(
-                          hintText: "Last Name",
-                          prefixIcon: const Icon(Icons.person_outline, color: AppColor.secondaryText),
-                        ),
-                        const Gap(20),
-
-                        CustomTextField(
                           hintText: "Email Address",
+                          // controller: authController.emailController,
                           prefixIcon: const Icon(Icons.email_outlined, color: AppColor.secondaryText),
                         ),
                         const Gap(20),
@@ -83,25 +73,39 @@ class RegisterScreen extends StatelessWidget {
                         Obx(() {
                           return CustomTextField(
                             hintText: "Password",
-                            obscureText: authController.isRegisterPasswordObscured.value,
+                            // controller: authController.passwordController,
+                            obscureText: authController.isLoginPasswordObscured.value,
                             prefixIcon: const Icon(Icons.lock_outline, color: AppColor.secondaryText),
                             // ADDED SUFFIX ICON TO TOGGLE VISIBILITY
                             suffixIcon: IconButton(
                               icon: Icon(
-                                authController.isRegisterPasswordObscured.value
+                                authController.isLoginPasswordObscured.value
                                     ? Icons.visibility_off
                                     : Icons.visibility,
                                 color: AppColor.secondaryText,
                               ),
                               onPressed: () {
-                                authController.toggleRegisterPasswordVisibility();
+                                authController.toggleLoginPasswordVisibility();
                               },
                             ),
                           );
                         }),
+                        const Gap(10),
+
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: CustomText(
+                              text: "Forgot Password?",
+                              color: AppColor.primary,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
                         const Gap(30),
 
-                       CustomButton(text: "Register", backgroundColor: AppColor.primary, textColor: Colors.white, onPressed: () {})
+                       CustomButton(text: "Login", backgroundColor: AppColor.primary, textColor: Colors.white, onPressed: () {})
                       ],
                     ),
                   ),
@@ -111,16 +115,16 @@ class RegisterScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       CustomText(
-                        text: "Already have an account? ",
+                        text: "Don't have an account? ",
                         color: AppColor.secondaryText,
                         fontSize: 14,
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.back();
+                          Get.toNamed('/register');
                         },
                         child: CustomText(
-                          text: "Login",
+                          text: "Register",
                           color: AppColor.primary,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
@@ -128,7 +132,6 @@ class RegisterScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const Gap(20),
                 ],
               ),
             ),

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+// Make sure to import your AllRoute file here
+// import 'package:mye_commerce/routes/all_route.dart';
 
-// Mixin GetSingleTickerProviderStateMixin allows this controller to handle animations
 class IntroController extends GetxController with GetSingleTickerProviderStateMixin {
   late AnimationController animationController;
   late Animation<double> scaleAnimation;
@@ -24,10 +25,10 @@ class IntroController extends GetxController with GetSingleTickerProviderStateMi
       ),
     );
 
-    // Optional: Add logic to navigate to the next screen after a few seconds
-    // Future.delayed(const Duration(seconds: 4), () {
-    //   Get.offNamed('/home');
-    // });
+    // ADDED: 3 second timer to route to the login screen
+    Future.delayed(const Duration(seconds: 3), () {
+      Get.offNamed('/login'); // Routes to login and removes IntroScreen from memory
+    });
   }
 
   @override

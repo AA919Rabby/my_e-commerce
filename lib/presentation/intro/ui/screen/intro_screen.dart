@@ -14,9 +14,7 @@ class IntroScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Initialize/Find the controller using GetX
     final controller = Get.find<IntroController>();
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
