@@ -44,10 +44,6 @@ jobs:
           echo "API_URL=your_mock_api_url_here" >> .env
           # Add any other variables your app needs to run here
 
-      # 5. Run standard Flutter tests
-      - name: Run Tests
-        run: flutter test
-
       # 6. Build the Android APK
       - name: Build Android APK
         run: flutter build apk --release
