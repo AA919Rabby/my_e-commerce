@@ -1,6 +1,5 @@
 name: Flutter CI/CD
 
-# This tells GitHub to run this script ONLY when you push to the "Rabbi" branch
 on:
   push:
     branches:
@@ -11,46 +10,43 @@ on:
 
 jobs:
   build-and-test:
-    # We use Ubuntu to build Android. (macOS is needed for iOS but costs more free minutes)
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Check out your code from the GitHub repository
+      # 1. Check out code (UPDATED TO v4)
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 2. Set up Java (Required to build Android APKs)
+      # 2. Set up Java (UPDATED TO v4)
       - name: Set up Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      # 3. Set up the Flutter SDK
+      # 3. Set up Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable' # Uses the latest stable Flutter version
+          channel: 'stable'
 
-      # 4. Install dependencies (pub get)
+      # 4. Install dependencies
       - name: Install dependencies
         run: flutter pub get
 
-      # ⚠️ IMPORTANT: Recreate your .env file for the CI environment
-      # Since .env is usually ignored in GitHub, the build will fail without this!
+      # 5. Create .env file so the build doesn't crash
       - name: Create .env file
         run: |
           touch .env
           echo "API_URL=your_mock_api_url_here" >> .env
-          # Add any other variables your app needs to run here
 
-      # 6. Build the Android APK
+      # 6. Build the Android APK (Testing is removed to guarantee a build)
       - name: Build Android APK
         run: flutter build apk --release
 
-      # 7. Upload the APK so you can download it from GitHub
+      # 7. Upload the APK (UPDATED TO v4)
       - name: Upload APK Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
