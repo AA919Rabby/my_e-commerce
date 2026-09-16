@@ -1,6 +1,28 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'package:http/http.dart'as http;
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mye_commerce/core/config/app_url.dart';
+
 
 class AuthController extends GetxController {
+
+  //Url
+  final url=AppUrl.baseUrl;
+
+  final isLoading = false.obs;
+
+  final registerKey=GlobalKey<FormState>();
+
+  //Controller
+  final loginEmailClt=TextEditingController();
+  final loginPasswordClt=TextEditingController();
+  final registerEmailClt=TextEditingController();
+  final registerPasswordClt=TextEditingController();
+  final firstNameClt=TextEditingController();
+  final lastNameClt=TextEditingController();
+
   // Separate variable for Login Password
   var isLoginPasswordObscured = true.obs;
 
@@ -22,4 +44,30 @@ class AuthController extends GetxController {
 // final passwordController = TextEditingController();
 // final firstNameController = TextEditingController();
 // final lastNameController = TextEditingController();
+
+Future<void> registerApi()async{
+ isLoading.value=true;
+ try{
+   final response=await http.post(
+     Uri.parse(AppUrl.register),
+     headers: {
+        'Content-Type': 'application/json',
+     },
+     body: jsonEncode({
+         "firstName":firstNameClt.text,
+         "lastName":lastNameClt.text,
+         "email":registerEmailClt.text,
+         "password":registerPasswordClt.text
+     })
+   );
+   log("Response of register: ${response.body}");
+ }catch(e){
+   log("Error in the register: $e");
+ }
+ finally {
+   isLoading.value=false;
+ }
+}
+
+
 }
