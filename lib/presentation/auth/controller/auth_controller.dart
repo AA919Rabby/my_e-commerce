@@ -4,6 +4,7 @@ import 'package:http/http.dart'as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mye_commerce/core/config/app_url.dart';
+import 'package:mye_commerce/global/custom_snackbar.dart';
 
 
 class AuthController extends GetxController {
@@ -61,8 +62,11 @@ Future<void> registerApi()async{
      })
    );
    log("Response of register: ${response.body}");
+   CustomSnackbar(Get.context!, title: "Success", message: "Account created successfully!");
  }catch(e){
    log("Error in the register: $e");
+   CustomSnackbar(Get.context!, title: "Error", message: "Failed to create account.");
+   CustomSnackbar(Get.context!, title: "Error", message: "Failed to create account: (${e.toString()})");
  }
  finally {
    isLoading.value=false;
