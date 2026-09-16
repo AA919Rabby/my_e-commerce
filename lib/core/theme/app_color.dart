@@ -5,7 +5,6 @@ class AppColor {
 
   // ============================================================
   // PERMANENT APP COLORS
-  // These colors NEVER change with device/browser theme.
   // ============================================================
 
   static const Color background = Color(0xFF171B2A);
@@ -28,9 +27,8 @@ class AppColor {
 
   static const Color selectedBackground = Color(0xFF30385A);
 
-  // Drawer animation colors (Used for the background gradient)
+  // Drawer animation colors (Used for background gradients & glowing accents)
   static const Color drawerGradient1 = Color(0xFFF6D005);
   static const Color drawerGradient2 = Color(0xFFCCB226);
   static const Color drawerGradient3 = Color(0xFFB6AA65);
-
 }
