@@ -71,22 +71,19 @@ class IntroScreen extends StatelessWidget {
                 Center(
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(28),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                      child: AnimatedBuilder(
-                        animation: controller.scaleAnimation,
-                        builder: (context, child) {
-                          return Transform.scale(
-                            scale: controller.scaleAnimation.value,
-                            child: child,
-                          );
-                        },
-                        child: CustomText(
-                          text: "My E-Commerce",
-                          color: AppColor.text,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
+                    child: AnimatedBuilder(
+                      animation: controller.scaleAnimation,
+                      builder: (context, child) {
+                        return Transform.scale(
+                          scale: controller.scaleAnimation.value,
+                          child: child,
+                        );
+                      },
+                      child: CustomText(
+                        text: "My E-Commerce",
+                        color: AppColor.text,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
                       ),
                     ),
                   ),

@@ -103,6 +103,13 @@ class RegisterScreen extends StatelessWidget {
                                 color: Colors.white.withOpacity(0.18),
                                 width: 1.2,
                               ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
                             ),
                             child: Column(
                               children: [
