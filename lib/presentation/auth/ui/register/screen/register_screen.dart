@@ -57,7 +57,7 @@ class RegisterScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                        color: AppColor.surfaceLight.withOpacity(0.3),
+                        color: AppColor.surfaceLight.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: AppColor.border),
                       ),
@@ -144,7 +144,7 @@ class RegisterScreen extends StatelessWidget {
                           const Gap(30),
 
                         Obx(()=> CustomButton(text: authController.isLoading.value?"Loading...":"Register",
-                            backgroundColor: AppColor.primary,
+                            backgroundColor: AppColor.drawerGradient1,
                             textColor: Colors.white, onPressed: () {
                            if(authController.isLoading.value) return;
                            if(authController.registerKey.currentState!.validate()){
@@ -170,7 +170,7 @@ class RegisterScreen extends StatelessWidget {
                           },
                           child: CustomText(
                             text: "Login",
-                            color: AppColor.primary,
+                            color: AppColor.text,
                             fontWeight: FontWeight.bold,
                             fontSize: 14,
                           ),

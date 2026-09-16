@@ -22,14 +22,15 @@ class AppColor {
 
   static const Color border = Color(0xFF353E55);
 
-  static const Color danger = Color(0xFFFF5C5C);
+  static const Color danger = Color(0xFFE10D0D);
 
   static const Color dangerBackground = Color(0xFF35232A);
 
   static const Color selectedBackground = Color(0xFF30385A);
 
   // Drawer animation colors (Used for the background gradient)
-  static const Color drawerGradient1 = Color(0xFF151A2A);
-  static const Color drawerGradient2 = Color(0xFF222B47);
-  static const Color drawerGradient3 = Color(0xFF30284A);
+  static const Color drawerGradient1 = Color(0xFFDFBE0C);
+  static const Color drawerGradient2 = Color(0xFFD1B51E);
+  static const Color drawerGradient3 = Color(0xFFB6AA65);
+
 }

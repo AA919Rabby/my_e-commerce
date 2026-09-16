@@ -37,7 +37,7 @@ class LoginScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.shopping_bag_outlined, size: 80, color: AppColor.primary),
+                  const Icon(Icons.shopping_bag_outlined, size: 80, color: AppColor.text),
                   const Gap(20),
                   CustomText(
                     text: "Welcome Back",
@@ -56,7 +56,7 @@ class LoginScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: AppColor.surfaceLight.withOpacity(0.3),
+                      color: AppColor.surfaceLight.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(color: AppColor.border),
                     ),
@@ -98,14 +98,14 @@ class LoginScreen extends StatelessWidget {
                             onTap: () {},
                             child: CustomText(
                               text: "Forgot Password?",
-                              color: AppColor.primary,
+                              color: AppColor.text,
                               fontSize: 14,
                             ),
                           ),
                         ),
                         const Gap(30),
 
-                       CustomButton(text: "Login", backgroundColor: AppColor.primary, textColor: Colors.white, onPressed: () {})
+                       CustomButton(text: "Login", backgroundColor: AppColor.drawerGradient1, textColor: Colors.white, onPressed: () {})
                       ],
                     ),
                   ),
@@ -125,7 +125,7 @@ class LoginScreen extends StatelessWidget {
                         },
                         child: CustomText(
                           text: "Register",
-                          color: AppColor.primary,
+                          color: AppColor.text,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
