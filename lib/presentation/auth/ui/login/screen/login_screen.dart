@@ -49,7 +49,7 @@ class LoginScreen extends StatelessWidget {
                   CustomText(
                     text: "Login to your account",
                     fontSize: 16,
-                    color: AppColor.secondaryText,
+                    color: AppColor.text,
                   ),
                   const Gap(40),
 
@@ -116,7 +116,7 @@ class LoginScreen extends StatelessWidget {
                     children: [
                       CustomText(
                         text: "Don't have an account? ",
-                        color: AppColor.secondaryText,
+                        color: AppColor.text,
                         fontSize: 14,
                       ),
                       GestureDetector(

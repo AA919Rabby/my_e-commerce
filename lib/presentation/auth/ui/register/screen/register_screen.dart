@@ -50,7 +50,7 @@ class RegisterScreen extends StatelessWidget {
                     CustomText(
                       text: "Get connected with us by creating an account",
                       fontSize: 16,
-                      color: AppColor.secondaryText,
+                      color: AppColor.text,
                     ),
                     const Gap(40),
 
@@ -161,7 +161,7 @@ class RegisterScreen extends StatelessWidget {
                       children: [
                         CustomText(
                           text: "Already have an account? ",
-                          color: AppColor.secondaryText,
+                          color: AppColor.text,
                           fontSize: 14,
                         ),
                         GestureDetector(

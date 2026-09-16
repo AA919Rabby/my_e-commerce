@@ -19,7 +19,7 @@ class CustomLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SpinKitSpinningLines(
-      color: color ?? Colors.yellow,
+      color: color ?? Colors.white,
       size: size ?? 40.r,
       duration: duration ?? const Duration(milliseconds: 1500),
       //  shape: shape ?? BoxShape.circle,
