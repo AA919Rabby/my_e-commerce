@@ -23,12 +23,14 @@ class AllRoute {
       name: login,
       page: () => LoginScreen(),
       binding: AllBinding(),
+      transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 600),
     ),
     GetPage(
       name: register,
       page: () => RegisterScreen(),
       binding: AllBinding(),
+      transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 600),
 
 ),

@@ -60,6 +60,13 @@ class RegisterScreen extends StatelessWidget {
                         color: AppColor.surfaceLight.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(color: AppColor.border),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
+                            ),
+                          ]
                       ),
                       child: Column(
                         children: [

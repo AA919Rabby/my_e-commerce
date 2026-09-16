@@ -5,6 +5,7 @@ import 'package:mye_commerce/presentation/intro/ui/screen/intro_screen.dart';
 
 import 'all_binding.dart';
 import 'all_route.dart';
+import 'core/theme/app_color.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key, required home});
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
           initialRoute: AllRoute.intro,
           getPages: AllRoute.routes,
           theme: ThemeData(
+            scaffoldBackgroundColor: AppColor.drawerGradient1,
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(
               seedColor: Colors.blue,

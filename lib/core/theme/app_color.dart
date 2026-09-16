@@ -29,8 +29,8 @@ class AppColor {
   static const Color selectedBackground = Color(0xFF30385A);
 
   // Drawer animation colors (Used for the background gradient)
-  static const Color drawerGradient1 = Color(0xFFDFBE0C);
-  static const Color drawerGradient2 = Color(0xFFD1B51E);
+  static const Color drawerGradient1 = Color(0xFFF6D005);
+  static const Color drawerGradient2 = Color(0xFFCCB226);
   static const Color drawerGradient3 = Color(0xFFB6AA65);
 
 }
