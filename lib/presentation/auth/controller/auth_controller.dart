@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:mye_commerce/core/config/app_url.dart';
 import 'package:mye_commerce/global/custom_snackbar.dart';
 
+import '../ui/register/widget/register_dialog.dart';
+
 
 class AuthController extends GetxController {
 
@@ -69,7 +71,7 @@ Future<void> registerApi()async{
      final data=jsonDecode(response.body);
      final otp=data["result"];
      CustomSnackbar(Get.context!, title: "Success", message: "Account created!, OTP is :$otp");
-
+     Get.dialog(const RegisterDialog(), barrierDismissible: false);
    }else if (response.statusCode==409){
       CustomSnackbar(Get.context!, title: "Error", message: "Email already exists.",isError: true);
    }else{
