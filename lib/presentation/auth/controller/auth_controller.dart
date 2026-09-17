@@ -15,6 +15,8 @@ class AuthController extends GetxController {
   final url=AppUrl.baseUrl;
 
   final isLoading = false.obs;
+  final isLoading2 = false.obs;
+
 
   final registerKey=GlobalKey<FormState>();
   final loginKey=GlobalKey<FormState>();
@@ -116,7 +118,7 @@ Future <void> loginApi()async{
 }
 /// register otp verify
 Future<void>registerOtpVerify()async{
-    isLoading.value=true;
+    isLoading2.value=true;
     try{
       final response=await http.post(
         Uri.parse(AppUrl.registerOtpVerify),
@@ -136,7 +138,7 @@ Future<void>registerOtpVerify()async{
     }catch(e){
       log("Error in the register otp verify: $e");
     }finally{
-      isLoading.value=false;
+      isLoading2.value=false;
     }
 }
 

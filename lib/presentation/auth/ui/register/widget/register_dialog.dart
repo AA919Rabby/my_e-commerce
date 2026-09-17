@@ -170,19 +170,6 @@ class RegisterDialog extends StatelessWidget {
                         },
                       )),
                       const Gap(16),
-
-                      // Cancel
-                      GestureDetector(
-                        onTap: () {
-                          authController.registerOtpVerifyClt.clear();
-                          Get.back();
-                        },
-                        child: CustomText(
-                          text: "Cancel",
-                          fontSize: 14,
-                          color: AppColor.secondaryText,
-                        ),
-                      ),
                     ],
                   ),
                 ),
