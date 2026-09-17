@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:get/get.dart';
 import 'package:mye_commerce/core/theme/app_color.dart';
 import 'package:mye_commerce/global/custom_loader.dart';
@@ -70,22 +71,28 @@ class IntroScreen extends StatelessWidget {
                 // Glassmorphic Animated Logo Card
                 Center(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(28),
-                    child: AnimatedBuilder(
-                      animation: controller.scaleAnimation,
-                      builder: (context, child) {
-                        return Transform.scale(
-                          scale: controller.scaleAnimation.value,
-                          child: child,
-                        );
-                      },
-                      child: CustomText(
-                        text: "My E-Commerce",
-                        color: AppColor.text,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30,
-                      ),
+                    borderRadius: BorderRadius.circular(28.r),
+                    child: CustomText(
+                      text: "My E-Commerce",
+                      color: AppColor.text,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
                     ),
+                    // child: AnimatedBuilder(
+                    //   animation: controller.scaleAnimation,
+                    //   builder: (context, child) {
+                    //     return Transform.scale(
+                    //       scale: controller.scaleAnimation.value,
+                    //       child: child,
+                    //     );
+                    //   },
+                    //   child: CustomText(
+                    //     text: "My E-Commerce",
+                    //     color: AppColor.text,
+                    //     fontWeight: FontWeight.bold,
+                    //     fontSize: 30,
+                    //   ),
+                    // ),
                   ),
                 ),
 

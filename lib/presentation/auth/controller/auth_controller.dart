@@ -15,6 +15,8 @@ class AuthController extends GetxController {
   final isLoading = false.obs;
 
   final registerKey=GlobalKey<FormState>();
+  final loginKey=GlobalKey<FormState>();
+
 
   //Controller
   final loginEmailClt=TextEditingController();
@@ -62,16 +64,52 @@ Future<void> registerApi()async{
      })
    );
    log("Response of register: ${response.body}");
-   CustomSnackbar(Get.context!, title: "Success", message: "Account created successfully!");
+   if(response.statusCode==200 || response.statusCode==201){
+     CustomSnackbar(Get.context!, title: "Success", message: "Account created successfully, check your email for verification!");
+   }else if (response.statusCode==409){
+      CustomSnackbar(Get.context!, title: "Error", message: "Email already exists.",isError: true);
+   }else{
+      CustomSnackbar(Get.context!, title: "Error", message: "Failed to create account.",isError: true);
+   }
  }catch(e){
    log("Error in the register: $e");
-   CustomSnackbar(Get.context!, title: "Error", message: "Failed to create account.");
-   CustomSnackbar(Get.context!, title: "Error", message: "Failed to create account: (${e.toString()})");
+   CustomSnackbar(Get.context!, title: "Error", message: "Failed to create account.",isError: true);
+   CustomSnackbar(Get.context!, title: "Error", message: "Failed to create account: (${e.toString()})",isError: true);
  }
  finally {
    isLoading.value=false;
  }
 }
+///login api
+Future <void> loginApi()async{
+  isLoading.value=true;
+  try{
+    final response=await http.post(
+      Uri.parse(AppUrl.login),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        "email":loginEmailClt.text,
+        "password":loginPasswordClt.text
+      })
+    );
+    log("Response of login: ${response.body}");
+   if(response.statusCode==200){
+     CustomSnackbar(Get.context!, title: "Success", message: "Account logged in successfully!");
+   }else{
+     CustomSnackbar(Get.context!, title: "Error", message: "Failed to login.",isError: true);
+   }
+  }catch(e){
+    log("Error in the login: $e");
+    CustomSnackbar(Get.context!, title: "Error", message: "Failed to login.",isError: true);
+    CustomSnackbar(Get.context!, title: "Error", message: "Failed to login: (${e.toString()})",isError: true);
+    }finally{
+      isLoading.value=false;
+    }
+}
+
+
 
 
 }

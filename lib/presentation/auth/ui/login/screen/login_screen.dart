@@ -62,160 +62,188 @@ class LoginScreen extends StatelessWidget {
             child: Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Brand Icon Glass Header Badge
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                        child: Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.08),
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.2),
+                child: Form(
+                  key: authController.loginKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Brand Icon Glass Header Badge
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                          child: Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.2),
+                              ),
                             ),
-                          ),
-                          child: const Icon(
-                            Icons.shopping_bag_outlined,
-                            size: 64,
-                            color: AppColor.text,
+                            child: const Icon(
+                              Icons.shopping_bag_outlined,
+                              size: 64,
+                              color: AppColor.text,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const Gap(24),
-                    CustomText(
-                      text: "Welcome Back",
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: AppColor.text,
-                    ),
-                    const Gap(8),
-                    CustomText(
-                      text: "Login to your account",
-                      fontSize: 16,
-                      color: AppColor.secondaryText,
-                    ),
-                    const Gap(36),
+                      const Gap(24),
+                      CustomText(
+                        text: "Welcome Back",
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppColor.text,
+                      ),
+                      const Gap(8),
+                      CustomText(
+                        text: "Login to your account",
+                        fontSize: 16,
+                        color: AppColor.secondaryText,
+                      ),
+                      const Gap(36),
 
-                    // Glassmorphic Card Container
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                        child: Container(
-                          padding: const EdgeInsets.all(26),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                Colors.white.withOpacity(0.14),
-                                Colors.white.withOpacity(0.04),
+                      // Glassmorphic Card Container
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+                          child: Container(
+                            padding: const EdgeInsets.all(26),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.white.withOpacity(0.14),
+                                  Colors.white.withOpacity(0.04),
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.18),
+                                width: 1.2,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 8),
+                                ),
                               ],
                             ),
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.18),
-                              width: 1.2,
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 20,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            children: [
-                              CustomTextField(
-                                hintText: "Email Address",
-                                prefixIcon: const Icon(
-                                  Icons.email_outlined,
-                                  color: AppColor.secondaryText,
-                                ),
-                              ),
-                              const Gap(20),
-
-                              // WRAPPED IN Obx() FOR LIVE UPDATES
-                              Obx(() {
-                                return CustomTextField(
-                                  hintText: "Password",
-                                  obscureText: authController
-                                      .isLoginPasswordObscured.value,
+                            child: Column(
+                              children: [
+                                CustomTextField(
+                                  controller: authController.loginEmailClt,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Required';
+                                    }
+                                    if(!GetUtils.isEmail(value)) {
+                                      return 'Invalid Email';
+                                    }
+                                    return null;
+                                  },
+                                  hintText: "Email Address",
                                   prefixIcon: const Icon(
-                                    Icons.lock_outline,
+                                    Icons.email_outlined,
                                     color: AppColor.secondaryText,
                                   ),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      authController.isLoginPasswordObscured.value
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
+                                ),
+                                const Gap(20),
+
+                                // WRAPPED IN Obx() FOR LIVE UPDATES
+                                Obx(() {
+                                  return CustomTextField(
+                                    controller: authController.loginPasswordClt,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Required';
+                                      }
+                                      if (value.length < 6) {
+                                        return 'Too short';
+                                      }
+                                      return null;
+                                    },
+                                    hintText: "Password",
+                                    obscureText: authController
+                                        .isLoginPasswordObscured.value,
+                                    prefixIcon: const Icon(
+                                      Icons.lock_outline,
                                       color: AppColor.secondaryText,
                                     ),
-                                    onPressed: () {
-                                      authController
-                                          .toggleLoginPasswordVisibility();
-                                    },
-                                  ),
-                                );
-                              }),
-                              const Gap(14),
+                                    suffixIcon: IconButton(
+                                      icon: Icon(
+                                        authController.isLoginPasswordObscured.value
+                                            ? Icons.visibility_off
+                                            : Icons.visibility,
+                                        color: AppColor.secondaryText,
+                                      ),
+                                      onPressed: () {
+                                        authController
+                                            .toggleLoginPasswordVisibility();
+                                      },
+                                    ),
+                                  );
+                                }),
+                                const Gap(14),
 
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: GestureDetector(
-                                  onTap: () {},
-                                  child: CustomText(
-                                    text: "Forgot Password?",
-                                    color: AppColor.secondaryText,
-                                    fontSize: 14,
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: GestureDetector(
+                                    onTap: () {},
+                                    child: CustomText(
+                                      text: "Forgot Password?",
+                                      color: AppColor.secondaryText,
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const Gap(28),
+                                const Gap(28),
 
-                              CustomButton(
-                                text: "Login",
-                                backgroundColor: AppColor.drawerGradient1,
-                                textColor: Colors.white,
-                                onPressed: () {},
-                              ),
-                            ],
+                                Obx(()=>CustomButton(
+                                  text: authController.isLoading.value? "Logging..." : "Login",
+                                  backgroundColor: AppColor.drawerGradient1,
+                                  textColor: Colors.white,
+                                  onPressed: () {
+                                    if(authController.isLoading.value) return;
+                                    if(authController.loginKey.currentState!.validate()) {
+                                      authController.loginApi();
+                                    }
+                                  },
+                                ),)
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const Gap(30),
+                      const Gap(30),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CustomText(
-                          text: "Don't have an account? ",
-                          color: AppColor.secondaryText,
-                          fontSize: 14,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Get.toNamed('/register');
-                          },
-                          child: CustomText(
-                            text: "Register",
-                            color: AppColor.primary,
-                            fontWeight: FontWeight.bold,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CustomText(
+                            text: "Don't have an account? ",
+                            color: AppColor.secondaryText,
                             fontSize: 14,
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          GestureDetector(
+                            onTap: () {
+                              Get.toNamed('/register');
+                            },
+                            child: CustomText(
+                              text: "Register",
+                              color: AppColor.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

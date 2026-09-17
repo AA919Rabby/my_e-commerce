@@ -5,7 +5,6 @@ class AppUrl {
 
   static String get baseUrl => dotenv.get('BASE_URL');
   static String get register => '$baseUrl/users/request';
-
-
+  static String get login => '$baseUrl/auth/login';
 
 }
