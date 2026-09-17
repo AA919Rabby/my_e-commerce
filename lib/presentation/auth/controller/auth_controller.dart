@@ -16,7 +16,7 @@ class AuthController extends GetxController {
 
   final registerKey=GlobalKey<FormState>();
   final loginKey=GlobalKey<FormState>();
-
+  final registerOtpVerifyKey=GlobalKey<FormState>();
 
   //Controller
   final loginEmailClt=TextEditingController();
@@ -25,6 +25,7 @@ class AuthController extends GetxController {
   final registerPasswordClt=TextEditingController();
   final firstNameClt=TextEditingController();
   final lastNameClt=TextEditingController();
+  final registerOtpVerifyClt=TextEditingController();
 
   // Separate variable for Login Password
   var isLoginPasswordObscured = true.obs;
@@ -57,15 +58,18 @@ Future<void> registerApi()async{
         'Content-Type': 'application/json',
      },
      body: jsonEncode({
-         "firstName":firstNameClt.text,
-         "lastName":lastNameClt.text,
-         "email":registerEmailClt.text,
-         "password":registerPasswordClt.text
+         "firstName":firstNameClt.text.trim(),
+         "lastName":lastNameClt.text.trim(),
+         "email":registerEmailClt.text.trim(),
+         "password":registerPasswordClt.text.trim()
      })
    );
    log("Response of register: ${response.body}");
    if(response.statusCode==200 || response.statusCode==201){
-     CustomSnackbar(Get.context!, title: "Success", message: "Account created successfully, check your email for verification!");
+     final data=jsonDecode(response.body);
+     final otp=data["result"];
+     CustomSnackbar(Get.context!, title: "Success", message: "Account created!, OTP is :$otp");
+
    }else if (response.statusCode==409){
       CustomSnackbar(Get.context!, title: "Error", message: "Email already exists.",isError: true);
    }else{
@@ -90,8 +94,8 @@ Future <void> loginApi()async{
         'Content-Type': 'application/json',
       },
       body: jsonEncode({
-        "email":loginEmailClt.text,
-        "password":loginPasswordClt.text
+        "email":loginEmailClt.text.trim(),
+        "password":loginPasswordClt.text.trim()
       })
     );
     log("Response of login: ${response.body}");
@@ -108,7 +112,31 @@ Future <void> loginApi()async{
       isLoading.value=false;
     }
 }
-
+/// register otp verify
+Future<void>registerOtpVerify()async{
+    isLoading.value=true;
+    try{
+      final response=await http.post(
+        Uri.parse(AppUrl.registerOtpVerify),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "email":registerEmailClt.text.trim(),
+          "otp":registerOtpVerifyClt.text.trim()
+        }));
+          if(response.statusCode==200){
+            Get.back();
+            CustomSnackbar(Get.context!, title: "Success", message: "OTP verified successfully!");
+          }else{
+            CustomSnackbar(Get.context!, title: "Error", message: "Failed to verify OTP.",isError: true);
+          }
+    }catch(e){
+      log("Error in the register otp verify: $e");
+    }finally{
+      isLoading.value=false;
+    }
+}
 
 
 
