@@ -8,7 +8,6 @@ import 'package:mye_commerce/global/custom_text.dart';
 import 'package:mye_commerce/global/custom_text_field.dart';
 import '../../../controller/auth_controller.dart';
 
-
 class ForgetPasswordScreen extends StatelessWidget {
   const ForgetPasswordScreen({super.key});
 
@@ -60,23 +59,6 @@ class ForgetPasswordScreen extends StatelessWidget {
             ),
           ),
 
-          // Back Arrow Button (Top Left)
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, top: 10.0),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: AppColor.text,
-                  size: 18,
-                ),
-                onPressed: () {
-                  Get.back();
-                },
-              ),
-            ),
-          ),
-
           // Main Form Content with working Spacer
           SafeArea(
             child: LayoutBuilder(
@@ -93,7 +75,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Gap(60),
+                            const Gap(70),
 
                             // Subtitle / Description
                             CustomText(
@@ -187,6 +169,37 @@ class ForgetPasswordScreen extends StatelessWidget {
                   ),
                 );
               },
+            ),
+          ),
+
+          // Bigger Back Button Placed on Top Layer (Receives All Touches)
+          Positioned(
+            top: 0,
+            left: 0,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16.0, top: 10.0),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(50),
+                  onTap: () {
+                    Get.back();
+                  },
+                  child: Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+
+                      color: Colors.transparent,
+
+                    ),
+                    child: const Icon(
+                      Icons.arrow_back,
+                      color: AppColor.text,
+                      size: 24, // Bigger icon
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ],

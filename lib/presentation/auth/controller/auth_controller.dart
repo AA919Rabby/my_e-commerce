@@ -74,8 +74,9 @@ Future<void> registerApi()async{
    if(response.statusCode==200 || response.statusCode==201){
      final data=jsonDecode(response.body);
      final otp=data["result"];
-     CustomSnackbar(Get.context!, title: "Success", message: "Account created!, OTP is :$otp");
-     Get.dialog(const RegisterDialog(), barrierDismissible: false);
+     CustomSnackbar(Get.context!, title: "Success", message: "Account created successfully!");
+     //CustomSnackbar(Get.context!, title: "Success", message: "Account created!, OTP is :$otp");
+    // Get.dialog(const RegisterDialog(), barrierDismissible: false);
    }else if (response.statusCode==409){
       CustomSnackbar(Get.context!, title: "Error", message: "Email already exists.",isError: true);
    }else{
