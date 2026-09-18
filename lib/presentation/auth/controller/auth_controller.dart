@@ -108,7 +108,7 @@ Future <void> loginApi()async{
    if(response.statusCode==200){
      CustomSnackbar(Get.context!, title: "Success", message: "Account logged in successfully!");
    }else{
-     CustomSnackbar(Get.context!, title: "Error", message: "Failed to login.",isError: true);
+     CustomSnackbar(Get.context!, title: "Error", message: "Failed to login",isError: true);
    }
   }catch(e){
     log("Error in the login: $e");
