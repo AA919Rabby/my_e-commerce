@@ -27,7 +27,7 @@ class IntroController extends GetxController with GetSingleTickerProviderStateMi
 
     // ADDED: 3 second timer to route to the login screen
     Future.delayed(const Duration(seconds: 3), () {
-      Get.offNamed('/login'); // Routes to login and removes IntroScreen from memory
+      Get.offAllNamed('/login'); // Routes to login and removes IntroScreen from memory
     });
   }
 
