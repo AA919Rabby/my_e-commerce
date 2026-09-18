@@ -21,6 +21,7 @@ class AuthController extends GetxController {
   final registerKey=GlobalKey<FormState>();
   final loginKey=GlobalKey<FormState>();
   final registerOtpVerifyKey=GlobalKey<FormState>();
+  final forgetPasswordSendOtpKey=GlobalKey<FormState>();
 
   //Controller
   final loginEmailClt=TextEditingController();
@@ -30,6 +31,7 @@ class AuthController extends GetxController {
   final firstNameClt=TextEditingController();
   final lastNameClt=TextEditingController();
   final registerOtpVerifyClt=TextEditingController();
+  final forgetPasswordSendOtpClt=TextEditingController();
 
   // Separate variable for Login Password
   var isLoginPasswordObscured = true.obs;
@@ -141,7 +143,33 @@ Future<void>registerOtpVerify()async{
       isLoading2.value=false;
     }
 }
-
+/// reset password - forget password
+Future<void>forgetPasswordSendOtp()async{
+    isLoading2.value=true;
+    try{
+      final response=await http.post(
+        Uri.parse(AppUrl.resetPassword),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "email":forgetPasswordSendOtpClt.text.trim()
+        }));
+          if(response.statusCode==200){
+            final data=jsonDecode(response.body);
+            final otp=data["result"];
+            CustomSnackbar(Get.context!, title: "Success", message: "Your OTP is :$otp");
+          }
+          else if (response.statusCode==404){
+            CustomSnackbar(Get.context!, title: "Error", message: "User not found.",isError: true);
+          }
+          else{
+            CustomSnackbar(Get.context!, title: "Error", message: "Failed to send OTP.",isError: true);
+          }
+    }catch(e){
+      log("Error in the forget password send otp: $e");
+    }finally{
+      isLoading2.value=false;
+    }
+}
 
 
 }
