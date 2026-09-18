@@ -135,7 +135,7 @@ Future<void>registerOtpVerify()async{
             Get.back();
             CustomSnackbar(Get.context!, title: "Success", message: "OTP verified successfully!");
           }else{
-            CustomSnackbar(Get.context!, title: "Error", message: "Failed to verify OTP.",isError: true);
+            CustomSnackbar(Get.context!, title: "Error", message: "Failed to verify OTP. ${response.body} ${response.statusCode} ",isError: true);
           }
     }catch(e){
       log("Error in the register otp verify: $e");
