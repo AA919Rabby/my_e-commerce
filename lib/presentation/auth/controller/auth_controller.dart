@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mye_commerce/core/config/app_url.dart';
 import 'package:mye_commerce/global/custom_snackbar.dart';
+import 'package:mye_commerce/local_db/auth_services.dart';
 
 import '../ui/register/widget/register_dialog.dart';
 
@@ -22,6 +23,7 @@ class AuthController extends GetxController {
   final loginKey=GlobalKey<FormState>();
   final registerOtpVerifyKey=GlobalKey<FormState>();
   final forgetPasswordSendOtpKey=GlobalKey<FormState>();
+  final forgetPasswordVerifyOtpKey=GlobalKey<FormState>();
 
   //Controller
   final loginEmailClt=TextEditingController();
@@ -32,6 +34,7 @@ class AuthController extends GetxController {
   final lastNameClt=TextEditingController();
   final registerOtpVerifyClt=TextEditingController();
   final forgetPasswordSendOtpClt=TextEditingController();
+  final forgetPasswordVerifyOtpClt=TextEditingController();
 
   // Separate variable for Login Password
   var isLoginPasswordObscured = true.obs;
@@ -177,7 +180,39 @@ Future<void>registerOtpVerify()async{
       isLoading2.value=false;
     }
 }
-
+// reset password otp verify
+Future<void>forgetPasswordVerifyOtp()async{
+  isLoading.value=true;
+  try{
+    final response=await http.post(
+      Uri.parse(AppUrl.resetPasswordVerifyOtp),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        "email": forgetPasswordSendOtpClt.text.trim(),
+        "otp": forgetPasswordVerifyOtpClt.text.trim()
+      }),
+    );
+    if (response.statusCode==200 || response.statusCode==201){
+      final data=jsonDecode(response.body);
+      final forgetToken=data["result"]["forgetToken"];
+      log("Forget Token: $forgetToken");
+      await AuthServices.setForgetToken(forgetToken);
+      log("Forget Token saved in local storage. ${AuthServices.getForgetToken()}");
+      CustomSnackbar(Get.context!, title: "Success", message: "OTP verified successfully!");
+    } else if (response.statusCode==400){
+      CustomSnackbar(Get.context!, title: "Error", message: "Invalid or expired OTP.",isError: true);
+    }
+    else{
+      CustomSnackbar(Get.context!, title: "Error", message: "Failed to verify OTP.",isError: true);
+      log("Failed to verify OTP. ${response.body} ${response.statusCode}");
+    }
+  }catch(e){
+      log("Error in the forget password verify otp: $e");
+    }
+    finally{
+      isLoading.value=false;
+    }
+}
 
 
 }

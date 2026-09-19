@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:get/get.dart';
 import 'package:mye_commerce/core/theme/app_color.dart';
 import 'package:mye_commerce/global/custom_button.dart';
@@ -185,8 +186,8 @@ class ForgetPasswordScreen extends StatelessWidget {
                     Get.back();
                   },
                   child: Container(
-                    width: 52,
-                    height: 52,
+                    width: 52.w,
+                    height: 52.h,
                     decoration: BoxDecoration(
 
                       color: Colors.transparent,

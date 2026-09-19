@@ -8,6 +8,7 @@ class AppUrl {
   static String get registerOtpVerify => '$baseUrl/users/create';
   static String get login => '$baseUrl/auth/login';
   static String get resetPassword => '$baseUrl/auth/send-otp';
+  static String get resetPasswordVerifyOtp => '$baseUrl/auth/verify-otp';
 
 
 }
