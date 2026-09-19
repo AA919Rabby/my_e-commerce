@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:http/http.dart'as http;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mye_commerce/all_route.dart';
 import 'package:mye_commerce/core/config/app_url.dart';
 import 'package:mye_commerce/global/custom_snackbar.dart';
 import 'package:mye_commerce/local_db/auth_services.dart';
@@ -167,7 +168,7 @@ Future<void>registerOtpVerify()async{
             final data=jsonDecode(response.body);
             final otp=data["result"];
             CustomSnackbar(Get.context!, title: "Success", message: "Your OTP is :$otp");
-            Get.toNamed("/forget-password-verify-otp");
+            Get.toNamed(AllRoute.forgetPasswordEnterOtp);
           }
           else if (response.statusCode==404){
             CustomSnackbar(Get.context!, title: "Error", message: "User not found.",isError: true);
