@@ -74,9 +74,9 @@ Future<void> registerApi()async{
    if(response.statusCode==200 || response.statusCode==201){
      final data=jsonDecode(response.body);
      final otp=data["result"];
-     CustomSnackbar(Get.context!, title: "Success", message: "Account created successfully!");
-     //CustomSnackbar(Get.context!, title: "Success", message: "Account created!, OTP is :$otp");
-    // Get.dialog(const RegisterDialog(), barrierDismissible: false);
+   //  CustomSnackbar(Get.context!, title: "Success", message: "Account created successfully!");
+     CustomSnackbar(Get.context!, title: "Success", message: "Account created!, OTP is :$otp");
+    Get.dialog(const RegisterDialog(), barrierDismissible: false);
    }else if (response.statusCode==409){
       CustomSnackbar(Get.context!, title: "Error", message: "Email already exists.",isError: true);
    }else{
@@ -137,6 +137,8 @@ Future<void>registerOtpVerify()async{
             CustomSnackbar(Get.context!, title: "Success", message: "OTP verified successfully!");
           }else{
             CustomSnackbar(Get.context!, title: "Error", message: "Failed to verify OTP. ${response.body} ${response.statusCode} ",isError: true);
+            log("Failed to verify OTP. ${response.body} ${response.statusCode}");
+
           }
     }catch(e){
       log("Error in the register otp verify: $e");
@@ -145,7 +147,7 @@ Future<void>registerOtpVerify()async{
     }
 }
 /// reset password - forget password
-  /*Future<void>forgetPasswordSendOtp()async{
+  Future<void>forgetPasswordSendOtp()async{
     isLoading2.value=true;
     try{
       final response=await http.post(
@@ -170,7 +172,7 @@ Future<void>registerOtpVerify()async{
     }finally{
       isLoading2.value=false;
     }
-}*/
+}
 
 
 
