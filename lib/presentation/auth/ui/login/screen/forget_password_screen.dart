@@ -185,8 +185,8 @@ class ForgetPasswordScreen extends StatelessWidget {
                     Get.back();
                   },
                   child: Container(
-                    width: 48,
-                    height: 48,
+                    width: 52,
+                    height: 52,
                     decoration: BoxDecoration(
 
                       color: Colors.transparent,
