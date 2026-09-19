@@ -109,7 +109,7 @@ Future <void> loginApi()async{
    if(response.statusCode==200){
      CustomSnackbar(Get.context!, title: "Success", message: "Account logged in successfully!");
    }else{
-     CustomSnackbar(Get.context!, title: "Error", message: "Failed to login",isError: true);
+     CustomSnackbar(Get.context!, title: "Error", message: "Failed to login ${response.body} ${response.statusCode}",isError: true);
    }
   }catch(e){
     log("Error in the login: $e");
@@ -145,7 +145,7 @@ Future<void>registerOtpVerify()async{
     }
 }
 /// reset password - forget password
-Future<void>forgetPasswordSendOtp()async{
+  /*Future<void>forgetPasswordSendOtp()async{
     isLoading2.value=true;
     try{
       final response=await http.post(
@@ -170,7 +170,8 @@ Future<void>forgetPasswordSendOtp()async{
     }finally{
       isLoading2.value=false;
     }
-}
+}*/
+
 
 
 }
