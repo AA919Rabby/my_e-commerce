@@ -157,7 +157,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                                 onPressed: () {
                                   if (authController.isLoading2.value) return;
                                   if (authController.forgetPasswordSendOtpKey.currentState!.validate()) {
-                                  //  authController.forgetPasswordSendOtp();
+                                    authController.forgetPasswordSendOtp();
                                   }
                                 },
                               ),

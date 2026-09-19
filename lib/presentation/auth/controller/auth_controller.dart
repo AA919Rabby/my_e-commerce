@@ -167,6 +167,7 @@ Future<void>registerOtpVerify()async{
             final data=jsonDecode(response.body);
             final otp=data["result"];
             CustomSnackbar(Get.context!, title: "Success", message: "Your OTP is :$otp");
+            Get.toNamed("/forget-password-verify-otp");
           }
           else if (response.statusCode==404){
             CustomSnackbar(Get.context!, title: "Error", message: "User not found.",isError: true);
