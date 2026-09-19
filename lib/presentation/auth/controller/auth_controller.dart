@@ -132,10 +132,14 @@ Future<void>registerOtpVerify()async{
           "email":registerEmailClt.text.trim(),
           "otp":registerOtpVerifyClt.text.trim()
         }));
-          if(response.statusCode==200){
+          if(response.statusCode==201 || response.statusCode==200){
             Get.back();
             CustomSnackbar(Get.context!, title: "Success", message: "OTP verified successfully!");
-          }else{
+          }
+          else if(response.statusCode==401){
+            CustomSnackbar(Get.context!, title: "Error", message: "Invalid OTP.",isError: true);
+          }
+          else{
             CustomSnackbar(Get.context!, title: "Error", message: "Failed to verify OTP. ${response.body} ${response.statusCode} ",isError: true);
             log("Failed to verify OTP. ${response.body} ${response.statusCode}");
 
