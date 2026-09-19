@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mye_commerce/all_route.dart';
 import 'package:mye_commerce/core/config/app_url.dart';
+import 'package:mye_commerce/global/custom_button.dart';
+import 'package:mye_commerce/global/custom_confirm_dialog.dart';
 import 'package:mye_commerce/global/custom_snackbar.dart';
 import 'package:mye_commerce/local_db/auth_services.dart';
 
+import '../../../core/theme/app_color.dart';
 import '../ui/register/widget/register_dialog.dart';
 
 
@@ -25,6 +28,8 @@ class AuthController extends GetxController {
   final registerOtpVerifyKey=GlobalKey<FormState>();
   final forgetPasswordSendOtpKey=GlobalKey<FormState>();
   final forgetPasswordVerifyOtpKey=GlobalKey<FormState>();
+  final resetNewForgetPasswordKey=GlobalKey<FormState>();
+
 
   //Controller
   final loginEmailClt=TextEditingController();
@@ -36,6 +41,8 @@ class AuthController extends GetxController {
   final registerOtpVerifyClt=TextEditingController();
   final forgetPasswordSendOtpClt=TextEditingController();
   final forgetPasswordVerifyOtpClt=TextEditingController();
+  final resetNewForgetPasswordClt=TextEditingController();
+
 
   // Separate variable for Login Password
   var isLoginPasswordObscured = true.obs;
@@ -194,14 +201,19 @@ Future<void>forgetPasswordVerifyOtp()async{
         "otp": forgetPasswordVerifyOtpClt.text.trim()
       }),
     );
-    if (response.statusCode==200 || response.statusCode==201){
-      final data=jsonDecode(response.body);
-      final forgetToken=data["result"]["forgetToken"];
-      log("Forget Token: $forgetToken");
-      await AuthServices.setForgetToken(forgetToken);
-      log("Forget Token saved in local storage. ${AuthServices.getForgetToken()}");
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      // Drill into the nested result map correctly
+      if (data['result'] != null && data['result']['forgetToken'] != null) {
+        final String forgetToken = data['result']['forgetToken'];
+        // Save to Local Storage
+        await AuthServices.setForgetToken(forgetToken);
+        log("Forget Token successfully saved: $forgetToken");
+      }
       CustomSnackbar(Get.context!, title: "Success", message: "OTP verified successfully!");
-    } else if (response.statusCode==400){
+      Get.toNamed(AllRoute.enterNewPassword);
+    }
+    else if (response.statusCode==400){
       CustomSnackbar(Get.context!, title: "Error", message: "Invalid or expired OTP.",isError: true);
     }
     else{
@@ -212,6 +224,43 @@ Future<void>forgetPasswordVerifyOtp()async{
       log("Error in the forget password verify otp: $e");
     }
     finally{
+      isLoading.value=false;
+    }
+}
+/// make new password
+Future<void>resetNewForgetPassword()async{
+  isLoading.value=true;
+    try{
+      final response=await http.patch(
+        Uri.parse(AppUrl.resetNewPassword),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "${AuthServices.getForgetToken()}"
+        },
+        body: jsonEncode({
+          "newPassword":resetNewForgetPasswordClt.text.trim()
+        }));
+          if(response.statusCode==200 || response.statusCode==201){
+        // ------
+            CustomConfirmDialog(
+              icon: Icons.check_circle_outline,
+              iconColor: Colors.green,
+              title:"Your password has been reset successfully. Please log in with your new password.",
+              child: CustomButton(
+                text: "Go to Login",
+                backgroundColor: AppColor.drawerGradient1,
+                textColor: Colors.white,
+                onPressed: () {
+                  Get.offAllNamed(AllRoute.login);
+                },
+              )
+            );
+      }else {
+            CustomSnackbar(Get.context!, title: "Error", message: "Failed to reset password.", isError: true);
+          }
+    }catch(e){
+      log("Error in the reset new forget password: $e");
+    }finally{
       isLoading.value=false;
     }
 }

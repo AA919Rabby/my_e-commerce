@@ -8,6 +8,7 @@ import 'package:mye_commerce/global/custom_text.dart';
 import 'package:mye_commerce/global/custom_text_field.dart';
 import '../../../controller/auth_controller.dart';
 
+
 class RegisterDialog extends StatelessWidget {
   const RegisterDialog({super.key});
 

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:mye_commerce/presentation/auth/ui/login/screen/enter_new_password_screen.dart';
 import 'package:mye_commerce/presentation/auth/ui/login/screen/enter_otp_screen.dart';
 import 'package:mye_commerce/presentation/auth/ui/login/screen/forget_password_screen.dart';
 import 'package:mye_commerce/presentation/auth/ui/login/screen/login_screen.dart';
@@ -15,6 +16,7 @@ class AllRoute {
   static const String register = '/register';
   static const String forgetPassword = '/forget-password';
   static const String  forgetPasswordEnterOtp= '/forget-password-enter-otp';
+  static const String  enterNewPassword= '/enter-new-password';
 
   static final List<GetPage> routes = [
     GetPage(
@@ -48,6 +50,13 @@ class AllRoute {
     GetPage(
       name: forgetPasswordEnterOtp,
       page: () => EnterOtpScreen(),
+      binding: AllBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 600),
+    ),
+    GetPage(
+      name: enterNewPassword,
+      page: () => EnterNewPasswordScreen(),
       binding: AllBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 600),
