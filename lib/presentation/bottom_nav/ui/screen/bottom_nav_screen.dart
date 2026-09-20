@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:get/get.dart';
+import 'package:mye_commerce/presentation/cart/ui/screen/cart_screen.dart';
+import 'package:mye_commerce/presentation/favourite/ui/screen/favourite_screen.dart';
+import 'package:mye_commerce/presentation/home/ui/screen/home_screen.dart';
+import 'package:mye_commerce/presentation/profile/ui/screen/profile_screen.dart';
 import '../../../../core/theme/app_color.dart';
 import '../../../../global/custom_text.dart';
 import '../../controller/bottom_nav_controller.dart';
@@ -15,10 +20,14 @@ class BottomNavScreen extends StatelessWidget {
     // SCREENS
     // ============================================================
     final List<Widget> pages = [
-      const Center(child: Text("Home")),
-      const Center(child: Text("Cart")),
-      const Center(child: Text("Favourite")),
-      const Center(child: Text("Profile")),
+      HomeScreen(),
+      CartScreen(),
+      FavouriteScreen(),
+      ProfileScreen(),
+      // const Center(child: Text("Home")),
+      // const Center(child: Text("Cart")),
+      // const Center(child: Text("Favourite")),
+      // const Center(child: Text("Profile")),
     ];
 
     return Scaffold(
@@ -36,10 +45,10 @@ class BottomNavScreen extends StatelessWidget {
       // ============================================================
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: AppColor.drawerGradient1, // Background set to drawerGradient1
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(24),
-            topRight: Radius.circular(24),
+          color: AppColor.drawerGradient1, // Background color
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(24.r),
+            topRight: Radius.circular(24.r),
           ),
           boxShadow: [
             BoxShadow(

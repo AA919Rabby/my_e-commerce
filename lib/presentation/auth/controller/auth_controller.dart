@@ -102,8 +102,6 @@ Future<void> registerApi()async{
    }
  }catch(e){
    log("Error in the register: $e");
-   CustomSnackbar(Get.context!, title: "Error", message: "Failed to create account.",isError: true);
-   CustomSnackbar(Get.context!, title: "Error", message: "Failed to create account: (${e.toString()})",isError: true);
  }
  finally {
    isLoading.value=false;
@@ -125,15 +123,13 @@ Future <void> loginApi()async{
     );
     log("Response of login: ${response.body}");
    if(response.statusCode==200){
-     CustomSnackbar(Get.context!, title: "Success", message: "Account logging successfully!");
+     //CustomSnackbar(Get.context!, title: "Success", message: "Account logging successfully!");
      Get.offAllNamed(AllRoute.bottomNav);
    }else{
-     CustomSnackbar(Get.context!, title: "Error", message: "Failed to login ${response.body} ${response.statusCode}",isError: true);
+     CustomSnackbar(Get.context!, title: "Error", message: "Failed to login.",isError: true);
    }
   }catch(e){
     log("Error in the login: $e");
-    CustomSnackbar(Get.context!, title: "Error", message: "Failed to login.",isError: true);
-    CustomSnackbar(Get.context!, title: "Error", message: "Failed to login: (${e.toString()})",isError: true);
     }finally{
       isLoading.value=false;
     }
@@ -159,7 +155,7 @@ Future<void>registerOtpVerify()async{
             CustomSnackbar(Get.context!, title: "Error", message: "Invalid OTP.",isError: true);
           }
           else{
-            CustomSnackbar(Get.context!, title: "Error", message: "Failed to verify OTP. ${response.body} ${response.statusCode} ",isError: true);
+            CustomSnackbar(Get.context!, title: "Error", message: "Failed to verify OTP. ",isError: true);
             log("Failed to verify OTP. ${response.body} ${response.statusCode}");
 
           }
