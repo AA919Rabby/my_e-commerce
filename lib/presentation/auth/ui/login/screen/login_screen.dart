@@ -141,8 +141,8 @@ class LoginScreen extends StatelessWidget {
                                     if (value == null || value.isEmpty) {
                                       return 'Required';
                                     }
-                                    if(!GetUtils.isEmail(value)) {
-                                      return 'Invalid Email';
+                                    if (!GetUtils.isEmail(value)) {
+                                      return 'Invalid email';
                                     }
                                     return null;
                                   },
