@@ -32,7 +32,7 @@ class BottomNavScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColor.background,
-
+      extendBody: true,
       // ============================================================
       // BODY
       // ============================================================
