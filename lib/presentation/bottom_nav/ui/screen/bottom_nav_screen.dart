@@ -4,7 +4,6 @@ import '../../../../core/theme/app_color.dart';
 import '../../../../global/custom_text.dart';
 import '../../controller/bottom_nav_controller.dart';
 
-
 class BottomNavScreen extends StatelessWidget {
   const BottomNavScreen({super.key});
 
@@ -14,14 +13,12 @@ class BottomNavScreen extends StatelessWidget {
 
     // ============================================================
     // SCREENS
-    // ADD YOUR REAL SCREENS HERE LATER
     // ============================================================
-
     final List<Widget> pages = [
-      const  Center(child: Text("Home"),),// HomePage()
-      const Center(child: Text("Cart"),), // CartPage()
-      const Center(child: Text("Favourite"),), // FavouritePage()
-      const Center(child: Text("Profile"),), // ProfilePage()
+      const Center(child: Text("Home")),
+      const Center(child: Text("Cart")),
+      const Center(child: Text("Favourite")),
+      const Center(child: Text("Profile")),
     ];
 
     return Scaffold(
@@ -30,53 +27,39 @@ class BottomNavScreen extends StatelessWidget {
       // ============================================================
       // BODY
       // ============================================================
-
       body: Obx(
             () => pages[bottomNavController.currentIndex.value],
       ),
 
       // ============================================================
-      // BOTTOM NAVIGATION BAR
+      // BOTTOM NAVIGATION BAR (Full Width & Uses drawerGradient1)
       // ============================================================
-
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Container(
-          height: 82,
-
-          margin: const EdgeInsets.only(
-            left: 16,
-            right: 16,
-            bottom: 12,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: AppColor.drawerGradient1, // Background set to drawerGradient1
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(24),
+            topRight: Radius.circular(24),
           ),
-
-          padding: const EdgeInsets.symmetric(
-            horizontal: 8,
-            vertical: 8,
-          ),
-
-          decoration: BoxDecoration(
-            color: AppColor.drawerGradient1,
-
-            borderRadius: BorderRadius.circular(28),
-
-            boxShadow: [
-              BoxShadow(
-                color: AppColor.drawerGradient1.withOpacity(0.35),
-                blurRadius: 20,
-                spreadRadius: 1,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-
-          child: Obx(
-                () => Row(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.25),
+              blurRadius: 15,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          top: false,
+          child: Container(
+            height: 68,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 6,
+            ),
+            child: Row(
               children: [
-                // ==================================================
                 // HOME
-                // ==================================================
-
                 Expanded(
                   child: _BottomNavItem(
                     controller: bottomNavController,
@@ -87,10 +70,7 @@ class BottomNavScreen extends StatelessWidget {
                   ),
                 ),
 
-                // ==================================================
                 // CART
-                // ==================================================
-
                 Expanded(
                   child: _BottomNavItem(
                     controller: bottomNavController,
@@ -101,10 +81,7 @@ class BottomNavScreen extends StatelessWidget {
                   ),
                 ),
 
-                // ==================================================
                 // FAVOURITE
-                // ==================================================
-
                 Expanded(
                   child: _BottomNavItem(
                     controller: bottomNavController,
@@ -115,10 +92,7 @@ class BottomNavScreen extends StatelessWidget {
                   ),
                 ),
 
-                // ==================================================
                 // PROFILE
-                // ==================================================
-
                 Expanded(
                   child: _BottomNavItem(
                     controller: bottomNavController,
@@ -147,7 +121,6 @@ class _BottomNavItem extends StatelessWidget {
 
   final IconData icon;
   final IconData selectedIcon;
-
   final String label;
 
   const _BottomNavItem({
@@ -160,89 +133,69 @@ class _BottomNavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isSelected =
-        controller.currentIndex.value == index;
+    return Obx(() {
+      final bool isSelected = controller.currentIndex.value == index;
 
-    return GestureDetector(
-      onTap: () {
-        controller.changeIndex(index);
-      },
+      // High-contrast colors designed specifically for drawerGradient1 background
+      final Color activeColor = AppColor.primary;
+      final Color inactiveColor = Colors.white.withOpacity(0.50);
 
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-
-        curve: Curves.easeOutCubic,
-
-        margin: const EdgeInsets.symmetric(
-          horizontal: 4,
-        ),
-
-        padding: const EdgeInsets.symmetric(
-          horizontal: 5,
-          vertical: 7,
-        ),
-
-        decoration: BoxDecoration(
-          color: isSelected
-              ? AppColor.selectedBackground
-              : Colors.transparent,
-
-          borderRadius: BorderRadius.circular(21),
-
-          // FLASH / GLOW EFFECT
-          boxShadow: isSelected
-              ? [
-            BoxShadow(
-              color: AppColor.primary.withOpacity(0.70),
-              blurRadius: 18,
-              spreadRadius: 1,
-              offset: const Offset(0, 3),
-            ),
-            BoxShadow(
-              color: AppColor.secondary.withOpacity(0.45),
-              blurRadius: 10,
-            ),
-          ]
-              : [],
-        ),
-
-        child: AnimatedScale(
-          duration: const Duration(milliseconds: 200),
-          scale: isSelected ? 1.05 : 1.0,
-
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-
-                child: Icon(
-                  isSelected ? selectedIcon : icon,
-                  key: ValueKey(isSelected),
-                  size: 25,
-                  color: isSelected
-                      ? AppColor.text
-                      : AppColor.background,
+      return GestureDetector(
+        onTap: () {
+          controller.changeIndex(index);
+        },
+        behavior: HitTestBehavior.opaque,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOutCubic,
+          margin: const EdgeInsets.symmetric(
+            horizontal: 6,
+            vertical: 2,
+          ),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 6,
+            vertical: 4,
+          ),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppColor.primary.withOpacity(0.18)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+            border: isSelected
+                ? Border.all(
+              color: AppColor.primary.withOpacity(0.4),
+              width: 1,
+            )
+                : null,
+          ),
+          child: AnimatedScale(
+            duration: const Duration(milliseconds: 200),
+            scale: isSelected ? 1.05 : 1.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    isSelected ? selectedIcon : icon,
+                    key: ValueKey(isSelected),
+                    size: 24,
+                    color: isSelected ? activeColor : inactiveColor,
+                  ),
                 ),
-              ),
-
-              const SizedBox(height: 3),
-
-              CustomText(
-                text: label,
-                fontSize: 11,
-                fontWeight: isSelected
-                    ? FontWeight.w700
-                    : FontWeight.w500,
-                color: isSelected
-                    ? AppColor.text
-                    : AppColor.background,
-                textAlign: TextAlign.center,
-              ),
-            ],
+                const SizedBox(height: 2),
+                CustomText(
+                  text: label,
+                  fontSize: 11,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                  color: isSelected ? activeColor : inactiveColor,
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }
