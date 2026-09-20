@@ -242,19 +242,21 @@ Future<void>resetNewForgetPassword()async{
         }));
           if(response.statusCode==200 || response.statusCode==201){
         // ------
-            CustomConfirmDialog(
-              icon: Icons.check_circle_outline,
-              iconColor: Colors.green,
-              title:"Your password has been reset successfully. Please log in with your new password.",
-              child: CustomButton(
-                text: "Go to Login",
-                backgroundColor: AppColor.drawerGradient1,
-                textColor: Colors.white,
-                onPressed: () {
-                  Get.offAllNamed(AllRoute.login);
-                },
-              )
-            );
+           Get.dialog(
+               CustomConfirmDialog(
+                   icon: Icons.check_circle_outline,
+                   iconColor: Colors.green,
+                   title:"Your password has been reset successfully. Please log in with your new password.",
+                   child: CustomButton(
+                     text: "Go to Login",
+                     backgroundColor: AppColor.drawerGradient1,
+                     textColor: Colors.white,
+                     onPressed: () {
+                       Get.offAllNamed(AllRoute.login);
+                     },
+                   )
+               )
+           );
       }else {
             CustomSnackbar(Get.context!, title: "Error", message: "Failed to reset password.", isError: true);
           }
