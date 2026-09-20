@@ -49,6 +49,8 @@ class AuthController extends GetxController {
 
   // Separate variable for Register Password
   var isRegisterPasswordObscured = true.obs;
+  // Type reet new password
+  var isResetNewForgetPasswordObscured = true.obs;
 
   // Toggle function for Login
   void toggleLoginPasswordVisibility() {
@@ -59,6 +61,11 @@ class AuthController extends GetxController {
   void toggleRegisterPasswordVisibility() {
     isRegisterPasswordObscured.value = !isRegisterPasswordObscured.value;
   }
+  //reset new password type
+  void toggleResetNewForgetPasswordVisibility() {
+    isResetNewForgetPasswordObscured.value = !isResetNewForgetPasswordObscured.value;
+  }
+
 
 // Add your TextControllers here as well if you haven't already
 // final emailController = TextEditingController();
@@ -118,7 +125,8 @@ Future <void> loginApi()async{
     );
     log("Response of login: ${response.body}");
    if(response.statusCode==200){
-     CustomSnackbar(Get.context!, title: "Success", message: "Account logged in successfully!");
+     CustomSnackbar(Get.context!, title: "Success", message: "Account logging successfully!");
+     Get.offAllNamed(AllRoute.bottomNav);
    }else{
      CustomSnackbar(Get.context!, title: "Error", message: "Failed to login ${response.body} ${response.statusCode}",isError: true);
    }

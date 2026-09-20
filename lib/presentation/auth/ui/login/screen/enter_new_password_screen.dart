@@ -123,20 +123,20 @@ class EnterNewPasswordScreen extends StatelessWidget {
                                         return CustomTextField(
                                           controller: authController.resetNewForgetPasswordClt,
                                           hintText: "New Password",
-                                          obscureText: authController.isRegisterPasswordObscured.value,
+                                          obscureText: authController.isResetNewForgetPasswordObscured.value,
                                           prefixIcon: const Icon(
                                             Icons.lock_outline,
                                             color: AppColor.secondaryText,
                                           ),
                                           suffixIcon: IconButton(
                                             icon: Icon(
-                                              authController.isRegisterPasswordObscured.value
+                                              authController.isResetNewForgetPasswordObscured.value
                                                   ? Icons.visibility_off
                                                   : Icons.visibility,
                                               color: AppColor.secondaryText,
                                             ),
                                             onPressed: () {
-                                              authController.toggleRegisterPasswordVisibility();
+                                              authController.toggleResetNewForgetPasswordVisibility();
                                             },
                                           ),
                                           validator: (value) {
