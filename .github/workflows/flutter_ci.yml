@@ -1,52 +1,91 @@
-name: Flutter CI/CD
 
-on:
-  push:
-    branches:
-      - Rabbi
-  pull_request:
-    branches:
-      - Rabbi
+  name: Flutter CI/CD
 
-jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
+  on:
+    push:
+      branches:
+        - Rabbi
+    pull_request:
+      branches:
+        - Rabbi
 
-    steps:
-      # 1. Check out code (UPDATED TO v4)
-      - name: Checkout repository
-        uses: actions/checkout@v4
+  jobs:
+    build-and-test:
+      runs-on: ubuntu-latest
 
-      # 2. Set up Java (UPDATED TO v4)
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
+      steps:
+        # 1. Check out code
+        - name: Checkout repository
+          uses: actions/checkout@v4
 
-      # 3. Set up Flutter
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-          cache: true
+        # 2. Set up Java 17
+        - name: Set up Java
+          uses: actions/setup-java@v4
+          with:
+            distribution: 'zulu'
+            java-version: '17'
 
-      # 4. Install dependencies
-      - name: Install dependencies
-        run: flutter pub get
+        # 3. Set up Flutter 3.44.1
+        - name: Set up Flutter
+          uses: subosito/flutter-action@v2
+          with:
+            flutter-version: '3.44.1'
+            channel: 'stable'
+            cache: true
 
-      # 5. Create .env file so the build doesn't crash
-      - name: Create .env file
-        run: |
+        # 4. Set up Android SDK
+        - name: Set up Android SDK
+          uses: android-actions/setup-android@v3
+
+        # 5. Install Android SDK 36
+        - name: Install Android SDK 36
+          run: |
+            sdkmanager "platforms;android-36"
+            sdkmanager "build-tools;36.0.0"
+
+        # 6. Accept Android SDK licenses
+        - name: Accept Android SDK licenses
+          run: yes | sdkmanager --licenses || true
+
+        # 7. Show Android SDK information
+        - name: Check Android SDK
+          run: |
+            sdkmanager --list | grep "platforms;android-36" || true
+            echo "ANDROID_HOME=$ANDROID_HOME"
+            echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+
+        # 8. Check Flutter version
+        - name: Check Flutter
+          run: |
+            flutter --version
+            flutter doctor -v
+
+        # 9. Install dependencies
+        - name: Install dependencies
+          run: flutter pub get
+
+        # 10. Create .env file
+        - name: Create .env file
+          run: |
             echo "BASE_URL=${{ secrets.BASE_URL }}" > .env
 
-      # 6. Build the Android APK (Testing is removed to guarantee a build)
-      - name: Build Android APK
-        run: flutter build apk --release
+        # 11. Clean previous build files
+        - name: Flutter clean
+          run: flutter clean
 
-      # 7. Upload the APK (UPDATED TO v4)
-      - name: Upload APK Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+        # 12. Get dependencies again after clean
+        - name: Flutter pub get
+          run: flutter pub get
+
+        # 13. Build Android APK
+        - name: Build Android APK
+          run: flutter build apk --release
+
+        # 14. Upload APK
+        - name: Upload APK Artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: app-release-apk
+            path: build/app/outputs/flutter-apk/app-release.apk
+            if-no-files-found: error
+
