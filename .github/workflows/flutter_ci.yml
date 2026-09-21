@@ -38,60 +38,90 @@
           run: |
             echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
             echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> $GITHUB_ENV
-            echo "/usr/local/lib/android/sdk/cmdline-tools/16.0/bin" >> $GITHUB_PATH
             echo "/usr/local/lib/android/sdk/platform-tools" >> $GITHUB_PATH
 
-        # 5. Accept Android SDK licenses
+        # 5. Find Android SDK manager
+        - name: Find Android SDK manager
+          run: |
+            echo "Searching for sdkmanager..."
+            
+            SDKMANAGER=$(find "$ANDROID_HOME" -type f -name "sdkmanager" 2>/dev/null | head -n 1)
+            
+            if [ -z "$SDKMANAGER" ]; then
+              echo "ERROR: sdkmanager was not found."
+              echo "Android SDK contents:"
+              find "$ANDROID_HOME" -maxdepth 4 -type f 2>/dev/null | head -100
+              exit 1
+            fi
+            
+            echo "Found sdkmanager at:"
+            echo "$SDKMANAGER"
+            
+            echo "SDKMANAGER=$SDKMANAGER" >> "$GITHUB_ENV"
+
+        # 6. Accept Android SDK licenses
         - name: Accept Android SDK licenses
           run: |
-            yes | /usr/local/lib/android/sdk/cmdline-tools/16.0/bin/sdkmanager --licenses > /dev/null || true
+            yes | "$SDKMANAGER" --licenses > /dev/null || true
 
-        # 6. Install Android SDK 36
+        # 7. Install Android SDK 36
         - name: Install Android SDK 36
           run: |
-            /usr/local/lib/android/sdk/cmdline-tools/16.0/bin/sdkmanager \
+            "$SDKMANAGER" \
               "platforms;android-36" \
               "build-tools;36.0.0"
 
-        # 7. Verify Android SDK
+        # 8. Verify Android SDK
         - name: Check Android SDK
           run: |
             echo "ANDROID_HOME=$ANDROID_HOME"
             echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+            echo "SDKMANAGER=$SDKMANAGER"
             
+            echo ""
+            echo "Installed Android platforms:"
             ls -la "$ANDROID_HOME/platforms"
+            
+            echo ""
+            echo "Android 36:"
             ls -la "$ANDROID_HOME/platforms/android-36"
             
-            /usr/local/lib/android/sdk/cmdline-tools/16.0/bin/sdkmanager --list | grep "platforms;android-36" || true
+            echo ""
+            echo "Installed build tools:"
+            ls -la "$ANDROID_HOME/build-tools"
+            
+            echo ""
+            echo "SDK Manager version:"
+            "$SDKMANAGER" --version
 
-        # 8. Check Flutter
+        # 9. Check Flutter
         - name: Check Flutter
           run: |
             flutter --version
             flutter doctor -v
 
-        # 9. Install dependencies
+        # 10. Install dependencies
         - name: Install dependencies
           run: flutter pub get
 
-        # 10. Create .env file
+        # 11. Create .env file
         - name: Create .env file
           run: |
             echo "BASE_URL=${{ secrets.BASE_URL }}" > .env
 
-        # 11. Clean previous build files
+        # 12. Clean previous build files
         - name: Flutter clean
           run: flutter clean
 
-        # 12. Get dependencies again after clean
+        # 13. Get dependencies again after clean
         - name: Flutter pub get
           run: flutter pub get
 
-        # 13. Build Android APK
+        # 14. Build Android APK
         - name: Build Android APK
           run: flutter build apk --release
 
-        # 14. Upload APK
+        # 15. Upload APK
         - name: Upload APK Artifact
           uses: actions/upload-artifact@v4
           with:
