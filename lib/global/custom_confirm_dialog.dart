@@ -213,19 +213,7 @@ class CustomConfirmDialog extends StatelessWidget {
     }
 
     if (icon != null) {
-      return Container(
-        height: 60,
-        width: 60,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: (iconColor ?? AppColor.primary)
-              .withOpacity(0.15),
-          border: Border.all(
-            color: (iconColor ?? AppColor.primary)
-                .withOpacity(0.3),
-            width: 1.5,
-          ),
-        ),
+      return Center(
         child: Icon(
           icon,
           size: 70,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:get/get.dart';
+import 'package:mye_commerce/presentation/home/ui/widget/home_categories.dart';
 import '../../../../core/theme/app_color.dart';
 import '../../../../global/custom_text.dart';
 import '../../controller/home_controller.dart';
@@ -15,7 +16,7 @@ class HomeScreen extends StatelessWidget {
     return Container(
       height: double.infinity,
       width: double.infinity,
-      color: Colors.grey.shade300,
+      color: AppColor.text,
       child: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
@@ -25,11 +26,11 @@ class HomeScreen extends StatelessWidget {
             children: [
               // 1. User Dummy Name
               Obx(
-                    () => CustomText(
+                () => CustomText(
                   text: homeController.userName.value,
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: AppColor.text,
+                  color: AppColor.black,
                 ),
               ),
 
@@ -65,8 +66,13 @@ class HomeScreen extends StatelessWidget {
                   // Handle product search here
                 },
               ),
-
               const Gap(20),
+              SizedBox(
+                width: double.infinity,
+                child: HomeCategories(),
+              ),
+              const Gap(20),
+
             ],
           ),
         ),

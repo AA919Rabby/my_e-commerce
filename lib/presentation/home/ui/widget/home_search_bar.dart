@@ -23,9 +23,16 @@ class HomeSearchBar extends StatelessWidget {
             color: Colors.white.withOpacity(0.08),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: Colors.white.withOpacity(0.15),
+              color: AppColor.drawerGradient1.withValues(alpha: 0.3),
               width: 1,
             ),
+            boxShadow: [
+              BoxShadow(
+                color:Colors.grey.shade200,
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: TextField(
             controller: controller,
@@ -38,6 +45,8 @@ class HomeSearchBar extends StatelessWidget {
                 color: AppColor.secondaryText.withOpacity(0.6),
                 fontSize: 14,
               ),
+              suffixIcon: Icon(Icons.mic,color: AppColor.secondaryText,
+                size: 22,),
               prefixIcon: const Icon(
                 Icons.search,
                 color: AppColor.secondaryText,
