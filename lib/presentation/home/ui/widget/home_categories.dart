@@ -17,7 +17,6 @@ class HomeCategories extends StatelessWidget {
 
     return Obx(() {
       final categories = controller.allCategories;
-      // Track selectedCategoryId here so Obx listens to changes
       final String selectedId = controller.selectedCategoryId.value;
 
       return SizedBox(
@@ -31,10 +30,7 @@ class HomeCategories extends StatelessWidget {
             return const Gap(12);
           },
           itemBuilder: (context, index) {
-            // ============================================================
             // ALL - MANUAL CATEGORY
-            // ============================================================
-
             if (index == 0) {
               final bool isSelected = selectedId == 'All';
 
@@ -48,15 +44,9 @@ class HomeCategories extends StatelessWidget {
               );
             }
 
-            // ============================================================
             // API CATEGORY
-            // ============================================================
-
             final Result category = categories[index - 1];
-
-            final String categoryId =
-                category.id ?? '';
-
+            final String categoryId = category.id ?? '';
             final bool isSelected = selectedId == categoryId;
 
             return _CategoryItem(
@@ -73,81 +63,28 @@ class HomeCategories extends StatelessWidget {
     });
   }
 
-  // ========================================================================
-  // CATEGORY ICON
-  // ========================================================================
-
   IconData _getCategoryIcon(String? name) {
-    final String categoryName =
-    (name ?? '').toLowerCase();
-
-    if (categoryName.contains('electronic')) {
-      return Icons.devices_rounded;
-    }
-
-    if (categoryName.contains('phone') ||
-        categoryName.contains('mobile')) {
-      return Icons.phone_android_rounded;
-    }
-
-    if (categoryName.contains('computer') ||
-        categoryName.contains('laptop')) {
-      return Icons.laptop_mac_rounded;
-    }
-
-    if (categoryName.contains('coffee') ||
-        categoryName.contains('cup')) {
-      return Icons.local_cafe_rounded;
-    }
-
-    if (categoryName.contains('fashion') ||
-        categoryName.contains('cloth')) {
-      return Icons.checkroom_rounded;
-    }
-
-    if (categoryName.contains('shoe')) {
-      return Icons.directions_run_rounded;
-    }
-
-    if (categoryName.contains('car') ||
-        categoryName.contains('vehicle')) {
-      return Icons.directions_car_rounded;
-    }
-
-    if (categoryName.contains('home') ||
-        categoryName.contains('furniture')) {
-      return Icons.home_rounded;
-    }
-
-    if (categoryName.contains('book')) {
-      return Icons.menu_book_rounded;
-    }
-
-    if (categoryName.contains('sport')) {
-      return Icons.sports_soccer_rounded;
-    }
-
-    if (categoryName.contains('beauty') ||
-        categoryName.contains('cosmetic')) {
-      return Icons.face_retouching_natural_rounded;
-    }
-
-    if (categoryName.contains('food')) {
-      return Icons.restaurant_rounded;
-    }
-
-    if (categoryName.contains('toy')) {
-      return Icons.toys_rounded;
-    }
-
+    final String categoryName = (name ?? '').toLowerCase();
+    if (categoryName.contains('electronic')) return Icons.devices_rounded;
+    if (categoryName.contains('phone') || categoryName.contains('mobile')) return Icons.phone_android_rounded;
+    if (categoryName.contains('computer') || categoryName.contains('laptop')) return Icons.laptop_mac_rounded;
+    if (categoryName.contains('coffee') || categoryName.contains('cup')) return Icons.local_cafe_rounded;
+    if (categoryName.contains('fashion') || categoryName.contains('cloth')) return Icons.checkroom_rounded;
+    if (categoryName.contains('shoe')) return Icons.directions_run_rounded;
+    if (categoryName.contains('car') || categoryName.contains('vehicle')) return Icons.directions_car_rounded;
+    if (categoryName.contains('home') || categoryName.contains('furniture')) return Icons.home_rounded;
+    if (categoryName.contains('book')) return Icons.menu_book_rounded;
+    if (categoryName.contains('sport')) return Icons.sports_soccer_rounded;
+    if (categoryName.contains('beauty') || categoryName.contains('cosmetic')) return Icons.face_retouching_natural_rounded;
+    if (categoryName.contains('food')) return Icons.restaurant_rounded;
+    if (categoryName.contains('toy')) return Icons.toys_rounded;
     return Icons.category_rounded;
   }
 }
 
 // ============================================================================
-// CATEGORY ITEM
+// CATEGORY ITEM (RESTORED TO ORIGINAL DESIGN)
 // ============================================================================
-
 class _CategoryItem extends StatelessWidget {
   final String title;
   final IconData icon;
@@ -169,29 +106,18 @@ class _CategoryItem extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
-
         width: 50.w,
         height: 50.h,
-
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-
-          // ==============================================================
-          // SELECTED = YELLOW
-          // UNSELECTED = LIGHT
-          // ==============================================================
-
-          color: isSelected
-              ? AppColor.drawerGradient1
-              : Colors.white,
-
+          // RESTORED: Yellow when selected, White when unselected
+          color: isSelected ? AppColor.drawerGradient1 : Colors.white,
           border: Border.all(
             color: isSelected
                 ? AppColor.drawerGradient1
                 : AppColor.drawerGradient1.withOpacity(0.30),
             width: isSelected ? 2 : 1,
           ),
-
           boxShadow: [
             BoxShadow(
               color: isSelected
@@ -203,39 +129,22 @@ class _CategoryItem extends StatelessWidget {
             ),
           ],
         ),
-
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // ============================================================
-            // ICON
-            // ============================================================
-
             Icon(
               icon,
               size: 16,
-              color: isSelected
-                  ? Colors.white
-                  : AppColor.drawerGradient1,
+              color: isSelected ? Colors.white : AppColor.drawerGradient1,
             ),
-
             const Gap(5),
-
-            // ============================================================
-            // NAME
-            // ============================================================
-
             Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               child: CustomText(
                 text: title,
                 fontSize: 8,
                 fontWeight: FontWeight.w600,
-                color: isSelected
-                    ? Colors.white
-                    : AppColor.black,
+                color: isSelected ? Colors.white : AppColor.black,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,

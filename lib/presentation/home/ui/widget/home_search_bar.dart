@@ -18,64 +18,78 @@ class HomeSearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeController = Get.find<HomeController>();
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.08),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: AppColor.drawerGradient1.withValues(alpha: 0.3),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.shade200,
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white, // RESTORED TO BRIGHT WHITE
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColor.drawerGradient1.withValues(alpha: 0.3),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade200,
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
-          child: TextField(
-            controller: controller,
-            onChanged: onChanged,
-            style: const TextStyle(color: AppColor.text),
-            cursorColor: AppColor.primary,
-            decoration: InputDecoration(
-              hintText: "Search products...",
-              hintStyle: TextStyle(
-                color: AppColor.secondaryText.withOpacity(0.6),
-                fontSize: 14,
-              ),
-              suffixIcon: Obx(
-                    () => GestureDetector(
-                  onTap: () {
-                    homeController.toggleListening();
-                  },
-                  child: Icon(
-                    homeController.isListening.value
-                        ? Icons.mic
-                        : Icons.mic_none,
-                    color: homeController.isListening.value
-                        ? Colors.redAccent
-                        : AppColor.secondaryText,
-                    size: 22,
-                  ),
+        ],
+      ),
+      child: TextField(
+        controller: controller,
+        onChanged: (val) {
+          homeController.onSearchChanged(val);
+          if (onChanged != null) {
+            onChanged!(val);
+          }
+        },
+        style: const TextStyle(color: AppColor.black), // RESTORED TO BLACK TEXT
+        cursorColor: AppColor.primary,
+        decoration: InputDecoration(
+          hintText: "Search products...",
+          hintStyle: TextStyle(
+            color: AppColor.secondaryText.withOpacity(0.6),
+            fontSize: 14,
+          ),
+          prefixIcon: Obx(() {
+            final bool isTyped = homeController.searchQuery.value.isNotEmpty;
+
+            if (isTyped) {
+              return GestureDetector(
+                onTap: () {
+                  homeController.clearSearch();
+                },
+                child: const Icon(
+                  Icons.close,
+                  color: Colors.redAccent,
+                  size: 22,
                 ),
-              ),
-              prefixIcon: const Icon(
-                Icons.search,
-                color: AppColor.secondaryText,
+              );
+            }
+
+            return const Icon(
+              Icons.search,
+              color: AppColor.secondaryText,
+              size: 22,
+            );
+          }),
+          suffixIcon: Obx(
+                () => GestureDetector(
+              onTap: () {
+                homeController.toggleListening();
+              },
+              child: Icon(
+                homeController.isListening.value ? Icons.mic : Icons.mic_none,
+                color: homeController.isListening.value
+                    ? Colors.redAccent
+                    : AppColor.secondaryText,
                 size: 22,
               ),
-              border: InputBorder.none,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 14,
-              ),
             ),
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 14,
           ),
         ),
       ),

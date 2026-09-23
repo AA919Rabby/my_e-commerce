@@ -24,10 +24,16 @@ class HomeController extends GetxController {
 
   RxString selectedCategoryId = 'All'.obs;
 
-  RxList<product_model.Result> allProduct =
-      <product_model.Result>[].obs;
+  RxList<product_model.Result> allProduct = <product_model.Result>[].obs;
 
   RxList<Result> allCategories = <Result>[].obs;
+
+  // ========================================================================
+  // PAGINATION
+  // ========================================================================
+
+  int currentPage = 1;
+  final int limit = 10;
 
   // ========================================================================
   // LOADING
@@ -53,10 +59,9 @@ class HomeController extends GetxController {
   // ========================================================================
 
   final searchController = TextEditingController();
+  final RxString searchQuery = ''.obs;
 
-  final stt.SpeechToText speechToText =
-  stt.SpeechToText();
-
+  final stt.SpeechToText speechToText = stt.SpeechToText();
   final RxBool isListening = false.obs;
 
   // ========================================================================
@@ -73,9 +78,46 @@ class HomeController extends GetxController {
     // Get all products from API
     getAllProduct();
 
+    // Debounce search: Automatically searches after 500ms when typing stops
+    debounce(
+      searchQuery,
+          (_) => getAllProduct(page: 1),
+      time: const Duration(milliseconds: 500),
+    );
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       checkAndRequestLocation();
     });
+  }
+
+  // ========================================================================
+  // SEARCH METHODS
+  // ========================================================================
+
+  void onSearchChanged(String query) {
+    searchQuery.value = query.trim();
+  }
+
+  void clearSearch() {
+    searchController.clear();
+    searchQuery.value = '';
+    getAllProduct(page: 1);
+  }
+
+  // ========================================================================
+  // REFRESH HOME
+  // ========================================================================
+
+  Future<void> onRefreshHome() async {
+    currentPage = 1;
+    searchController.clear();
+    searchQuery.value = '';
+    selectedCategoryId.value = 'All';
+
+    await Future.wait([
+      getCategories(),
+      getAllProduct(page: 1),
+    ]);
   }
 
   // ========================================================================
@@ -107,14 +149,12 @@ class HomeController extends GetxController {
         await speechToText.listen(
           onResult: (result) {
             searchController.text = result.recognizedWords;
+            onSearchChanged(result.recognizedWords);
           },
         );
       } else {
         isListening.value = false;
-
-        log(
-          "Speech recognition not available or permission denied.",
-        );
+        log("Speech recognition not available or permission denied.");
       }
     }
   }
@@ -135,71 +175,39 @@ class HomeController extends GetxController {
         },
       );
 
-      log(
-        'Category API Status Code: ${response.statusCode}',
-      );
+      log('Category API Status Code: ${response.statusCode}');
+      log('Category API Response: ${response.body}');
 
-      log(
-        'Category API Response: ${response.body}',
-      );
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        log('Categories fetched successfully');
 
-      if (response.statusCode == 200 ||
-          response.statusCode == 201) {
-        log(
-          'Categories fetched successfully',
-        );
+        final Map<String, dynamic> jsonData = jsonDecode(response.body);
 
-        final Map<String, dynamic> jsonData =
-        jsonDecode(response.body);
+        final AllCategory allCategory = AllCategory.fromJson(jsonData);
 
-        final AllCategory allCategory =
-        AllCategory.fromJson(jsonData);
+        allCategories.value = allCategory.result ?? [];
 
-        allCategories.value =
-            allCategory.result ?? [];
-
-        log(
-          'Fetched categories: ${allCategories.length}',
-        );
+        log('Fetched categories: ${allCategories.length}');
       } else {
-        log(
-          'Failed to fetch categories. '
-              'Status code: ${response.statusCode}',
-        );
+        log('Failed to fetch categories. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      log(
-        'Error fetching categories: $e',
-      );
+      log('Error fetching categories: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
   // ========================================================================
-  // SELECT CATEGORY
+  // SELECT CATEGORY & FILTER PRODUCTS
   // ========================================================================
 
   void selectCategory(String categoryId) {
     selectedCategoryId.value = categoryId;
+    log('Selected Category ID: $categoryId');
 
-    log(
-      'Selected Category ID: $categoryId',
-    );
-
-    if (categoryId == 'All') {
-      log('Selected category: All');
-      return;
-    }
-
-    final Result? category =
-    allCategories.firstWhereOrNull(
-          (item) => item.id == categoryId,
-    );
-
-    log(
-      'Selected category: ${category?.name}',
-    );
+    // Automatically re-fetch products matching this category
+    getAllProduct(page: 1);
   }
 
   // ========================================================================
@@ -207,12 +215,7 @@ class HomeController extends GetxController {
   // ========================================================================
 
   Future<void> checkAndRequestLocation() async {
-    // ================================================================
-    // CHECK LOCATION SERVICE
-    // ================================================================
-
-    bool isLocationServiceEnabled =
-    await Geolocator.isLocationServiceEnabled();
+    bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
 
     if (!isLocationServiceEnabled) {
       Get.dialog(
@@ -236,26 +239,18 @@ class HomeController extends GetxController {
         barrierDismissible: false,
       );
 
-      userLocation.value =
-      "Location service is off";
-
+      userLocation.value = "Location service is off";
       return;
     }
 
-    // ================================================================
-    // CHECK PERMISSION
-    // ================================================================
-
-    LocationPermission permission =
-    await Geolocator.checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
 
     if (permission == LocationPermission.denied) {
       Get.dialog(
         CustomConfirmDialog(
           icon: Icons.location_on_outlined,
           iconColor: AppColor.primary,
-          title:
-          "Allow location access to find products near you",
+          title: "Allow location access to find products near you",
           child: CustomButton(
             text: "Allow Location",
             backgroundColor: AppColor.drawerGradient1,
@@ -263,138 +258,110 @@ class HomeController extends GetxController {
             onPressed: () async {
               Get.back();
 
-              permission =
-              await Geolocator.requestPermission();
+              permission = await Geolocator.requestPermission();
 
-              _handlePermissionResult(
-                permission,
-              );
+              _handlePermissionResult(permission);
             },
           ),
         ),
         barrierDismissible: false,
       );
-    } else if (permission ==
-        LocationPermission.deniedForever) {
-      userLocation.value =
-      "Permission denied";
+    } else if (permission == LocationPermission.deniedForever) {
+      userLocation.value = "Permission denied";
     } else {
-      // Already allowed
       _getCurrentCity();
     }
   }
 
-  // ========================================================================
-  // HANDLE LOCATION PERMISSION
-  // ========================================================================
-
-  void _handlePermissionResult(
-      LocationPermission permission,
-      ) {
-    if (permission ==
-        LocationPermission.whileInUse ||
-        permission ==
-            LocationPermission.always) {
+  void _handlePermissionResult(LocationPermission permission) {
+    if (permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always) {
       _getCurrentCity();
     } else {
-      userLocation.value =
-      "Permission denied";
+      userLocation.value = "Permission denied";
     }
   }
-
-  // ========================================================================
-  // GET CURRENT CITY
-  // ========================================================================
 
   Future<void> _getCurrentCity() async {
     try {
-      Position position =
-      await Geolocator.getCurrentPosition(
-        locationSettings:
-        const LocationSettings(
+      Position position = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.medium,
         ),
       );
 
-      // ================================================================
-      // GET ADDRESS
-      // ================================================================
-
-      List<Placemark> placemarks =
-      await placemarkFromCoordinates(
+      List<Placemark> placemarks = await placemarkFromCoordinates(
         position.latitude,
         position.longitude,
       );
 
       if (placemarks.isNotEmpty) {
         final place = placemarks.first;
-
-        userLocation.value =
-        "${place.locality ?? ''}, "
-            "${place.country ?? ''}";
+        userLocation.value = "${place.locality ?? ''}, ${place.country ?? ''}";
       } else {
-        userLocation.value =
-        "Location detected";
+        userLocation.value = "Location detected";
       }
     } catch (e) {
-      userLocation.value =
-      "Unable to get location";
+      userLocation.value = "Unable to get location";
     }
   }
 
   // ========================================================================
-  // GET ALL PRODUCTS
+  // GET ALL PRODUCTS (With page, limit, searchTerm, productCategory params)
   // ========================================================================
 
-  Future<void> getAllProduct() async {
+  Future<void> getAllProduct({int page = 1}) async {
     isLoading2.value = true;
+    currentPage = page;
 
     try {
+      // Build Query Parameters matching Postman
+      final Map<String, String> queryParams = {
+        'page': '$page',
+        'limit': '$limit',
+      };
+
+      // 1. Add searchTerm if typing
+      if (searchQuery.value.isNotEmpty) {
+        queryParams['searchTerm'] = searchQuery.value;
+      }
+
+      // 2. Add productCategory if a specific category is selected
+      if (selectedCategoryId.value != 'All') {
+        final Result? category = allCategories.firstWhereOrNull(
+              (item) => item.id == selectedCategoryId.value,
+        );
+        queryParams['productCategory'] = category?.name ?? selectedCategoryId.value;
+      }
+
+      final uri = Uri.parse(AppUrl.getProducts).replace(queryParameters: queryParams);
+      log("Fetching Products with URL: $uri");
+
       final response = await http.get(
-        Uri.parse(AppUrl.getProducts),
+        uri,
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
       );
 
-      log(
-        "All Product API Status Code: ${response.statusCode}",
-      );
+      log("All Product API Status Code: ${response.statusCode}");
+      log("All Product API Response: ${response.body}");
 
-      log(
-        "All Product API Response: ${response.body}",
-      );
-
-      if (response.statusCode == 200 ||
-          response.statusCode == 201) {
-        final Map<String, dynamic> jsonData =
-        jsonDecode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final Map<String, dynamic> jsonData = jsonDecode(response.body);
 
         final product_model.AllProduct allProducts =
-        product_model.AllProduct.fromJson(
-          jsonData,
-        );
+        product_model.AllProduct.fromJson(jsonData);
 
-        allProduct.value =
-            allProducts.result?.result ?? [];
+        allProduct.value = allProducts.result?.result ?? [];
 
-        log(
-          "All products fetched successfully",
-        );
-
-        log(
-          "Total products: ${allProduct.length}",
-        );
+        log("All products fetched successfully: ${allProduct.length}");
       } else {
-        log(
-          "All Product API error: ${response.statusCode}",
-        );
+        log("All Product API error: ${response.statusCode}");
       }
     } catch (e) {
-      log(
-        "AllProduct catch error: $e",
-      );
+      log("AllProduct catch error: $e");
     } finally {
       isLoading2.value = false;
     }
@@ -407,9 +374,7 @@ class HomeController extends GetxController {
   @override
   void onClose() {
     searchController.dispose();
-
     speechToText.stop();
-
     super.onClose();
   }
 }

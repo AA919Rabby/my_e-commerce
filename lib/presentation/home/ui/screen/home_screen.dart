@@ -14,72 +14,83 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeController = Get.find<HomeController>();
+
     return Container(
       height: double.infinity,
       width: double.infinity,
-      color: AppColor.text,
+      color: AppColor.text, // RESTORED TO LIGHT BACKGROUND
       child: SafeArea(
         bottom: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 1. User Dummy Name
-              Obx(
-                () => CustomText(
-                  text: homeController.userName.value,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: AppColor.black,
-                ),
-              ),
-
-              const Gap(4),
-
-              // 2. Location Indicator (Below Name)
-              Row(
-                children: [
-                  const Icon(
-                    Icons.location_on,
-                    size: 16,
-                    color: AppColor.primary,
+        child: RefreshIndicator.adaptive(
+          onRefresh: () async {
+            await homeController.onRefreshHome();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 1. User Dummy Name
+                Obx(
+                      () => CustomText(
+                    text: homeController.userName.value,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.black, // RESTORED TO BLACK TEXT
                   ),
-                  const Gap(4),
-                  Expanded(
-                    child: Obx(
-                          () => CustomText(
-                        text: homeController.userLocation.value,
-                        fontSize: 13,
-                        color: AppColor.secondaryText,
+                ),
+
+                const Gap(4),
+
+                // 2. Location Indicator
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.location_on,
+                      size: 16,
+                      color: AppColor.primary,
+                    ),
+                    const Gap(4),
+                    Expanded(
+                      child: Obx(
+                            () => CustomText(
+                          text: homeController.userLocation.value,
+                          fontSize: 13,
+                          color: AppColor.secondaryText,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
 
-              const Gap(24),
+                const Gap(24),
 
-              // 3. Search Bar Widget
-              HomeSearchBar(
-                controller: homeController.searchController,
-                onChanged: (query) {
-                  // Handle product search here
-                },
-              ),
-              const Gap(10),
-              CustomText(text: "Categories",fontSize: 16,),
-              const Gap(10),
-              SizedBox(
-                width: double.infinity,
-                child: HomeCategories(),
-              ),
-              const Gap(10),
-              CustomText(text: "Today's deal",fontSize: 16,),
-              const Gap(10),
-              HomeProduct(),
-              const Gap(30),
-            ],
+                // 3. Search Bar Widget
+                HomeSearchBar(
+                  controller: homeController.searchController,
+                  onChanged: (query) {
+                    homeController.onSearchChanged(query);
+                  },
+                ),
+
+                const Gap(10),
+                const CustomText(text: "Categories", fontSize: 16, color: AppColor.black),
+                const Gap(10),
+
+                const SizedBox(
+                  width: double.infinity,
+                  child: HomeCategories(),
+                ),
+
+                const Gap(10),
+                const CustomText(text: "Today's deal", fontSize: 16, color: AppColor.black),
+                const Gap(10),
+
+                const HomeProduct(),
+                const Gap(30),
+              ],
+            ),
           ),
         ),
       ),
