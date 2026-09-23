@@ -6,6 +6,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 import 'package:mye_commerce/core/config/app_url.dart';
 import 'package:mye_commerce/core/theme/app_color.dart';
@@ -41,10 +42,12 @@ class HomeController extends GetxController {
   final userLocation = "Fetching location...".obs;
 
   // ========================================================================
-  // SEARCH
+  // SEARCH & SPEECH TO TEXT
   // ========================================================================
 
   final searchController = TextEditingController();
+  final stt.SpeechToText speechToText = stt.SpeechToText();
+  final RxBool isListening = false.obs;
 
   // ========================================================================
   // ON INIT
@@ -60,6 +63,42 @@ class HomeController extends GetxController {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       checkAndRequestLocation();
     });
+  }
+
+  // ========================================================================
+  // SPEECH TO TEXT METHOD
+  // ========================================================================
+
+  Future<void> toggleListening() async {
+    if (isListening.value) {
+      await speechToText.stop();
+      isListening.value = false;
+    } else {
+      bool available = await speechToText.initialize(
+        onError: (error) {
+          log("Speech error: $error");
+          isListening.value = false;
+        },
+        onStatus: (status) {
+          log("Speech status: $status");
+          if (status == 'done' || status == 'notListening') {
+            isListening.value = false;
+          }
+        },
+      );
+
+      if (available) {
+        isListening.value = true;
+        await speechToText.listen(
+          onResult: (result) {
+            searchController.text = result.recognizedWords;
+          },
+        );
+      } else {
+        isListening.value = false;
+        log("Speech recognition not available or permission denied.");
+      }
+    }
   }
 
   // ========================================================================
@@ -295,7 +334,7 @@ class HomeController extends GetxController {
   @override
   void onClose() {
     searchController.dispose();
-
+    speechToText.stop();
     super.onClose();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:get/get.dart';
 
 import '../../../../core/theme/app_color.dart';
@@ -20,7 +21,7 @@ class HomeCategories extends StatelessWidget {
       final String selectedId = controller.selectedCategoryId.value;
 
       return SizedBox(
-        height: 100,
+        height: 60.h,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
@@ -169,8 +170,8 @@ class _CategoryItem extends StatelessWidget {
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
 
-        width: 88,
-        height: 88,
+        width: 60.w,
+        height: 60.h,
 
         decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -212,7 +213,7 @@ class _CategoryItem extends StatelessWidget {
 
             Icon(
               icon,
-              size: 27,
+              size: 16,
               color: isSelected
                   ? Colors.white
                   : AppColor.drawerGradient1,
@@ -230,7 +231,7 @@ class _CategoryItem extends StatelessWidget {
               ),
               child: CustomText(
                 text: title,
-                fontSize: 10,
+                fontSize: 8,
                 fontWeight: FontWeight.w600,
                 color: isSelected
                     ? Colors.white

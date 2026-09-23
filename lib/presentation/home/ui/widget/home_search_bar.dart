@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../../../core/theme/app_color.dart';
+import '../../controller/home_controller.dart';
 
 class HomeSearchBar extends StatelessWidget {
   final TextEditingController controller;
@@ -14,6 +16,8 @@ class HomeSearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeController = Get.find<HomeController>();
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: BackdropFilter(
@@ -28,7 +32,7 @@ class HomeSearchBar extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color:Colors.grey.shade200,
+                color: Colors.grey.shade200,
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -45,8 +49,22 @@ class HomeSearchBar extends StatelessWidget {
                 color: AppColor.secondaryText.withOpacity(0.6),
                 fontSize: 14,
               ),
-              suffixIcon: Icon(Icons.mic,color: AppColor.secondaryText,
-                size: 22,),
+              suffixIcon: Obx(
+                    () => GestureDetector(
+                  onTap: () {
+                    homeController.toggleListening();
+                  },
+                  child: Icon(
+                    homeController.isListening.value
+                        ? Icons.mic
+                        : Icons.mic_none,
+                    color: homeController.isListening.value
+                        ? Colors.redAccent
+                        : AppColor.secondaryText,
+                    size: 22,
+                  ),
+                ),
+              ),
               prefixIcon: const Icon(
                 Icons.search,
                 color: AppColor.secondaryText,
