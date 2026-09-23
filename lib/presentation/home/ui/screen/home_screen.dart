@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:get/get.dart';
 import 'package:mye_commerce/presentation/home/ui/widget/home_categories.dart';
+import 'package:mye_commerce/presentation/home/ui/widget/home_product.dart';
 import '../../../../core/theme/app_color.dart';
 import '../../../../global/custom_text.dart';
 import '../../controller/home_controller.dart';
@@ -76,8 +77,8 @@ class HomeScreen extends StatelessWidget {
               const Gap(10),
               CustomText(text: "Today's deal",fontSize: 16,),
               const Gap(10),
-
-
+              HomeProduct(),
+              const Gap(30),
             ],
           ),
         ),
