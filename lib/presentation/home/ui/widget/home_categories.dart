@@ -40,7 +40,7 @@ class HomeCategories extends StatelessWidget {
 
               return _CategoryItem(
                 title: 'All',
-                icon: Icons.apps_rounded,
+                icon: Icons.shopify_outlined,
                 isSelected: isSelected,
                 onTap: () {
                   controller.selectCategory('All');
@@ -170,8 +170,8 @@ class _CategoryItem extends StatelessWidget {
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
 
-        width: 60.w,
-        height: 60.h,
+        width: 50.w,
+        height: 50.h,
 
         decoration: BoxDecoration(
           shape: BoxShape.circle,

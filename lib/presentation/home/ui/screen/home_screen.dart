@@ -66,12 +66,17 @@ class HomeScreen extends StatelessWidget {
                   // Handle product search here
                 },
               ),
-              const Gap(20),
+              const Gap(10),
+              CustomText(text: "Categories",fontSize: 16,),
+              const Gap(10),
               SizedBox(
                 width: double.infinity,
                 child: HomeCategories(),
               ),
-              const Gap(20),
+              const Gap(10),
+              CustomText(text: "Today's deal",fontSize: 16,),
+              const Gap(10),
+
 
             ],
           ),

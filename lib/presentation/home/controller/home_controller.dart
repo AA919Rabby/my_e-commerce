@@ -7,12 +7,16 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-
-import 'package:mye_commerce/core/config/app_url.dart';
-import 'package:mye_commerce/core/theme/app_color.dart';
-import 'package:mye_commerce/global/custom_button.dart';
-import 'package:mye_commerce/global/custom_confirm_dialog.dart';
 import 'package:mye_commerce/presentation/home/data/all_category_model.dart';
+import 'package:mye_commerce/presentation/home/data/all_product_model.dart' as product_model;
+
+import '../../../core/config/app_url.dart';
+import '../../../core/theme/app_color.dart';
+import '../../../global/custom_button.dart';
+import '../../../global/custom_confirm_dialog.dart';
+
+
+
 
 class HomeController extends GetxController {
   // ========================================================================
@@ -20,13 +24,13 @@ class HomeController extends GetxController {
   // ========================================================================
 
   RxString selectedCategoryId = 'All'.obs;
-
+  RxList <product_model.Result> allProduct=<product_model.Result>[].obs;
   RxList<Result> allCategories = <Result>[].obs;
 
   // ========================================================================
   // LOADING
   // ========================================================================
-
+  RXBool isLoading2=false.obs;
   RxBool isLoading = false.obs;
 
   // ========================================================================
@@ -326,6 +330,35 @@ class HomeController extends GetxController {
       "Unable to get location";
     }
   }
+/// Product
+  Future<void>getAllProduct()async{
+    isLoading2.value=True;
+    try{
+      final response=await http.get(
+        Uri.parse(AppUrl.getCategories),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+          log("All Product API Status Code: ${response.statusCode}");
+          log("All Product API Response: ${response.body}");
+      if (response.statusCode==200 || response.statusCode==201){
+        final Map<String,dynamic>jsonData=jsonDecode(response.body);
+        final product_model.AllProduct allProduct=product_model.AllProduct.fromJson(jsonData);
+        allProduct.value=allProducts.result?.result??[];
+        log("All products fetched successfully");
+        log("Total products: ${allProduct.length}");
+      }else{
+        log("All Product API error: ${response.statusCode}");
+    }
+      );
+    }catch(e){
+      log("AllProduct catch error: $e");
+    }finally {
+      isLoading2.value=false;
+    }
+  }
+
 
   // ========================================================================
   // DISPOSE

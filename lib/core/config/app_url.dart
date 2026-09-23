@@ -11,6 +11,7 @@ class AppUrl {
   static String get resetPasswordVerifyOtp => '$baseUrl/auth/verify-otp';
   static String get resetNewPassword => '$baseUrl/auth/reset-password';
   static String get getCategories => '$baseUrl/products/categories';
+  static String get getProduct => '$baseUrl/products';
 
 
 }
