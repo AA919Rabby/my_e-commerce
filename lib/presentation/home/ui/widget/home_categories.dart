@@ -104,6 +104,7 @@ class _CategoryItem extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: AnimatedContainer(
+        padding: EdgeInsets.all(2.sp),
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
         width: 50.w,
@@ -134,7 +135,7 @@ class _CategoryItem extends StatelessWidget {
           children: [
             Icon(
               icon,
-              size: 16,
+              size: 20,
               color: isSelected ? Colors.white : AppColor.drawerGradient1,
             ),
             const Gap(5),

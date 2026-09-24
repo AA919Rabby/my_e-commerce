@@ -18,23 +18,23 @@ class HomeProduct extends StatelessWidget {
 
     return Obx(() {
       if (homeController.isLoading2.value) {
-        return  Center(
-          child: CustomLoader(color: AppColor.drawerGradient1,),
+        return  SizedBox(
+          height: 0.4.sh,
+          child: Center(
+            child: CustomLoader(color: AppColor.drawerGradient1,),
+          ),
         );
       }
 
       if (homeController.allProduct.isEmpty) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Center(
-              child: CustomText(
-                text: "No products found",
-                color: AppColor.black,
-              ),
+        return SizedBox(
+          height: 0.4.sh,
+          child: const Center(
+            child: CustomText(
+              text: "No products found",
+              fontSize: 20,
             ),
-          ],
+          ),
         );
       }
 
@@ -59,7 +59,7 @@ class HomeProduct extends StatelessWidget {
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              // Get.toNamed(AllRoute.productDetails, arguments: product);
+              Get.toNamed(AllRoute.productDetails);
             },
             child: Container(
               padding: EdgeInsets.all(10.sp),
@@ -89,7 +89,7 @@ class HomeProduct extends StatelessWidget {
                         child: productImage != null && productImage.isNotEmpty
                             ? Image.network(
                           productImage,
-                          fit: BoxFit.cover,
+                          fit: BoxFit.contain,
                           webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
                           errorBuilder: (context, error, stackTrace) {
                             return Icon(
@@ -112,7 +112,7 @@ class HomeProduct extends StatelessWidget {
 
                   CustomText(
                     text: product.name ?? "Product",
-                    fontSize: 15.sp,
+                    fontSize: 13.sp,
                     color: AppColor.black, // FIX: Black text so it's visible on white card
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -120,12 +120,18 @@ class HomeProduct extends StatelessWidget {
 
                   const Gap(5),
 
-                  CustomText(
-                    text: "\$${product.price?.toStringAsFixed(2) ?? "0.00"}",
-                    fontSize: 15.sp,
-                    color: AppColor.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                   children: [
+                     CustomText(
+                       text: "\$${product.price?.toStringAsFixed(2) ?? "0.00"}",
+                       fontSize: 13.sp,
+                       color: AppColor.drawerGradient1,
+                       fontWeight: FontWeight.bold,
+                     ),
+                     Icon(Icons.shopping_cart_outlined,color: AppColor.drawerGradient2,)
+                   ],
+                 ),
                 ],
               ),
             ),

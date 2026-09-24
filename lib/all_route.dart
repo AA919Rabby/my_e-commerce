@@ -5,6 +5,8 @@ import 'package:mye_commerce/presentation/auth/ui/login/screen/forget_password_s
 import 'package:mye_commerce/presentation/auth/ui/login/screen/login_screen.dart';
 import 'package:mye_commerce/presentation/auth/ui/register/screen/register_screen.dart';
 import 'package:mye_commerce/presentation/bottom_nav/ui/screen/bottom_nav_screen.dart';
+import 'package:mye_commerce/presentation/home/data/product_details_model.dart';
+import 'package:mye_commerce/presentation/home/ui/screen/home_product_details_screen.dart';
 import 'package:mye_commerce/presentation/intro/ui/screen/intro_screen.dart';
 // Make sure to import your LoginScreen here
 // import 'package:mye_commerce/presentation/login/ui/screen/login_screen.dart';
@@ -19,6 +21,7 @@ class AllRoute {
   static const String  forgetPasswordEnterOtp= '/forget-password-enter-otp';
   static const String  enterNewPassword= '/enter-new-password';
   static const String  bottomNav= '/bottom-nav';
+  static const String  productDetails= '/productDetails';
 
 
   static final List<GetPage> routes = [
@@ -69,6 +72,13 @@ class AllRoute {
       page: () => BottomNavScreen(),
       binding: AllBinding(),
       transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 600),
+    ),
+    GetPage(
+      name: productDetails,
+      page: () => HomeProductDetailsScreen(),
+      binding: AllBinding(),
+      transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 600),
     ),
 
