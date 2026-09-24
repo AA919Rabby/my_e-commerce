@@ -12,6 +12,7 @@ class AppUrl {
   static String get resetNewPassword => '$baseUrl/auth/reset-password';
   static String get getCategories => '$baseUrl/products/categories';
   static String get getProducts => '$baseUrl/products';
+  static String get updateProfile => '$baseUrl/auth/set-profile';
 
 
 }

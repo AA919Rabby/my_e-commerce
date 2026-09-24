@@ -8,6 +8,7 @@ import 'package:mye_commerce/presentation/bottom_nav/ui/screen/bottom_nav_screen
 import 'package:mye_commerce/presentation/home/data/product_details_model.dart';
 import 'package:mye_commerce/presentation/home/ui/screen/home_product_details_screen.dart';
 import 'package:mye_commerce/presentation/intro/ui/screen/intro_screen.dart';
+import 'package:mye_commerce/presentation/profile/ui/screen/update_profile_screen.dart';
 // Make sure to import your LoginScreen here
 // import 'package:mye_commerce/presentation/login/ui/screen/login_screen.dart';
 
@@ -22,6 +23,7 @@ class AllRoute {
   static const String  enterNewPassword= '/enter-new-password';
   static const String  bottomNav= '/bottom-nav';
   static const String  productDetails= '/productDetails';
+  static const String  updateProfile= '/updateProfile';
 
 
   static final List<GetPage> routes = [
@@ -77,6 +79,13 @@ class AllRoute {
     GetPage(
       name: productDetails,
       page: () => HomeProductDetailsScreen(),
+      binding: AllBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 600),
+    ),
+    GetPage(
+      name: updateProfile,
+      page: () => UpdateProfileScreen(),
       binding: AllBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 600),
