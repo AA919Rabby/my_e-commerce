@@ -9,6 +9,9 @@ import 'package:mye_commerce/global/custom_text.dart';
 import 'package:mye_commerce/presentation/home/controller/home_controller.dart';
 import 'package:mye_commerce/presentation/home/data/all_product_model.dart' as product_model;
 
+// IMPORT YOUR PRODUCT DETAILS MODEL:
+import 'package:mye_commerce/presentation/home/data/product_details_model.dart' as details;
+
 class HomeProduct extends StatelessWidget {
   const HomeProduct({super.key});
 
@@ -18,10 +21,10 @@ class HomeProduct extends StatelessWidget {
 
     return Obx(() {
       if (homeController.isLoading2.value) {
-        return  SizedBox(
+        return SizedBox(
           height: 0.4.sh,
           child: Center(
-            child: CustomLoader(color: AppColor.drawerGradient1,),
+            child: CustomLoader(color: AppColor.drawerGradient1),
           ),
         );
       }
@@ -59,12 +62,25 @@ class HomeProduct extends StatelessWidget {
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              Get.toNamed(AllRoute.productDetails);
+              // PASSING THE DATA OBJECT DIRECTLY
+              Get.toNamed(
+                AllRoute.productDetails,
+                arguments: details.Result(
+                  id: product.id,
+                  name: product.name,
+                  images: product.images,
+                  price: product.price?.toInt(),
+                  description: product.description,
+                  rating: null, // Left null since all_product list doesn't have rating
+                  brand: product.brand,
+                  availability: product.availability,
+                ),
+              );
             },
             child: Container(
               padding: EdgeInsets.all(10.sp),
               decoration: BoxDecoration(
-                color: Colors.white, // FIX: Set to White so it's not "Black like something"
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
@@ -81,7 +97,7 @@ class HomeProduct extends StatelessWidget {
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade100, // Light grey background for image
+                        color: Colors.grey.shade100,
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: ClipRRect(
@@ -107,31 +123,30 @@ class HomeProduct extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   const Gap(10),
-
                   CustomText(
                     text: product.name ?? "Product",
-                    fontSize: 13.sp,
-                    color: AppColor.black, // FIX: Black text so it's visible on white card
+                    fontSize: 13,
+                    color: AppColor.black,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-
                   const Gap(5),
-
-                 Row(
-                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                   children: [
-                     CustomText(
-                       text: "\$${product.price?.toStringAsFixed(2) ?? "0.00"}",
-                       fontSize: 13.sp,
-                       color: AppColor.drawerGradient1,
-                       fontWeight: FontWeight.bold,
-                     ),
-                     Icon(Icons.shopping_cart_outlined,color: AppColor.drawerGradient2,)
-                   ],
-                 ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomText(
+                        text: "\$${product.price?.toStringAsFixed(2) ?? "0.00"}",
+                        fontSize: 16,
+                        color: AppColor.drawerGradient1,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      Icon(
+                        Icons.shopping_cart_outlined,
+                        color: AppColor.drawerGradient2,
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
