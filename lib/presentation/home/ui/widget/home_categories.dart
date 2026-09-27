@@ -46,12 +46,15 @@ class HomeCategories extends StatelessWidget {
 
             // API CATEGORY
             final Result category = categories[index - 1];
-            final String categoryId = category.id ?? '';
+
+            // Note: If your API filters categories by their ID instead of their Name,
+            // you might need to change this to: `category.id?.toString() ?? ''`
+            final String categoryId = category.name ?? '';
             final bool isSelected = selectedId == categoryId;
 
             return _CategoryItem(
               title: category.name ?? 'Category',
-              icon: _getCategoryIcon(category.name),
+              icon: _getCategoryIcon(categoryId),
               isSelected: isSelected,
               onTap: () {
                 controller.selectCategory(categoryId);
@@ -63,27 +66,32 @@ class HomeCategories extends StatelessWidget {
     });
   }
 
-  IconData _getCategoryIcon(String? name) {
-    final String categoryName = (name ?? '').toLowerCase();
-    if (categoryName.contains('electronic')) return Icons.devices_rounded;
-    if (categoryName.contains('phone') || categoryName.contains('mobile')) return Icons.phone_android_rounded;
-    if (categoryName.contains('computer') || categoryName.contains('laptop')) return Icons.laptop_mac_rounded;
-    if (categoryName.contains('coffee') || categoryName.contains('cup')) return Icons.local_cafe_rounded;
-    if (categoryName.contains('fashion') || categoryName.contains('cloth')) return Icons.checkroom_rounded;
-    if (categoryName.contains('shoe')) return Icons.directions_run_rounded;
-    if (categoryName.contains('car') || categoryName.contains('vehicle')) return Icons.directions_car_rounded;
-    if (categoryName.contains('home') || categoryName.contains('furniture')) return Icons.home_rounded;
-    if (categoryName.contains('book')) return Icons.menu_book_rounded;
-    if (categoryName.contains('sport')) return Icons.sports_soccer_rounded;
-    if (categoryName.contains('beauty') || categoryName.contains('cosmetic')) return Icons.face_retouching_natural_rounded;
-    if (categoryName.contains('food')) return Icons.restaurant_rounded;
-    if (categoryName.contains('toy')) return Icons.toys_rounded;
-    return Icons.category_rounded;
+  IconData _getCategoryIcon(String category) {
+    final String value = category.toLowerCase();
+
+    if (value.contains('hair')) {
+      return Icons.content_cut_rounded;
+    }
+
+    if (value.contains('makeup') ||
+        value.contains('beauty')) {
+      return Icons.face_retouching_natural;
+    }
+
+    if (value.contains('ac')) {
+      return Icons.ac_unit_rounded;
+    }
+
+    if (value.contains('painting')) {
+      return Icons.format_paint_rounded;
+    }
+
+    return Icons.home_repair_service_rounded;
   }
 }
 
 // ============================================================================
-// CATEGORY ITEM (RESTORED TO ORIGINAL DESIGN)
+// CATEGORY ITEM
 // ============================================================================
 class _CategoryItem extends StatelessWidget {
   final String title;
@@ -111,7 +119,6 @@ class _CategoryItem extends StatelessWidget {
         height: 50.h,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          // RESTORED: Yellow when selected, White when unselected
           color: isSelected ? AppColor.drawerGradient1 : Colors.white,
           border: Border.all(
             color: isSelected

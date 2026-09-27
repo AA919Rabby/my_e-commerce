@@ -1,53 +1,45 @@
 class AllCategory {
-  bool? success;
-  String? message;
   List<Result>? result;
 
-  AllCategory({this.success, this.message, this.result});
+  AllCategory({this.result});
 
-  AllCategory.fromJson(Map<String, dynamic> json) {
-    success = json['success'];
-    message = json['message'];
-    if (json['result'] != null) {
+  AllCategory.fromJson(dynamic json) {
+    if (json is List) {
       result = <Result>[];
-      json['result'].forEach((v) {
-        result!.add(new Result.fromJson(v));
-      });
+
+      for (final item in json) {
+        result!.add(
+          Result(
+            name: item.toString(),
+          ),
+        );
+      }
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['success'] = this.success;
-    data['message'] = this.message;
-    if (this.result != null) {
-      data['result'] = this.result!.map((v) => v.toJson()).toList();
-    }
-    return data;
+    return {
+      'result': result?.map((v) => v.name).toList(),
+    };
   }
 }
 
 class Result {
-  String? id;
   String? name;
-  String? createdAt;
-  String? updatedAt;
 
-  Result({this.id, this.name, this.createdAt, this.updatedAt});
+  Result({this.name});
 
-  Result.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
+  Result.fromJson(dynamic json) {
+    if (json is String) {
+      name = json;
+    } else if (json is Map<String, dynamic>) {
+      name = json['name'];
+    }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['createdAt'] = this.createdAt;
-    data['updatedAt'] = this.updatedAt;
-    return data;
+    return {
+      'name': name,
+    };
   }
 }

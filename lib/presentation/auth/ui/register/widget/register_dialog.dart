@@ -166,7 +166,7 @@ class RegisterDialog extends StatelessWidget {
                           if (authController.isLoading.value) return;
 
                           if (authController.registerOtpVerifyKey.currentState!.validate()) {
-                            authController.registerOtpVerify();
+                            authController.recoveryPasswordOtpVerify();
                           }
                         },
                       )),

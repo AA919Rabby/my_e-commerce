@@ -18,55 +18,115 @@ class HomeScreen extends StatelessWidget {
     return Container(
       height: double.infinity,
       width: double.infinity,
-      color: AppColor.text, // RESTORED TO LIGHT BACKGROUND
+      // Using AppColor.text (#F3F5FA) provides a beautiful light-mode background
+      color: AppColor.text,
       child: SafeArea(
         bottom: false,
         child: RefreshIndicator.adaptive(
+          color: AppColor.drawerGradient1,
+          backgroundColor: Colors.white,
           onRefresh: () async {
             await homeController.onRefreshHome();
           },
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 1. User Dummy Name
-                Obx(
-                      () => CustomText(
-                    text: homeController.userName.value,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: AppColor.black, // RESTORED TO BLACK TEXT
-                  ),
-                ),
-
-                const Gap(4),
-
-                // 2. Location Indicator
+                // ==========================================================
+                // 1. TOP HEADER (GREETING & NOTIFICATION)
+                // ==========================================================
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Icon(
-                      Icons.location_on,
-                      size: 16,
-                      color: AppColor.primary,
-                    ),
-                    const Gap(4),
-                    Expanded(
-                      child: Obx(
-                            () => CustomText(
-                          text: homeController.userLocation.value,
-                          fontSize: 13,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const CustomText(
+                          text: "Welcome back,",
+                          fontSize: 14,
                           color: AppColor.secondaryText,
+                          fontWeight: FontWeight.w500,
                         ),
+                        const Gap(4),
+                        Obx(
+                              () => CustomText(
+                            text: homeController.userName.value,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: AppColor.black,
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    // Notification / Profile Icon Mockup
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.notifications_none_rounded,
+                        color: AppColor.black,
+                        size: 24,
                       ),
                     ),
                   ],
                 ),
 
+                const Gap(16),
+
+                // ==========================================================
+                // 2. LOCATION PILL
+                // ==========================================================
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: AppColor.drawerGradient1.withOpacity(0.4),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.location_on,
+                        size: 16,
+                        color: AppColor.drawerGradient1,
+                      ),
+                      const Gap(6),
+                      Flexible(
+                        child: Obx(
+                              () => CustomText(
+                            text: homeController.userLocation.value,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: AppColor.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
                 const Gap(24),
 
-                // 3. Search Bar Widget
+                // ==========================================================
+                // 3. SEARCH BAR
+                // ==========================================================
                 HomeSearchBar(
                   controller: homeController.searchController,
                   onChanged: (query) {
@@ -74,21 +134,64 @@ class HomeScreen extends StatelessWidget {
                   },
                 ),
 
-                const Gap(10),
-                const CustomText(text: "Categories", fontSize: 16, color: AppColor.black),
-                const Gap(10),
+                const Gap(30),
+
+                // ==========================================================
+                // 4. CATEGORIES SECTION
+                // ==========================================================
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const CustomText(
+                      text: "Categories",
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColor.black,
+                    ),
+                    CustomText(
+                      text: "See All",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppColor.drawerGradient1,
+                    ),
+                  ],
+                ),
+
+                const Gap(16),
 
                 const SizedBox(
                   width: double.infinity,
                   child: HomeCategories(),
                 ),
 
-                const Gap(10),
-                const CustomText(text: "Today's deal", fontSize: 16, color: AppColor.black),
-                const Gap(10),
+                const Gap(30),
+
+                // ==========================================================
+                // 5. TODAY'S DEAL SECTION
+                // ==========================================================
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const CustomText(
+                      text: "Today's deal",
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColor.black,
+                    ),
+                    CustomText(
+                      text: "View More",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppColor.drawerGradient1,
+                    ),
+                  ],
+                ),
+
+                const Gap(16),
 
                 const HomeProduct(),
-                const Gap(30),
+
+                const Gap(30), // Bottom padding
               ],
             ),
           ),

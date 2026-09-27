@@ -21,8 +21,8 @@ class BottomNavScreen extends StatelessWidget {
     // ============================================================
     final List<Widget> pages = [
       HomeScreen(),
-      CartScreen(),
-      FavouriteScreen(),
+     // CartScreen(),
+     // FavouriteScreen(),
       ProfileScreen(),
       // const Center(child: Text("Home")),
       // const Center(child: Text("Cart")),
@@ -84,33 +84,25 @@ class BottomNavScreen extends StatelessWidget {
                   child: _BottomNavItem(
                     controller: bottomNavController,
                     index: 1,
-                    icon: Icons.shopping_cart_outlined,
+                    icon: Icons.shopping_cart_outlined, // 👈 Added standard outline icon here
                     selectedIcon: Icons.shopping_cart_rounded,
-                    label: 'Cart',
+                    label: 'Order',
                   ),
                 ),
+
 
                 // FAVOURITE
                 Expanded(
                   child: _BottomNavItem(
                     controller: bottomNavController,
                     index: 2,
-                    icon: Icons.favorite_border_rounded,
-                    selectedIcon: Icons.favorite_rounded,
-                    label: 'Favourite',
+                    icon: Icons.settings,
+                    selectedIcon: Icons.settings_outlined,
+                    label: 'Settings',
                   ),
                 ),
 
-                // PROFILE
-                Expanded(
-                  child: _BottomNavItem(
-                    controller: bottomNavController,
-                    index: 3,
-                    icon: Icons.person_outline_rounded,
-                    selectedIcon: Icons.person_rounded,
-                    label: 'Profile',
-                  ),
-                ),
+
               ],
             ),
           ),

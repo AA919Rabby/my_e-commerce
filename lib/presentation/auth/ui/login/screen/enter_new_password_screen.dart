@@ -170,7 +170,7 @@ class EnterNewPasswordScreen extends StatelessWidget {
                                 onPressed: () {
                                   if (authController.isLoading.value) return;
                                   if (authController.resetNewForgetPasswordKey.currentState!.validate()) {
-                                    authController.resetNewForgetPassword();
+                                    authController.recoveryNewPassword();
                                   }
                                 },
                               ),

@@ -73,7 +73,7 @@ class IntroScreen extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(28.r),
                     child: CustomText(
-                      text: "My E-Commerce",
+                      text: "TN Service",
                       color: AppColor.text,
                       fontWeight: FontWeight.bold,
                       fontSize: 30,

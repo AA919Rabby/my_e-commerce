@@ -20,7 +20,7 @@ class HomeSearchBar extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white, // RESTORED TO BRIGHT WHITE
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: AppColor.drawerGradient1.withValues(alpha: 0.3),
@@ -42,7 +42,7 @@ class HomeSearchBar extends StatelessWidget {
             onChanged!(val);
           }
         },
-        style: const TextStyle(color: AppColor.black), // RESTORED TO BLACK TEXT
+        style: const TextStyle(color: AppColor.black),
         cursorColor: AppColor.primary,
         decoration: InputDecoration(
           hintText: "Search products...",

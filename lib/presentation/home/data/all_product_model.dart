@@ -1,192 +1,116 @@
 class AllProduct {
-  bool? success;
-  String? message;
-  Result? result;
+  int? totalItems;
+  int? totalPages;
+  int? currentPage;
+  int? limit;
+  bool? hasNext;
+  bool? hasPrevious;
+  List<Items>? items;
 
   AllProduct({
-    this.success,
-    this.message,
-    this.result,
+    this.totalItems,
+    this.totalPages,
+    this.currentPage,
+    this.limit,
+    this.hasNext,
+    this.hasPrevious,
+    this.items,
   });
 
   AllProduct.fromJson(Map<String, dynamic> json) {
-    success = json['success'];
-    message = json['message'];
+    totalItems = json['total_items'];
+    totalPages = json['total_pages'];
+    currentPage = json['current_page'];
+    limit = json['limit'];
+    hasNext = json['has_next'];
+    hasPrevious = json['has_previous'];
 
-    result = json['result'] != null
-        ? Result.fromJson(json['result'])
-        : null;
-  }
+    if (json['items'] != null) {
+      items = <Items>[];
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =
-    <String, dynamic>{};
-
-    data['success'] = success;
-    data['message'] = message;
-
-    if (result != null) {
-      data['result'] = result!.toJson();
-    }
-
-    return data;
-  }
-}
-
-class Result {
-  Meta? meta;
-  List<Result>? result;
-
-  String? id;
-  String? name;
-  List<String>? images;
-  double? price;
-  String? description;
-  String? brand;
-  String? productCategory;
-  int? quantity;
-  String? availability;
-
-  Result({
-    this.meta,
-    this.result,
-    this.id,
-    this.name,
-    this.images,
-    this.price,
-    this.description,
-    this.brand,
-    this.productCategory,
-    this.quantity,
-    this.availability,
-  });
-
-  Result.fromJson(Map<String, dynamic> json) {
-    meta = json['meta'] != null
-        ? Meta.fromJson(json['meta'])
-        : null;
-
-    if (json['result'] != null) {
-      result = <Result>[];
-
-      json['result'].forEach((v) {
-        result!.add(
-          Result.fromJson(v),
+      json['items'].forEach((v) {
+        items!.add(
+          Items.fromJson(v),
         );
       });
     }
-
-    id = json['id'];
-    name = json['name'];
-
-    if (json['images'] != null) {
-      images = <String>[];
-
-      json['images'].forEach((v) {
-        images!.add(v.toString());
-      });
-    }
-
-    if (json['price'] != null) {
-      price = double.tryParse(
-        json['price'].toString(),
-      );
-    }
-
-    description = json['description'];
-    brand = json['brand'];
-    productCategory = json['productCategory'];
-    quantity = json['quantity'];
-    availability = json['availability'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data =
     <String, dynamic>{};
 
-    if (meta != null) {
-      data['meta'] = meta!.toJson();
-    }
-
-    if (result != null) {
-      data['result'] =
-          result!.map((v) => v.toJson()).toList();
-    }
-
-    data['id'] = id;
-    data['name'] = name;
-    data['images'] = images;
-    data['price'] = price;
-    data['description'] = description;
-    data['brand'] = brand;
-    data['productCategory'] = productCategory;
-    data['quantity'] = quantity;
-    data['availability'] = availability;
-
-    return data;
-  }
-}
-
-class Meta {
-  int? page;
-  int? limit;
-  int? total;
-  int? totalPages;
-
-  Meta({
-    this.page,
-    this.limit,
-    this.total,
-    this.totalPages,
-  });
-
-  Meta.fromJson(Map<String, dynamic> json) {
-    page = json['page'];
-    limit = json['limit'];
-    total = json['total'];
-    totalPages = json['totalPages'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =
-    <String, dynamic>{};
-
-    data['page'] = page;
+    data['total_items'] = totalItems;
+    data['total_pages'] = totalPages;
+    data['current_page'] = currentPage;
     data['limit'] = limit;
-    data['total'] = total;
-    data['totalPages'] = totalPages;
+    data['has_next'] = hasNext;
+    data['has_previous'] = hasPrevious;
+
+    if (items != null) {
+      data['items'] =
+          items!.map((v) => v.toJson()).toList();
+    }
 
     return data;
   }
 }
 
-class Varients {
-  String? id;
-  String? productId;
-  int? quantity;
-  String? color;
-  Null? size;
-  String? createdAt;
-  String? updatedAt;
+class Items {
+  int? id;
+  String? title;
+  String? category;
+  String? description;
+  int? priceBdt;
+  int? stock;
+  String? imageUrl;
+  String? locationArea;
+  int? servicePersons;
+  bool? isAvailable;
+  int? rating;
+  int? totalReviews;
 
-  Varients({
+  Items({
     this.id,
-    this.productId,
-    this.quantity,
-    this.color,
-    this.size,
-    this.createdAt,
-    this.updatedAt,
+    this.title,
+    this.category,
+    this.description,
+    this.priceBdt,
+    this.stock,
+    this.imageUrl,
+    this.locationArea,
+    this.servicePersons,
+    this.isAvailable,
+    this.rating,
+    this.totalReviews,
   });
 
-  Varients.fromJson(Map<String, dynamic> json) {
+  Items.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    productId = json['productId'];
-    quantity = json['quantity'];
-    color = json['color'];
-    size = json['size'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
+    title = json['title'];
+    category = json['category'];
+    description = json['description'];
+
+    priceBdt =
+        (json['price_bdt'] as num?)?.toInt();
+
+    stock = json['stock'];
+
+    imageUrl = json['image_url'];
+
+    locationArea = json['location_area'];
+
+    servicePersons =
+    json['service_persons'];
+
+    isAvailable =
+    json['is_available'];
+
+    rating =
+        (json['rating'] as num?)?.toInt();
+
+    totalReviews =
+    json['total_reviews'];
   }
 
   Map<String, dynamic> toJson() {
@@ -194,12 +118,17 @@ class Varients {
     <String, dynamic>{};
 
     data['id'] = id;
-    data['productId'] = productId;
-    data['quantity'] = quantity;
-    data['color'] = color;
-    data['size'] = size;
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
+    data['title'] = title;
+    data['category'] = category;
+    data['description'] = description;
+    data['price_bdt'] = priceBdt;
+    data['stock'] = stock;
+    data['image_url'] = imageUrl;
+    data['location_area'] = locationArea;
+    data['service_persons'] = servicePersons;
+    data['is_available'] = isAvailable;
+    data['rating'] = rating;
+    data['total_reviews'] = totalReviews;
 
     return data;
   }

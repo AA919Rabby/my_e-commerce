@@ -2,29 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:get/get.dart';
+
 import 'package:mye_commerce/all_route.dart';
 import 'package:mye_commerce/core/theme/app_color.dart';
 import 'package:mye_commerce/global/custom_loader.dart';
 import 'package:mye_commerce/global/custom_text.dart';
 import 'package:mye_commerce/presentation/home/controller/home_controller.dart';
-import 'package:mye_commerce/presentation/home/data/all_product_model.dart' as product_model;
-
-// IMPORT YOUR PRODUCT DETAILS MODEL:
-import 'package:mye_commerce/presentation/home/data/product_details_model.dart' as details;
+import 'package:mye_commerce/presentation/home/data/all_product_model.dart'
+as product_model;
+import 'package:mye_commerce/presentation/home/data/product_details_model.dart'
+as details;
 
 class HomeProduct extends StatelessWidget {
   const HomeProduct({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final HomeController homeController = Get.find<HomeController>();
+    final HomeController homeController =
+    Get.find<HomeController>();
 
     return Obx(() {
       if (homeController.isLoading2.value) {
         return SizedBox(
           height: 0.4.sh,
           child: Center(
-            child: CustomLoader(color: AppColor.drawerGradient1),
+            child: CustomLoader(
+              color: AppColor.drawerGradient1,
+            ),
           ),
         );
       }
@@ -45,36 +49,40 @@ class HomeProduct extends StatelessWidget {
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
         itemCount: homeController.allProduct.length,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate:
+        SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           crossAxisSpacing: 12.w,
           mainAxisSpacing: 12.h,
           childAspectRatio: 0.72,
         ),
         itemBuilder: (context, index) {
-          final product_model.Result product = homeController.allProduct[index];
-
-          String? productImage;
-          if (product.images != null && product.images!.isNotEmpty) {
-            productImage = product.images!.first;
-          }
+          final product_model.Items product =
+          homeController.allProduct[index];
 
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
-              // PASSING THE DATA OBJECT DIRECTLY
+              final details.ProductDetails productDetails =
+              details.ProductDetails(
+                id: product.id,
+                title: product.title,
+                category: product.category,
+                description: product.description,
+                priceBdt: product.priceBdt,
+                stock: product.stock,
+                imageUrl: product.imageUrl,
+                locationArea: product.locationArea,
+                servicePersons: product.servicePersons,
+                isAvailable: product.isAvailable,
+                rating: product.rating,
+                totalReviews: product.totalReviews,
+                reviews: null,
+              );
+
               Get.toNamed(
                 AllRoute.productDetails,
-                arguments: details.Result(
-                  id: product.id,
-                  name: product.name,
-                  images: product.images,
-                  price: product.price?.toInt(),
-                  description: product.description,
-                  rating: null, // Left null since all_product list doesn't have rating
-                  brand: product.brand,
-                  availability: product.availability,
-                ),
+                arguments: productDetails,
               );
             },
             child: Container(
@@ -91,23 +99,30 @@ class HomeProduct extends StatelessWidget {
                 ],
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
                         color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(12.r),
+                        borderRadius:
+                        BorderRadius.circular(12.r),
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12.r),
-                        child: productImage != null && productImage.isNotEmpty
+                        borderRadius:
+                        BorderRadius.circular(12.r),
+                        child: product.imageUrl != null &&
+                            product.imageUrl!.isNotEmpty
                             ? Image.network(
-                          productImage,
+                          product.imageUrl!,
                           fit: BoxFit.contain,
-                          webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
-                          errorBuilder: (context, error, stackTrace) {
+                          webHtmlElementStrategy:
+                          WebHtmlElementStrategy
+                              .prefer,
+                          errorBuilder:
+                              (context, error, stackTrace) {
                             return Icon(
                               Icons.image_outlined,
                               size: 45.sp,
@@ -123,20 +138,36 @@ class HomeProduct extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   const Gap(10),
+
                   CustomText(
-                    text: product.name ?? "Product",
+                    text: product.title ?? "Service",
                     fontSize: 13,
                     color: AppColor.black,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
+
+                  const Gap(4),
+
+                  CustomText(
+                    text: product.category ?? "",
+                    fontSize: 10,
+                    color: AppColor.secondaryText,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+
                   const Gap(5),
+
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment:
+                    MainAxisAlignment.spaceBetween,
                     children: [
                       CustomText(
-                        text: "\$${product.price?.toStringAsFixed(2) ?? "0.00"}",
+                        text:
+                        "৳${product.priceBdt ?? 0}",
                         fontSize: 16,
                         color: AppColor.drawerGradient1,
                         fontWeight: FontWeight.bold,

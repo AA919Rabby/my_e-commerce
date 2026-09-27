@@ -24,7 +24,8 @@ class HomeController extends GetxController {
 
   RxString selectedCategoryId = 'All'.obs;
 
-  RxList<product_model.Result> allProduct = <product_model.Result>[].obs;
+  RxList<product_model.Items> allProduct =
+      <product_model.Items>[].obs;
 
   RxList<Result> allCategories = <Result>[].obs;
 
@@ -72,13 +73,10 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
 
-    // Get categories from API
     getCategories();
 
-    // Get all products from API
     getAllProduct();
 
-    // Debounce search: Automatically searches after 500ms when typing stops
     debounce(
       searchQuery,
           (_) => getAllProduct(page: 1),
@@ -175,21 +173,11 @@ class HomeController extends GetxController {
         },
       );
 
-      log('Category API Status Code: ${response.statusCode}');
-      log('Category API Response: ${response.body}');
-
       if (response.statusCode == 200 || response.statusCode == 201) {
-        log('Categories fetched successfully');
-
-        final Map<String, dynamic> jsonData = jsonDecode(response.body);
-
+        final dynamic jsonData = jsonDecode(response.body);
         final AllCategory allCategory = AllCategory.fromJson(jsonData);
 
-        allCategories.value = allCategory.result ?? [];
-
-        log('Fetched categories: ${allCategories.length}');
-      } else {
-        log('Failed to fetch categories. Status code: ${response.statusCode}');
+        allCategories.assignAll(allCategory.result ?? []);
       }
     } catch (e) {
       log('Error fetching categories: $e');
@@ -202,11 +190,8 @@ class HomeController extends GetxController {
   // SELECT CATEGORY & FILTER PRODUCTS
   // ========================================================================
 
-  void selectCategory(String categoryId) {
-    selectedCategoryId.value = categoryId;
-    log('Selected Category ID: $categoryId');
-
-    // Automatically re-fetch products matching this category
+  void selectCategory(String categoryName) {
+    selectedCategoryId.value = categoryName;
     getAllProduct(page: 1);
   }
 
@@ -229,16 +214,13 @@ class HomeController extends GetxController {
             textColor: Colors.white,
             onPressed: () async {
               Get.back();
-
               await Geolocator.openLocationSettings();
-
               checkAndRequestLocation();
             },
           ),
         ),
         barrierDismissible: false,
       );
-
       userLocation.value = "Location service is off";
       return;
     }
@@ -257,9 +239,7 @@ class HomeController extends GetxController {
             textColor: Colors.white,
             onPressed: () async {
               Get.back();
-
               permission = await Geolocator.requestPermission();
-
               _handlePermissionResult(permission);
             },
           ),
@@ -307,7 +287,7 @@ class HomeController extends GetxController {
   }
 
   // ========================================================================
-  // GET ALL PRODUCTS (With page, limit, searchTerm, productCategory params)
+  // GET ALL PRODUCTS / SERVICES
   // ========================================================================
 
   Future<void> getAllProduct({int page = 1}) async {
@@ -315,27 +295,27 @@ class HomeController extends GetxController {
     currentPage = page;
 
     try {
-      // Build Query Parameters matching Postman
       final Map<String, String> queryParams = {
         'page': '$page',
         'limit': '$limit',
       };
 
-      // 1. Add searchTerm if typing
+      // We send these to the backend just in case it supports them
       if (searchQuery.value.isNotEmpty) {
+        queryParams['search'] = searchQuery.value; // Added standard 'search' key
         queryParams['searchTerm'] = searchQuery.value;
       }
 
-      // 2. Add productCategory if a specific category is selected
       if (selectedCategoryId.value != 'All') {
-        final Result? category = allCategories.firstWhereOrNull(
-              (item) => item.id == selectedCategoryId.value,
-        );
-        queryParams['productCategory'] = category?.name ?? selectedCategoryId.value;
+        queryParams['category'] = selectedCategoryId.value; // Added standard 'category' key
+        queryParams['productCategory'] = selectedCategoryId.value;
       }
 
-      final uri = Uri.parse(AppUrl.getProducts).replace(queryParameters: queryParams);
-      log("Fetching Products with URL: $uri");
+      final originalUri = Uri.parse(AppUrl.getProducts);
+      final Map<String, String> finalQueryParams = Map<String, String>.from(originalUri.queryParameters);
+      finalQueryParams.addAll(queryParams);
+
+      final uri = originalUri.replace(queryParameters: finalQueryParams);
 
       final response = await http.get(
         uri,
@@ -345,22 +325,45 @@ class HomeController extends GetxController {
         },
       );
 
-      log("All Product API Status Code: ${response.statusCode}");
-      log("All Product API Response: ${response.body}");
-
       if (response.statusCode == 200 || response.statusCode == 201) {
         final Map<String, dynamic> jsonData = jsonDecode(response.body);
+        final product_model.AllProduct allProducts = product_model.AllProduct.fromJson(jsonData);
 
-        final product_model.AllProduct allProducts =
-        product_model.AllProduct.fromJson(jsonData);
+        List<product_model.Items> fetchedItems = allProducts.items ?? [];
 
-        allProduct.value = allProducts.result?.result ?? [];
+        // ====================================================================
+        // 🔥 FIX: LOCAL FILTERING FALLBACK
+        // Because the API is returning all items regardless of the search queries,
+        // we filter the list manually here so the UI updates correctly.
+        // ====================================================================
 
-        log("All products fetched successfully: ${allProduct.length}");
+        // 1. Search Filter
+        if (searchQuery.value.isNotEmpty) {
+          final query = searchQuery.value.toLowerCase();
+          fetchedItems = fetchedItems.where((item) {
+            final title = (item.title ?? '').toLowerCase();
+            final desc = (item.description ?? '').toLowerCase();
+            return title.contains(query) || desc.contains(query);
+          }).toList();
+        }
+
+        // 2. Category Filter
+        if (selectedCategoryId.value != 'All') {
+          final selectedCat = selectedCategoryId.value.toLowerCase();
+          fetchedItems = fetchedItems.where((item) {
+            final itemCat = (item.category ?? '').toLowerCase();
+            return itemCat == selectedCat || itemCat.contains(selectedCat);
+          }).toList();
+        }
+
+        allProduct.assignAll(fetchedItems);
+        log("Products fetched and filtered successfully: ${allProduct.length}");
+
       } else {
-        log("All Product API error: ${response.statusCode}");
+        allProduct.clear();
       }
     } catch (e) {
+      allProduct.clear();
       log("AllProduct catch error: $e");
     } finally {
       isLoading2.value = false;

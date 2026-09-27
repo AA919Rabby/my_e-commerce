@@ -82,7 +82,7 @@ class LoginScreen extends StatelessWidget {
                               ),
                             ),
                             child: const Icon(
-                              Icons.shopping_bag_outlined,
+                              Icons.cleaning_services,
                               size: 64,
                               color: AppColor.text,
                             ),

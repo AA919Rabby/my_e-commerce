@@ -157,7 +157,7 @@ class EnterOtpScreen extends StatelessWidget {
                                 onPressed: () {
                                   if (authController.isLoading.value) return;
                                   if (authController.forgetPasswordVerifyOtpKey.currentState!.validate()) {
-                                    authController.forgetPasswordVerifyOtp();
+                                    authController.recoveryPasswordOtpVerify();
                                   }
                                 },
                               ),
