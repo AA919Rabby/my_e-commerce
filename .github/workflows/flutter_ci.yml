@@ -4,10 +4,10 @@
   on:
     push:
       branches:
-        - Rabbi
+        - Service-name
     pull_request:
       branches:
-        - Rabbi
+        - Service-name
 
   jobs:
     build-and-test:
