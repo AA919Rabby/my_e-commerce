@@ -145,7 +145,7 @@ class AuthController extends GetxController {
         final msg = data["detail"] ?? "Incorrect email or password.";
         CustomSnackbar(Get.context!, title: "Error", message: msg, isError: true);
       } else {
-        CustomSnackbar(Get.context!, title: "Error", message: "Failed to login ${response.body.toString()}.", isError: true);
+        CustomSnackbar(Get.context!, title: "Error", message: "Failed to login.", isError: true);
       }
     } catch (e) {
       log("Error in the login: $e");
