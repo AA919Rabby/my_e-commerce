@@ -44,7 +44,7 @@ class HomeScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const CustomText(
-                          text: "Welcome back,",
+                          text: "Welcome chief,",
                           fontSize: 14,
                           color: AppColor.secondaryText,
                           fontWeight: FontWeight.w500,
@@ -84,7 +84,7 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
 
-                const Gap(16),
+                const Gap(10),
 
                 // ==========================================================
                 // 2. LOCATION PILL
@@ -122,7 +122,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
 
-                const Gap(24),
+                const Gap(14),
 
                 // ==========================================================
                 // 3. SEARCH BAR
@@ -134,37 +134,25 @@ class HomeScreen extends StatelessWidget {
                   },
                 ),
 
-                const Gap(30),
+                const Gap(13),
 
                 // ==========================================================
                 // 4. CATEGORIES SECTION
                 // ==========================================================
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const CustomText(
-                      text: "Categories",
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: AppColor.black,
-                    ),
-                    CustomText(
-                      text: "See All",
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColor.drawerGradient1,
-                    ),
-                  ],
+                const CustomText(
+                  text: "Categories",
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: AppColor.black,
                 ),
-
-                const Gap(16),
+                const Gap(10),
 
                 const SizedBox(
                   width: double.infinity,
                   child: HomeCategories(),
                 ),
 
-                const Gap(30),
+                const Gap(15),
 
                 // ==========================================================
                 // 5. TODAY'S DEAL SECTION
@@ -187,7 +175,7 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
 
-                const Gap(16),
+                const Gap(10),
 
                 const HomeProduct(),
 

@@ -115,8 +115,8 @@ class _CategoryItem extends StatelessWidget {
         padding: EdgeInsets.all(2.sp),
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeInOut,
-        width: 50.w,
-        height: 50.h,
+        width: 67.w,
+        height: 67.h,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: isSelected ? AppColor.drawerGradient1 : Colors.white,
@@ -142,7 +142,7 @@ class _CategoryItem extends StatelessWidget {
           children: [
             Icon(
               icon,
-              size: 20,
+              size: 25,
               color: isSelected ? Colors.white : AppColor.drawerGradient1,
             ),
             const Gap(5),
@@ -150,7 +150,7 @@ class _CategoryItem extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: CustomText(
                 text: title,
-                fontSize: 8,
+                fontSize: 10,
                 fontWeight: FontWeight.w600,
                 color: isSelected ? Colors.white : AppColor.black,
                 maxLines: 1,
