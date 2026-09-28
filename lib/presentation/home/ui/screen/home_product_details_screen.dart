@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:get/get.dart';
+import 'package:mye_commerce/all_route.dart';
 
 import 'package:mye_commerce/core/theme/app_color.dart';
 import 'package:mye_commerce/global/custom_button.dart';
@@ -29,14 +30,9 @@ class HomeProductDetailsScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
 
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: AppColor.black,
-            size: 20,
-          ),
-          onPressed: () => Get.back(),
-        ),
+        leading: InkWell(
+            onTap: ()=>Get.back(),
+            child: Icon(Icons.arrow_back)),
 
         title: CustomText(
           text: product.title ?? "Service Details",
@@ -428,7 +424,7 @@ class HomeProductDetailsScreen extends StatelessWidget {
                     CrossAxisAlignment.start,
                     children: [
                       CustomText(
-                        text: "Stock",
+                        text: "Remaining",
                         fontSize: 12,
                         fontWeight:
                         FontWeight.bold,
@@ -548,12 +544,14 @@ class HomeProductDetailsScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: CustomButton(
-                  text: "Add to Cart",
+                  text: "Get Now",
                   backgroundColor:
                   AppColor.drawerGradient1,
                   textColor:
-                  AppColor.black,
-                  onPressed: () {},
+                  AppColor.text,
+                  onPressed: () {
+                    Get.toNamed(AllRoute.pushServices,arguments: product.id);
+                  },
                 ),
               ),
             ],

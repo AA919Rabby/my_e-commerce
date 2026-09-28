@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:get/get.dart';
+import 'package:mye_commerce/all_route.dart';
 import 'package:mye_commerce/presentation/home/ui/widget/home_categories.dart';
 import 'package:mye_commerce/presentation/home/ui/widget/home_product.dart';
 import '../../../../core/theme/app_color.dart';
@@ -62,23 +63,28 @@ class HomeScreen extends StatelessWidget {
                     ),
 
                     // Notification / Profile Icon Mockup
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.notifications_none_rounded,
-                        color: AppColor.black,
-                        size: 24,
+                    InkWell(
+                      onTap: (){
+                        Get.toNamed(AllRoute.notification);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(
+                          Icons.notifications_none_rounded,
+                          color: AppColor.black,
+                          size: 24,
+                        ),
                       ),
                     ),
                   ],
@@ -167,7 +173,7 @@ class HomeScreen extends StatelessWidget {
                       color: AppColor.black,
                     ),
                     CustomText(
-                      text: "View More",
+                      text: "View all",
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
                       color: AppColor.drawerGradient1,

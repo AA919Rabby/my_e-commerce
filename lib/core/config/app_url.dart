@@ -11,8 +11,9 @@ class AppUrl {
   static String get recoveryNewPassword => '$baseUrl/api/v1/users/recover_new_password';
   static String get getProducts => '$baseUrl/api/v1/services';
   static String get getCategories => '$baseUrl/api/v1/services/categories';
+  static String get notification => '$baseUrl/api/v1/notifications';
+  static String get makeServices => '$baseUrl/api/v1/services/order';
 
-//
 
   /// /
   //static String get registerOtpVerify => '$baseUrl/users/create';

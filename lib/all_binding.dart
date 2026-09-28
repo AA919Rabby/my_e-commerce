@@ -2,8 +2,10 @@
 import 'package:get/get.dart';
 import 'package:mye_commerce/presentation/auth/controller/auth_controller.dart';
 import 'package:mye_commerce/presentation/bottom_nav/controller/bottom_nav_controller.dart';
+import 'package:mye_commerce/presentation/cart/controller/cart_controller.dart';
 import 'package:mye_commerce/presentation/home/controller/home_controller.dart';
 import 'package:mye_commerce/presentation/intro/controller/intro_controller.dart';
+import 'package:mye_commerce/presentation/notificatioon/controller/notification_controller.dart';
 import 'package:mye_commerce/presentation/profile/controller/profile_controller.dart';
 
 class AllBinding extends Bindings {
@@ -15,6 +17,8 @@ class AllBinding extends Bindings {
     Get.lazyPut(()=>BottomNavController(), fenix: true);
     Get.lazyPut(()=>HomeController(), fenix: true);
     Get.lazyPut(()=>ProfileController(), fenix: true);
+    Get.lazyPut(()=>NotificationController(), fenix: true);
+    Get.lazyPut(()=>CartController(), fenix: true);
 
   }
 }

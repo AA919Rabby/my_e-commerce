@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:get/get.dart';
 import 'package:mye_commerce/presentation/cart/ui/screen/cart_screen.dart';
-import 'package:mye_commerce/presentation/favourite/ui/screen/favourite_screen.dart';
 import 'package:mye_commerce/presentation/home/ui/screen/home_screen.dart';
 import 'package:mye_commerce/presentation/profile/ui/screen/profile_screen.dart';
 import '../../../../core/theme/app_color.dart';
@@ -23,7 +22,8 @@ class BottomNavScreen extends StatelessWidget {
       HomeScreen(),
      // CartScreen(),
      // FavouriteScreen(),
-      ProfileScreen(),
+      CartScreen(),
+
       // const Center(child: Text("Home")),
       // const Center(child: Text("Cart")),
       // const Center(child: Text("Favourite")),
@@ -96,12 +96,11 @@ class BottomNavScreen extends StatelessWidget {
                   child: _BottomNavItem(
                     controller: bottomNavController,
                     index: 2,
-                    icon: Icons.settings,
-                    selectedIcon: Icons.settings_outlined,
+                    icon: Icons.settings_outlined,
+                    selectedIcon: Icons.settings,
                     label: 'Settings',
                   ),
                 ),
-
 
               ],
             ),

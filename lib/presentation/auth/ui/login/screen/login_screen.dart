@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
+import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:get/get.dart';
 import 'package:mye_commerce/core/theme/app_color.dart';
 import 'package:mye_commerce/global/custom_button.dart';
@@ -68,25 +69,37 @@ class LoginScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // Brand Icon Glass Header Badge
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(24),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                          child: Container(
-                            padding: const EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.08),
-                              borderRadius: BorderRadius.circular(24),
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.2),
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.cleaning_services,
-                              size: 64,
-                              color: AppColor.text,
-                            ),
-                          ),
+                      // ClipRRect(
+                      //   borderRadius: BorderRadius.circular(24),
+                      //   child: BackdropFilter(
+                      //     filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                      //     child: Container(
+                      //       padding: const EdgeInsets.all(20),
+                      //       decoration: BoxDecoration(
+                      //         color: Colors.white.withOpacity(0.08),
+                      //         borderRadius: BorderRadius.circular(24),
+                      //         border: Border.all(
+                      //           color: Colors.white.withOpacity(0.2),
+                      //         ),
+                      //       ),
+                      //       child: const Icon(
+                      //         Icons.home_repair_service_rounded,
+                      //         size: 64,
+                      //         color: AppColor.text,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      Container(
+                        padding: EdgeInsets.all(16.sp),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColor.drawerGradient1.withOpacity(0.1),
+                        ),
+                        child: Icon(
+                          Icons.home_repair_service_rounded,
+                          color: AppColor.drawerGradient1,
+                          size: 45.r,
                         ),
                       ),
                       const Gap(24),

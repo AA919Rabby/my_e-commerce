@@ -118,7 +118,7 @@ class IntroScreen extends StatelessWidget {
                                 child: Icon(
                                   Icons.home_repair_service_rounded,
                                   color: AppColor.drawerGradient1,
-                                  size: 45.sp,
+                                  size: 45.r,
                                 ),
                               ),
 
