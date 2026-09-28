@@ -20,7 +20,7 @@ class HomeCategories extends StatelessWidget {
       final String selectedId = controller.selectedCategoryId.value;
 
       return SizedBox(
-        height: 60.h,
+        height: 67.h,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),

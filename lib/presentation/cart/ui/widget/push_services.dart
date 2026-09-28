@@ -134,7 +134,8 @@ class PushServices extends StatelessWidget {
                     onPressed: () {
                       // Pass the productId retrieved from Get.arguments
                       controller.submitServiceOrder(productId);
-                    }, backgroundColor: AppColor.drawerGradient1 ,
+                    },
+                    backgroundColor: AppColor.drawerGradient1 ,
                   );
                 }),
 

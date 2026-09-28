@@ -13,7 +13,8 @@ class AppUrl {
   static String get getCategories => '$baseUrl/api/v1/services/categories';
   static String get notification => '$baseUrl/api/v1/notifications';
   static String get makeServices => '$baseUrl/api/v1/services/order';
-
+  static String get pendingServices => '$baseUrl/api/v1/services/order/history';
+  static String cancelServices(String orderId) => '$baseUrl/api/v1/services/order/$orderId/cancel';
 
   /// /
   //static String get registerOtpVerify => '$baseUrl/users/create';

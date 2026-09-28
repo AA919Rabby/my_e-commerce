@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mye_commerce/core/theme/app_color.dart';
 import 'package:mye_commerce/global/custom_text.dart';
+import 'package:mye_commerce/presentation/cart/ui/widget/cancel_services.dart';
+import 'package:mye_commerce/presentation/cart/ui/widget/pending_services.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -31,6 +33,7 @@ class CartScreen extends StatelessWidget {
             unselectedLabelStyle: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
             indicatorWeight: 3,
             tabs: [
+
               Tab(text: "Pending"),
               Tab(text: "Complete"),
               Tab(text: "Cancel"),
@@ -39,13 +42,7 @@ class CartScreen extends StatelessWidget {
         ),
         body: const TabBarView(
           children: [
-            Center(
-              child: CustomText(
-                text: "No pending orders",
-                color: AppColor.secondaryText,
-                fontSize: 16,
-              ),
-            ),
+           PendingServices(),
             Center(
               child: CustomText(
                 text: "No completed orders",
@@ -53,13 +50,7 @@ class CartScreen extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
-            Center(
-              child: CustomText(
-                text: "No cancelled orders",
-                color: AppColor.secondaryText,
-                fontSize: 16,
-              ),
-            ),
+            CancelServices(),
           ],
         ),
       ),
