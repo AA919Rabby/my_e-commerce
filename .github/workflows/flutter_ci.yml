@@ -1,0 +1,131 @@
+
+  name: Flutter CI/CD
+
+  on:
+    push:
+      branches:
+        - Service-name
+    pull_request:
+      branches:
+        - Service-name
+
+  jobs:
+    build-and-test:
+      runs-on: ubuntu-latest
+
+      steps:
+        # 1. Check out code
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        # 2. Set up Java 17
+        - name: Set up Java
+          uses: actions/setup-java@v4
+          with:
+            distribution: 'zulu'
+            java-version: '17'
+
+        # 3. Set up Flutter
+        - name: Set up Flutter
+          uses: subosito/flutter-action@v2
+          with:
+            flutter-version: '3.44.1'
+            channel: 'stable'
+            cache: true
+
+        # 4. Configure Android SDK
+        - name: Configure Android SDK
+          run: |
+            echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+            echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+            echo "/usr/local/lib/android/sdk/platform-tools" >> $GITHUB_PATH
+
+        # 5. Find Android SDK manager
+        - name: Find Android SDK manager
+          run: |
+            echo "Searching for sdkmanager..."
+            
+            SDKMANAGER=$(find "$ANDROID_HOME" -type f -name "sdkmanager" 2>/dev/null | head -n 1)
+            
+            if [ -z "$SDKMANAGER" ]; then
+              echo "ERROR: sdkmanager was not found."
+              echo "Android SDK contents:"
+              find "$ANDROID_HOME" -maxdepth 4 -type f 2>/dev/null | head -100
+              exit 1
+            fi
+            
+            echo "Found sdkmanager at:"
+            echo "$SDKMANAGER"
+            
+            echo "SDKMANAGER=$SDKMANAGER" >> "$GITHUB_ENV"
+
+        # 6. Accept Android SDK licenses
+        - name: Accept Android SDK licenses
+          run: |
+            yes | "$SDKMANAGER" --licenses > /dev/null || true
+
+        # 7. Install Android SDK 36
+        - name: Install Android SDK 36
+          run: |
+            "$SDKMANAGER" \
+              "platforms;android-36" \
+              "build-tools;36.0.0"
+
+        # 8. Verify Android SDK
+        - name: Check Android SDK
+          run: |
+            echo "ANDROID_HOME=$ANDROID_HOME"
+            echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+            echo "SDKMANAGER=$SDKMANAGER"
+            
+            echo ""
+            echo "Installed Android platforms:"
+            ls -la "$ANDROID_HOME/platforms"
+            
+            echo ""
+            echo "Android 36:"
+            ls -la "$ANDROID_HOME/platforms/android-36"
+            
+            echo ""
+            echo "Installed build tools:"
+            ls -la "$ANDROID_HOME/build-tools"
+            
+            echo ""
+            echo "SDK Manager version:"
+            "$SDKMANAGER" --version
+
+        # 9. Check Flutter
+        - name: Check Flutter
+          run: |
+            flutter --version
+            flutter doctor -v
+
+        # 10. Install dependencies
+        - name: Install dependencies
+          run: flutter pub get
+
+        # 11. Create .env file
+        - name: Create .env file
+          run: |
+            echo "BASE_URL=${{ secrets.BASE_URL }}" > .env
+
+        # 12. Clean previous build files
+        - name: Flutter clean
+          run: flutter clean
+
+        # 13. Get dependencies again after clean
+        - name: Flutter pub get
+          run: flutter pub get
+
+        # 14. Build Android APK
+        - name: Build Android APK
+          run: flutter build apk --release
+
+        # 15. Upload APK
+        - name: Upload APK Artifact
+          uses: actions/upload-artifact@v4
+          with:
+            name: app-release-apk
+            path: build/app/outputs/flutter-apk/app-release.apk
+            if-no-files-found: error
+
