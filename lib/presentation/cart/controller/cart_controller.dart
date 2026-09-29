@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -20,6 +21,7 @@ class CartController extends GetxController {
 
   RxList<PendingService> pendingServicesList = <PendingService>[].obs;
   RxList<PendingService> cancelServicesList = <PendingService>[].obs;
+  RxList<PendingService> completedServicesList = <PendingService>[].obs; // ADDED THIS
 
   RxBool isLoading = false.obs;
   RxBool isFetchingPending = false.obs;
@@ -69,7 +71,6 @@ class CartController extends GetxController {
       if (response.statusCode == 200 || response.statusCode == 201) {
         CustomSnackbar(Get.context!, title: "Success", message: "Services confirm.");
 
-        // --- FIX: Clear text fields after successful submission ---
         nameController.clear();
         ageController.clear();
         addressController.clear();
@@ -113,13 +114,42 @@ class CartController extends GetxController {
             item.status?.toUpperCase() == 'CANCEL' ||
             item.status?.toUpperCase() == 'CANCELED'));
 
+        // ADDED THIS FILTER
+        completedServicesList.assignAll(allItems.where((item) =>
+        item.status?.toUpperCase() == 'COMPLETED' ||
+            item.status?.toUpperCase() == 'COMPLETE'));
+
       } else {
-        print("Failed to fetch pending services: ${response.statusCode}");
+        log("Failed to fetch pending services: ${response.statusCode}");
       }
     } catch (e) {
-      print("Error fetching pending services: $e");
+      log("Error fetching pending services: $e");
     } finally {
       isFetchingPending.value = false;
+    }
+  }
+
+  // ADDED COMPLETE SERVICE ORDER METHOD
+  Future<void> completeServiceOrder(String orderId) async {
+    try {
+      final token = AuthServices.getAccessToken();
+
+      final response = await http.post(
+        Uri.parse(AppUrl.completeServices(orderId)),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        CustomSnackbar(Get.context!, title: "Success", message: "Order completed successfully.");
+        fetchPendingServices(); // Refresh list to move it to complete tab
+      } else {
+        CustomSnackbar(Get.context!, title: "Failed", message: "Could not complete order.", isError: true);
+      }
+    } catch (e) {
+      CustomSnackbar(Get.context!, title: "Error", message: "Something went wrong.", isError: true);
     }
   }
 
@@ -184,8 +214,7 @@ class CartController extends GetxController {
         }
 
         if (paymentUrl != null && paymentUrl.isNotEmpty) {
-
-          // FIX: Use Named Route from all_route.dart and pass URL as argument
+          // IP fix if needed: paymentUrl = paymentUrl.replaceAll('127.0.0.1', '192.168.1.xxx');
           final result = await Get.toNamed(AllRoute.paymentWebView, arguments: paymentUrl);
 
           if (result == 'success') {

@@ -17,6 +17,7 @@ class AppUrl {
   static String cancelServices(String orderId) => '$baseUrl/api/v1/services/order/$orderId/cancel';
   static String get makePayment => '$baseUrl/api/v1/payment/initiate';
   static String get getReview => '$baseUrl/api/v1/services/1/reviews';
+  static String completeServices(String orderId) => '$baseUrl/api/v1/services/order/$orderId/complete';
 
 
   /// /

@@ -53,8 +53,6 @@ class _PaymentWebViewState extends State<PaymentWebView> {
     return Scaffold(
       appBar: AppBar(
         title: const CustomText(text: "Secure Payment"),
-        backgroundColor: AppColor.primary,
-        foregroundColor: Colors.white,
       ),
       body: Stack(
         children: [
