@@ -41,6 +41,38 @@ class CancelServices extends StatelessWidget {
     return 'N/A';
   }
 
+  String _getFormattedDate(dynamic service) {
+    try {
+      String? dateString;
+
+      // Safely check common date properties individually to prevent crashes
+      try { dateString ??= service.createdAt?.toString(); } catch (_) {}
+      try { dateString ??= service.created_at?.toString(); } catch (_) {}
+      try { dateString ??= service.date?.toString(); } catch (_) {}
+      try { dateString ??= service.updatedAt?.toString(); } catch (_) {}
+
+      // Fallback: Check raw JSON if the model has a toJson method
+      if (dateString == null) {
+        try {
+          final json = service.toJson();
+          dateString = (json['created_at'] ?? json['createdAt'] ?? json['date'])?.toString();
+        } catch (_) {}
+      }
+
+      if (dateString == null || dateString.trim().isEmpty || dateString == 'null') {
+        return 'N/A';
+      }
+
+      final parsed = DateTime.tryParse(dateString);
+      if (parsed != null) {
+        return "${parsed.day.toString().padLeft(2, '0')}/${parsed.month.toString().padLeft(2, '0')}/${parsed.year}";
+      }
+      return dateString;
+    } catch (_) {
+      return 'N/A';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<CartController>();
@@ -77,6 +109,7 @@ class CancelServices extends StatelessWidget {
             final customerName = _getName(service.serviceAddress);
             final streetAddress = _getStreetAddress(service.serviceAddress);
             final postcode = _getPostcode(service.serviceAddress);
+            final dateText = _getFormattedDate(service);
 
             return Container(
               padding: const EdgeInsets.all(16.0),
@@ -192,6 +225,23 @@ class CancelServices extends StatelessWidget {
                       const Gap(6),
                       CustomText(
                         text: "Postcode: $postcode",
+                        fontSize: 14,
+                        color: AppColor.secondaryText,
+                      ),
+                    ],
+                  ),
+                  const Gap(6),
+
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today_outlined,
+                        size: 16,
+                        color: AppColor.secondaryText,
+                      ),
+                      const Gap(6),
+                      CustomText(
+                        text: "Date: $dateText",
                         fontSize: 14,
                         color: AppColor.secondaryText,
                       ),

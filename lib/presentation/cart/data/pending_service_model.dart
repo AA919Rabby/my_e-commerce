@@ -8,6 +8,7 @@ class PendingService {
   final String? status;
   final String? paymentStatus;
   final String? paymentSessionUrl;
+  final String? createdAt; // <--- Add this line
 
   PendingService({
     this.id,
@@ -19,6 +20,7 @@ class PendingService {
     this.status,
     this.paymentStatus,
     this.paymentSessionUrl,
+    this.createdAt, // <--- Add this line
   });
 
   factory PendingService.fromJson(Map<String, dynamic> json) {
@@ -37,8 +39,8 @@ class PendingService {
           : null,
       status: json['status']?.toString(),
       paymentStatus: json['payment_status']?.toString(),
-      // Typed as String? instead of Null so string URLs are parsed safely
       paymentSessionUrl: json['payment_session_url']?.toString(),
+      createdAt: json['created_at']?.toString() ?? json['createdAt']?.toString(), // <--- Add this line
     );
   }
 
@@ -53,6 +55,7 @@ class PendingService {
       'status': status,
       'payment_status': paymentStatus,
       'payment_session_url': paymentSessionUrl,
+      'created_at': createdAt, // <--- Add this line
     };
   }
 }

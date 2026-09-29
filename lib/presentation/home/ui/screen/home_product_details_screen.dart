@@ -43,16 +43,7 @@ class HomeProductDetailsScreen extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
 
-        actions: [
-          IconButton(
-            icon: const Icon(
-              Icons.favorite_border_rounded,
-              color: AppColor.black,
-            ),
-            onPressed: () {},
-          ),
-          const Gap(10),
-        ],
+
       ),
 
       // ================================================================

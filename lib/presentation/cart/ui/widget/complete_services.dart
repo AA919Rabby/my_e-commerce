@@ -24,7 +24,7 @@ class CompleteServices extends StatelessWidget {
     final parts = fullAddress.split(',');
 
     if (parts.length > 3) {
-      return parts.sublist(1, parts.length - 2).join(',').trim(); // Fixed formatting error here
+      return parts.sublist(1, parts.length - 2).join(',').trim();
     } else if (parts.length > 1) {
       return parts[1].trim();
     }
@@ -36,9 +36,41 @@ class CompleteServices extends StatelessWidget {
     final parts = fullAddress.split(',');
 
     if (parts.length >= 3) {
-      return parts[parts.length - 2].trim(); // Fixed formatting error here
+      return parts[parts.length - 2].trim();
     }
     return 'N/A';
+  }
+
+  String _getFormattedDate(dynamic service) {
+    try {
+      String? dateString;
+
+      // Safely check common date properties individually to prevent crashes
+      try { dateString ??= service.createdAt?.toString(); } catch (_) {}
+      try { dateString ??= service.created_at?.toString(); } catch (_) {}
+      try { dateString ??= service.date?.toString(); } catch (_) {}
+      try { dateString ??= service.updatedAt?.toString(); } catch (_) {}
+
+      // Fallback: Check raw JSON if the model has a toJson method
+      if (dateString == null) {
+        try {
+          final json = service.toJson();
+          dateString = (json['created_at'] ?? json['createdAt'] ?? json['date'])?.toString();
+        } catch (_) {}
+      }
+
+      if (dateString == null || dateString.trim().isEmpty || dateString == 'null') {
+        return 'N/A';
+      }
+
+      final parsed = DateTime.tryParse(dateString);
+      if (parsed != null) {
+        return "${parsed.day.toString().padLeft(2, '0')}/${parsed.month.toString().padLeft(2, '0')}/${parsed.year}";
+      }
+      return dateString;
+    } catch (_) {
+      return 'N/A';
+    }
   }
 
   @override
@@ -77,6 +109,7 @@ class CompleteServices extends StatelessWidget {
             final customerName = _getName(service.serviceAddress);
             final streetAddress = _getStreetAddress(service.serviceAddress);
             final postcode = _getPostcode(service.serviceAddress);
+            final dateText = _getFormattedDate(service);
 
             return Container(
               padding: const EdgeInsets.all(16.0),
@@ -112,13 +145,12 @@ class CompleteServices extends StatelessWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          // Changed styling to Green for Completed
                           color: Colors.green.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: CustomText(
-                          text: service.status ?? "COMPLETED",
-                          color: Colors.green, // Changed styling to Green
+                          text: "COMPLETED",
+                          color: Colors.green,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
@@ -193,6 +225,23 @@ class CompleteServices extends StatelessWidget {
                       const Gap(6),
                       CustomText(
                         text: "Postcode: $postcode",
+                        fontSize: 14,
+                        color: AppColor.secondaryText,
+                      ),
+                    ],
+                  ),
+                  const Gap(6),
+
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today_outlined,
+                        size: 16,
+                        color: AppColor.secondaryText,
+                      ),
+                      const Gap(6),
+                      CustomText(
+                        text: "Date: $dateText",
                         fontSize: 14,
                         color: AppColor.secondaryText,
                       ),

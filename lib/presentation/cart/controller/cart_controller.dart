@@ -70,14 +70,13 @@ class CartController extends GetxController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         CustomSnackbar(Get.context!, title: "Success", message: "Services confirm.");
-
+        Get.back();
         nameController.clear();
         ageController.clear();
         addressController.clear();
         postcodeController.clear();
         phoneController.clear();
 
-        Get.back();
         fetchPendingServices();
       } else {
         CustomSnackbar(Get.context!, title: "Failed", message: "Services failed.", isError: true);
@@ -107,17 +106,30 @@ class CartController extends GetxController {
 
         var allItems = jsonResponse.map((data) => PendingService.fromJson(data)).toList();
 
-        pendingServicesList.assignAll(allItems.where((item) => item.status == 'PENDING'));
+        pendingServicesList.assignAll(allItems.where((item) =>
+        item.status?.toUpperCase() == 'PENDING'));
 
         cancelServicesList.assignAll(allItems.where((item) =>
         item.status?.toUpperCase() == 'CANCELLED' ||
             item.status?.toUpperCase() == 'CANCEL' ||
             item.status?.toUpperCase() == 'CANCELED'));
 
-        // ADDED THIS FILTER
+        // --- FIX: Added 'PAID', 'PROCESSING', 'CONFIRMED', and 'SUCCESS' ---
         completedServicesList.assignAll(allItems.where((item) =>
         item.status?.toUpperCase() == 'COMPLETED' ||
-            item.status?.toUpperCase() == 'COMPLETE'));
+            item.status?.toUpperCase() == 'COMPLETE' ||
+            item.status?.toUpperCase() == 'PAID' ||
+            item.status?.toUpperCase() == 'PROCESSING' ||
+            item.status?.toUpperCase() == 'CONFIRMED' ||
+            item.status?.toUpperCase() == 'SUCCESS'));
+
+        // --- DEBUG: Print any status that isn't caught by the lists above ---
+        for (var item in allItems) {
+          String s = item.status?.toUpperCase() ?? 'NULL';
+          if (!['PENDING', 'CANCELLED', 'CANCEL', 'CANCELED', 'COMPLETED', 'COMPLETE', 'PAID', 'PROCESSING', 'CONFIRMED', 'SUCCESS'].contains(s)) {
+            log("⚠️ UNHANDLED STATUS FOUND: $s for Order ID: ${item.id}");
+          }
+        }
 
       } else {
         log("Failed to fetch pending services: ${response.statusCode}");

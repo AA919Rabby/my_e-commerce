@@ -89,7 +89,7 @@ class _CustomButtonState extends State<CustomButton> {
   @override
   Widget build(BuildContext context) {
     final double effectiveRadius = widget.borderRadius ?? 12.r;
-    final double effectiveHeight = widget.height ?? 50.h;
+    final double effectiveHeight = widget.height ?? 42.h;
 
     return AnimatedScale(
       scale: _isPressed ? 0.96 : 1.0,
@@ -127,9 +127,8 @@ class _CustomButtonState extends State<CustomButton> {
                 duration: const Duration(milliseconds: 150),
                 style: TextStyle(
                   color: widget.textColor,
-                  fontSize: 16.sp,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
-                  letterSpacing: 0.3,
                 ),
                 child: Text(widget.text),
               ),

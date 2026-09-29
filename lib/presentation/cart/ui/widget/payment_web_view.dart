@@ -52,7 +52,11 @@ class _PaymentWebViewState extends State<PaymentWebView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const CustomText(text: "Secure Payment"),
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        title: CustomText(text: "Secure Payment",fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: AppColor.black,),
       ),
       body: Stack(
         children: [
