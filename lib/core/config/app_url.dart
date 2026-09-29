@@ -22,6 +22,9 @@ class AppUrl {
   static String  getReview(String serviceId) => '$baseUrl/api/v1/services/$serviceId/reviews';
   static String completeServices(String orderId) => '$baseUrl/api/v1/services/order/$orderId/complete';
 
+ //websockets
+  static String get servicesWs => '${baseUrl.replaceFirst('https://', 'wss://').replaceFirst('http://', 'ws://')}/api/v1/services/ws';
+  static String get slotsWs => '${baseUrl.replaceFirst('https://', 'wss://').replaceFirst('http://', 'ws://')}/api/v1/slots/ws';
 
   /// /
   //static String get registerOtpVerify => '$baseUrl/users/create';

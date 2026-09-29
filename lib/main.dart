@@ -1,12 +1,18 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mye_commerce/local_db/auth_services.dart';
 import 'package:mye_commerce/presentation/intro/ui/screen/intro_screen.dart';
+import 'package:mye_commerce/services/websocket_service.dart';
 import 'app.dart';
+import 'package:get/get.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AuthServices.init();
+  Get.put(WebSocketService());
   try {
     // 1. Load Base url
     await dotenv.load(fileName: ".env");
