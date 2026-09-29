@@ -6,18 +6,15 @@ import '../../../../core/theme/app_color.dart';
 import '../../../../global/custom_text.dart';
 import '../../../../global/custom_text_field.dart';
 import '../../../../global/custom_button.dart';
-import '../../../../global/custom_loader.dart';
 import '../../controller/cart_controller.dart';
 
 class PushServices extends StatelessWidget {
   PushServices({super.key});
 
-  // Retrieving the product ID passed via Get.arguments
   final String productId = Get.arguments.toString();
 
   @override
   Widget build(BuildContext context) {
-    // Initialize the CartController
     final controller = Get.find<CartController>();
 
     return Scaffold(
@@ -48,7 +45,6 @@ class PushServices extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 1. Full Name Input
                 const CustomText(text: "Full Name", color: AppColor.black, fontWeight: FontWeight.bold),
                 const Gap(8),
                 CustomTextField(
@@ -61,7 +57,6 @@ class PushServices extends StatelessWidget {
                 ),
                 const Gap(16),
 
-                // 2. Age Input (Validation: Min 10 years)
                 const CustomText(text: "Age", color: AppColor.black, fontWeight: FontWeight.bold),
                 const Gap(8),
                 CustomTextField(
@@ -77,7 +72,6 @@ class PushServices extends StatelessWidget {
                 ),
                 const Gap(16),
 
-                // 3. Address Input
                 const CustomText(text: "Address", color: AppColor.black, fontWeight: FontWeight.bold),
                 const Gap(8),
                 CustomTextField(
@@ -90,7 +84,6 @@ class PushServices extends StatelessWidget {
                 ),
                 const Gap(16),
 
-                // 4. Postcode Input
                 const CustomText(text: "Postcode", color: AppColor.black, fontWeight: FontWeight.bold),
                 const Gap(8),
                 CustomTextField(
@@ -104,7 +97,6 @@ class PushServices extends StatelessWidget {
                 ),
                 const Gap(16),
 
-                // 5. Phone Number Input (Validation: Min 10 characters)
                 const CustomText(text: "Phone Number", color: AppColor.black, fontWeight: FontWeight.bold),
                 const Gap(8),
                 CustomTextField(
@@ -120,33 +112,25 @@ class PushServices extends StatelessWidget {
                 ),
                 const Gap(40),
 
-                // Submit Button / Loader
                 Obx(() {
                   if (controller.isLoading.value) {
                     return CustomButton(
                       text: "Processing",
-
                       textColor: AppColor.text,
-                      onPressed: () {
-
-                      },
+                      onPressed: () {},
                       backgroundColor: AppColor.drawerGradient1 ,
                     );
                   }
 
-                  // Uses the CustomButton with your preferred colors
                   return CustomButton(
                     text: "Confirm Booking",
-
                     textColor: AppColor.text,
                     onPressed: () {
-                      // Pass the productId retrieved from Get.arguments
                       controller.submitServiceOrder(productId);
                     },
                     backgroundColor: AppColor.drawerGradient1 ,
                   );
                 }),
-
                 const Gap(20),
               ],
             ),

@@ -5,14 +5,13 @@ import 'package:mye_commerce/presentation/auth/ui/login/screen/forget_password_s
 import 'package:mye_commerce/presentation/auth/ui/login/screen/login_screen.dart';
 import 'package:mye_commerce/presentation/auth/ui/register/screen/register_screen.dart';
 import 'package:mye_commerce/presentation/bottom_nav/ui/screen/bottom_nav_screen.dart';
+import 'package:mye_commerce/presentation/cart/ui/widget/payment_web_view.dart'; // <-- ADD THIS IMPORT
 import 'package:mye_commerce/presentation/cart/ui/widget/push_services.dart';
 import 'package:mye_commerce/presentation/home/data/product_details_model.dart';
 import 'package:mye_commerce/presentation/home/ui/screen/home_product_details_screen.dart';
 import 'package:mye_commerce/presentation/intro/ui/screen/intro_screen.dart';
 import 'package:mye_commerce/presentation/notificatioon/ui/screen/notification_screen.dart';
 import 'package:mye_commerce/presentation/profile/ui/screen/update_profile_screen.dart';
-// Make sure to import your LoginScreen here
-// import 'package:mye_commerce/presentation/login/ui/screen/login_screen.dart';
 
 import 'all_binding.dart';
 
@@ -21,13 +20,14 @@ class AllRoute {
   static const String login = '/login';
   static const String register = '/register';
   static const String forgetPassword = '/forget-password';
-  static const String  forgetPasswordEnterOtp= '/forget-password-enter-otp';
-  static const String  enterNewPassword= '/enter-new-password';
-  static const String  bottomNav= '/bottom-nav';
-  static const String  productDetails= '/productDetails';
-  static const String  updateProfile= '/updateProfile';
-  static const String  notification= '/notification';
-  static const String  pushServices= '/pushServices';
+  static const String forgetPasswordEnterOtp= '/forget-password-enter-otp';
+  static const String enterNewPassword= '/enter-new-password';
+  static const String bottomNav= '/bottom-nav';
+  static const String productDetails= '/productDetails';
+  static const String updateProfile= '/updateProfile';
+  static const String notification= '/notification';
+  static const String pushServices= '/pushServices';
+  static const String paymentWebView = '/paymentWebView'; // <-- ADD THIS ROUTE STRING
 
 
   static final List<GetPage> routes = [
@@ -36,7 +36,6 @@ class AllRoute {
       page: () => const IntroScreen(),
       binding: AllBinding(),
     ),
-    // ADDED login route page
     GetPage(
       name: login,
       page: () => LoginScreen(),
@@ -50,7 +49,7 @@ class AllRoute {
       binding: AllBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 600),
-),
+    ),
     GetPage(
       name: forgetPassword,
       page: () => ForgetPasswordScreen(),
@@ -58,7 +57,6 @@ class AllRoute {
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 600),
     ),
-
     GetPage(
       name: forgetPasswordEnterOtp,
       page: () => EnterOtpScreen(),
@@ -108,6 +106,13 @@ class AllRoute {
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 600),
     ),
-
+    // <-- ADD THIS GETPAGE ROUTE
+    GetPage(
+      name: paymentWebView,
+      page: () => PaymentWebView(url: Get.arguments.toString()), // Receives URL from arguments
+      binding: AllBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 600),
+    ),
   ];
 }

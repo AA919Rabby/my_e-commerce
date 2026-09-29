@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:mye_commerce/presentation/cart/ui/widget/payment_web_view.dart';
+import '../../../all_route.dart';
 import '../../../core/config/app_url.dart';
 import '../../../global/custom_snackbar.dart';
 import '../../../local_db/auth_services.dart';
@@ -67,6 +68,14 @@ class CartController extends GetxController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         CustomSnackbar(Get.context!, title: "Success", message: "Services confirm.");
+
+        // --- FIX: Clear text fields after successful submission ---
+        nameController.clear();
+        ageController.clear();
+        addressController.clear();
+        postcodeController.clear();
+        phoneController.clear();
+
         Get.back();
         fetchPendingServices();
       } else {
@@ -141,13 +150,11 @@ class CartController extends GetxController {
     }
   }
 
-  // --- Updated Initiate Payment ---
   Future<void> initiatePayment(String orderId) async {
-    payingOrderId.value = orderId; // Set loading ONLY for this order ID
+    payingOrderId.value = orderId;
     try {
       final token = AuthServices.getAccessToken();
 
-      // Convert orderId to int if possible, otherwise keep string
       final dynamic parsedOrderId = int.tryParse(orderId) ?? orderId;
 
       final response = await http.post(
@@ -161,16 +168,25 @@ class CartController extends GetxController {
         }),
       );
 
-      print("Payment Response Status: ${response.statusCode}");
-      print("Payment Response Body: ${response.body}");
-
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
 
-        String? paymentUrl = data['url'] ?? data['GatewayPageURL'] ?? data['payment_session_url'];
+        String? paymentUrl = data['url'] ??
+            data['GatewayPageURL'] ??
+            data['payment_session_url'] ??
+            data['payment_url'];
+
+        if (paymentUrl == null && data['data'] != null && data['data'] is Map) {
+          paymentUrl = data['data']['url'] ??
+              data['data']['GatewayPageURL'] ??
+              data['data']['payment_session_url'] ??
+              data['data']['payment_url'];
+        }
 
         if (paymentUrl != null && paymentUrl.isNotEmpty) {
-          final result = await Get.to(() => PaymentWebView(url: paymentUrl));
+
+          // FIX: Use Named Route from all_route.dart and pass URL as argument
+          final result = await Get.toNamed(AllRoute.paymentWebView, arguments: paymentUrl);
 
           if (result == 'success') {
             CustomSnackbar(Get.context!, title: "Success", message: "Payment completed successfully!");
@@ -179,18 +195,14 @@ class CartController extends GetxController {
             CustomSnackbar(Get.context!, title: "Failed", message: "Payment was cancelled or failed.", isError: true);
           }
         } else {
-          CustomSnackbar(Get.context!, title: "Error", message: "Could not retrieve payment URL.", isError: true);
+          String rawResponse = response.body.length > 100 ? '${response.body.substring(0, 100)}...' : response.body;
+          CustomSnackbar(Get.context!, title: "API Info", message: "Missing URL. Backend sent: $rawResponse", isError: true);
         }
-      } else {
-        final errorData = jsonDecode(response.body);
-        String errorMessage = errorData['detail'] ?? errorData['message'] ?? "Status code: ${response.statusCode}";
-        CustomSnackbar(Get.context!, title: "Payment Error", message: errorMessage, isError: true);
       }
     } catch (e) {
-      print("Payment Error: $e");
       CustomSnackbar(Get.context!, title: "Error", message: "Something went wrong with the payment.", isError: true);
     } finally {
-      payingOrderId.value = ''; // Reset payment loading state
+      payingOrderId.value = '';
     }
   }
 }
