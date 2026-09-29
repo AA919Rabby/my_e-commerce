@@ -26,9 +26,7 @@ class HomeProduct extends StatelessWidget {
         return SizedBox(
           height: 0.4.sh,
           child: Center(
-            child: CustomLoader(
-              color: AppColor.drawerGradient1,
-            ),
+            child: CustomLoader(),
           ),
         );
       }

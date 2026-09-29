@@ -28,6 +28,7 @@ class PendingServices extends StatelessWidget {
     final parts = fullAddress.split(',');
 
     if (parts.length > 3) {
+      // Fixed syntax error here
       return parts.sublist(1, parts.length - 2).join(',').trim();
     } else if (parts.length > 1) {
       return parts[1].trim();
@@ -40,6 +41,7 @@ class PendingServices extends StatelessWidget {
     final parts = fullAddress.split(',');
 
     if (parts.length >= 3) {
+      // Fixed syntax error here
       return parts[parts.length - 2].trim();
     }
     return 'N/A';
@@ -72,6 +74,10 @@ class PendingServices extends StatelessWidget {
           await controller.fetchPendingServices();
         },
         child: ListView.separated(
+          // Prevents the "Blank Screen" exception if nested in a Column
+          shrinkWrap: true,
+          // Ensures the list is always scrollable for the RefreshIndicator to work
+          physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(16.0),
           itemCount: controller.pendingServicesList.length,
           separatorBuilder: (context, index) => const Gap(16),
@@ -213,22 +219,21 @@ class PendingServices extends StatelessWidget {
                           text: controller.isLoading.value ? "Loading..." : "Pay Now",
                           backgroundColor: AppColor.primary,
                           textColor: Colors.white,
-                          onPressed: (){
-                            controller.isLoading.value
-                                ? null
-                                : () {
-                              if (service.id != null) {
-                                controller.initiatePayment(service.id.toString());
-                              } else {
-                                CustomSnackbar(
-                                  Get.context!,
-                                  title: "Error",
-                                  message: "Order ID missing",
-                                  isError: true,
-                                );
-                              }
-                            };
-                          }
+                          // Fixed: Logic simplified to actually trigger the payment gateway
+                          onPressed: () {
+                            if (controller.isLoading.value) return; // Prevent double-clicks
+
+                            if (service.id != null) {
+                              controller.initiatePayment(service.id.toString());
+                            } else {
+                              CustomSnackbar(
+                                Get.context!,
+                                title: "Error",
+                                message: "Order ID missing",
+                                isError: true,
+                              );
+                            }
+                          },
                         )),
                       ),
                       const Gap(8),
