@@ -211,14 +211,21 @@ class PendingServices extends StatelessWidget {
                       Expanded(
                         child: Obx(() => CustomButton(
                           text: controller.isLoading.value ? "Loading..." : "Pay Now",
-                          backgroundColor: AppColor.drawerGradient1,
-                          textColor: AppColor.text,
+                          backgroundColor: AppColor.primary,
+                          textColor: Colors.white,
                           onPressed: (){
-                            controller.isLoading.value ? null : () {
+                            controller.isLoading.value
+                                ? null
+                                : () {
                               if (service.id != null) {
                                 controller.initiatePayment(service.id.toString());
                               } else {
-                                CustomSnackbar(Get.context!, title: "Error", message: "Order ID missing", isError: true);
+                                CustomSnackbar(
+                                  Get.context!,
+                                  title: "Error",
+                                  message: "Order ID missing",
+                                  isError: true,
+                                );
                               }
                             };
                           }
@@ -273,11 +280,15 @@ class PendingServices extends StatelessWidget {
                                       borderRadius: 8,
                                       onPressed: () async {
                                         Navigator.pop(context);
-                                        // Pass the primary ID, not the tranId
                                         if (service.id != null) {
                                           await controller.cancelServiceOrder(service.id.toString());
                                         } else {
-                                          CustomSnackbar(Get.context!, title: "Error", message: "Order ID missing", isError: true);
+                                          CustomSnackbar(
+                                            Get.context!,
+                                            title: "Error",
+                                            message: "Order ID missing",
+                                            isError: true,
+                                          );
                                         }
                                       },
                                     ),

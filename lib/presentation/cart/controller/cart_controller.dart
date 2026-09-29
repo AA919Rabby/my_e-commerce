@@ -8,7 +8,6 @@ import '../../../global/custom_snackbar.dart';
 import '../../../local_db/auth_services.dart';
 import '../data/pending_service_model.dart';
 
-
 class CartController extends GetxController {
   final formKey = GlobalKey<FormState>();
 
@@ -139,7 +138,6 @@ class CartController extends GetxController {
     }
   }
 
-  // --- NEW: Initiate SSLCommerz Payment ---
   Future<void> initiatePayment(String orderId) async {
     isLoading.value = true;
     try {
@@ -159,16 +157,14 @@ class CartController extends GetxController {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        // Note: Change 'url' below if your API returns the link under a different key (like 'GatewayPageURL' or 'payment_url')
-        String? paymentUrl = data['url'] ?? data['GatewayPageURL'];
+        String? paymentUrl = data['url'] ?? data['GatewayPageURL'] ?? data['payment_session_url'];
 
         if (paymentUrl != null && paymentUrl.isNotEmpty) {
-          // Open the In-App WebView
           final result = await Get.to(() => PaymentWebView(url: paymentUrl));
 
           if (result == 'success') {
             CustomSnackbar(Get.context!, title: "Success", message: "Payment completed successfully!");
-            fetchPendingServices(); // Refresh list to move it to complete
+            fetchPendingServices();
           } else if (result == 'fail') {
             CustomSnackbar(Get.context!, title: "Failed", message: "Payment was cancelled or failed.", isError: true);
           }

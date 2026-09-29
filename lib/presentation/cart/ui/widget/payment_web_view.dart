@@ -33,8 +33,6 @@ class _PaymentWebViewState extends State<PaymentWebView> {
             setState(() { isLoading = false; });
           },
           onNavigationRequest: (NavigationRequest request) {
-            // INTERCEPT SUCCESS OR FAIL REDIRECTS
-            // Adjust 'success', 'fail', 'cancel' based on what your Django backend uses as return URLs
             if (request.url.contains('success') || request.url.contains('payment-success')) {
               Get.back(result: 'success');
               return NavigationDecision.prevent;
@@ -54,7 +52,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: CustomText(text: "Secure Payment"),
+        title: const CustomText(text: "Secure Payment"),
         backgroundColor: AppColor.primary,
         foregroundColor: Colors.white,
       ),
