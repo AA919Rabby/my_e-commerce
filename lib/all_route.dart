@@ -9,6 +9,7 @@ import 'package:mye_commerce/presentation/cart/ui/widget/payment_web_view.dart';
 import 'package:mye_commerce/presentation/cart/ui/widget/push_services.dart';
 import 'package:mye_commerce/presentation/home/data/product_details_model.dart';
 import 'package:mye_commerce/presentation/home/ui/screen/home_product_details_screen.dart';
+import 'package:mye_commerce/presentation/home/ui/widget/product_all_screen.dart';
 import 'package:mye_commerce/presentation/intro/ui/screen/intro_screen.dart';
 import 'package:mye_commerce/presentation/notificatioon/ui/screen/notification_screen.dart';
 import 'package:mye_commerce/presentation/profile/ui/screen/update_profile_screen.dart';
@@ -28,6 +29,7 @@ class AllRoute {
   static const String notification= '/notification';
   static const String pushServices= '/pushServices';
   static const String paymentWebView = '/paymentWebView'; // <-- ADD THIS ROUTE STRING
+  static const String viewAll = '/viewAll'; // <-- ADD THIS ROUTE STRING
 
 
   static final List<GetPage> routes = [
@@ -110,6 +112,13 @@ class AllRoute {
     GetPage(
       name: paymentWebView,
       page: () => PaymentWebView(url: Get.arguments.toString()), // Receives URL from arguments
+      binding: AllBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 600),
+    ),
+    GetPage(
+      name: viewAll,
+      page: () =>ProductAllScreen(), // Receives URL from arguments
       binding: AllBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 600),

@@ -172,11 +172,16 @@ class HomeScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: AppColor.black,
                     ),
-                    CustomText(
-                      text: "View all",
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColor.drawerGradient1,
+                    InkWell(
+                      onTap: (){
+                        Get.toNamed(AllRoute.viewAll);
+                      },
+                      child: CustomText(
+                        text: "View all",
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColor.drawerGradient1,
+                      ),
                     ),
                   ],
                 ),

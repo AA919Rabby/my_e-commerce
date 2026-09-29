@@ -16,7 +16,10 @@ class AppUrl {
   static String get pendingServices => '$baseUrl/api/v1/services/order/history';
   static String cancelServices(String orderId) => '$baseUrl/api/v1/services/order/$orderId/cancel';
   static String get makePayment => '$baseUrl/api/v1/payment/initiate';
-  static String get getReview => '$baseUrl/api/v1/services/1/reviews';
+  //static String get addReview => '$baseUrl/api/v1/services/reviews';
+  //static String get getReview => '$baseUrl/api/v1/services/1/reviews';
+  static String get addReview => '$baseUrl/api/v1/services/reviews';
+  static String  getReview(String serviceId) => '$baseUrl/api/v1/services/$serviceId/reviews';
   static String completeServices(String orderId) => '$baseUrl/api/v1/services/order/$orderId/complete';
 
 

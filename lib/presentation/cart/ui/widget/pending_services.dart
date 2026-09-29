@@ -288,13 +288,27 @@ class PendingServices extends StatelessWidget {
                       ),
                       const Gap(8),
 
+                      // ==========================================
+                      // FIX IS HERE - changed item to service
+                      // ==========================================
                       Expanded(
                         child: CustomButton(
                           text: "Review",
                           backgroundColor: AppColor.drawerGradient1,
                           textColor: AppColor.text,
                           onPressed: () {
-                            // Implement Review Logic
+                            // Use serviceId if available, fallback to service.id
+                            final targetServiceId = service.serviceId?.toString() ?? service.id.toString();
+                            if (targetServiceId.isNotEmpty) {
+                              controller.openReviewDialog(targetServiceId);
+                            } else {
+                              CustomSnackbar(
+                                Get.context!,
+                                title: "Error",
+                                message: "Service ID missing",
+                                isError: true,
+                              );
+                            }
                           },
                         ),
                       ),
