@@ -2,27 +2,25 @@ class NotificationModel {
   final String id;
   final String title;
   final String subtitle;
-  final DateTime time;
   final bool isRead;
+  final String? createdAt;
 
   NotificationModel({
     required this.id,
     required this.title,
     required this.subtitle,
-    required this.time,
-    this.isRead = false,
+    required this.isRead,
+    this.createdAt,
   });
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
     return NotificationModel(
       id: json['id']?.toString() ?? '',
       title: json['title'] ?? 'Notification',
-      // Adjust 'message' if your backend calls it something else like 'body' or 'subtitle'
-      subtitle: json['message'] ?? '',
-      time: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
-          : DateTime.now(),
-      isRead: json['is_read'] ?? false,
+      // Maps 'body' from FastAPI to 'subtitle' for the Flutter UI
+      subtitle: json['body'] ?? json['subtitle'] ?? 'No details provided.',
+      isRead: json['is_read'] ?? json['isRead'] ?? false,
+      createdAt: json['created_at']?.toString(),
     );
   }
 
@@ -30,15 +28,25 @@ class NotificationModel {
     String? id,
     String? title,
     String? subtitle,
-    DateTime? time,
     bool? isRead,
+    String? createdAt,
   }) {
     return NotificationModel(
       id: id ?? this.id,
       title: title ?? this.title,
       subtitle: subtitle ?? this.subtitle,
-      time: time ?? this.time,
       isRead: isRead ?? this.isRead,
+      createdAt: createdAt ?? this.createdAt,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'body': subtitle,
+      'is_read': isRead,
+      'created_at': createdAt,
+    };
   }
 }

@@ -138,7 +138,7 @@ class NotificationScreen extends StatelessWidget {
                           width: 10,
                           height: 10,
                           decoration: const BoxDecoration(
-                            color: AppColor.danger,
+                            color: Colors.orange,
                             shape: BoxShape.circle,
                           ),
                         ),

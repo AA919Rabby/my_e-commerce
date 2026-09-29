@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:get/get.dart';
-import 'package:mye_commerce/core/config/app_url.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import '../../presentation/cart/controller/cart_controller.dart';
 
+import '../../presentation/cart/controller/cart_controller.dart';
+import '../../presentation/notificatioon/controller/notification_controller.dart';
+import '../../presentation/profile/controller/profile_controller.dart';
+import '../core/config/app_url.dart';
 
 class WebSocketService extends GetxService {
   WebSocketChannel? _channel;
@@ -50,18 +52,30 @@ class WebSocketService extends GetxService {
       final Map<String, dynamic> data = jsonDecode(rawMessage);
       final String event = data['event'] ?? '';
 
-      // Check if CartController is active
+      // 1. Live Notification Event -> Reload Notifications List
+      if (event == 'NEW_NOTIFICATION') {
+        if (Get.isRegistered<NotificationController>()) {
+          Get.find<NotificationController>().fetchNotifications();
+        }
+      }
+
+      // 2. Live Profile Update Event -> Reload Profile Data
+      if (event == 'PROFILE_UPDATED') {
+        if (Get.isRegistered<ProfileController>()) {
+          //Get.find<ProfileController>().fetchProfile();
+        }
+      }
+
+      // 3. Orders, Payments, & Reviews Live Events
       if (Get.isRegistered<CartController>()) {
         final cartController = Get.find<CartController>();
 
-        // 1. Order or Payment update -> Refresh orders list!
         if (event == 'NEW_ORDER' ||
             event == 'ORDER_STATUS_CHANGED' ||
             event == 'PAYMENT_UPDATE') {
           cartController.fetchPendingServices();
         }
 
-        // 2. New Review posted -> Refresh reviews live!
         if (event == 'NEW_REVIEW' && data['service_id'] != null) {
           cartController.fetchServiceReviews(data['service_id'].toString());
         }

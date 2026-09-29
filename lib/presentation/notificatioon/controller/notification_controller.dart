@@ -5,8 +5,6 @@ import 'package:http/http.dart' as http;
 import 'package:mye_commerce/core/config/app_url.dart';
 import 'package:mye_commerce/local_db/auth_services.dart';
 import '../data/notification_model.dart';
-// Import your Auth/LocalDB service here to get the token
-// import '../../local_db/auth_services.dart';
 
 class NotificationController extends GetxController {
   RxList<NotificationModel> notifications = <NotificationModel>[].obs;
@@ -33,11 +31,12 @@ class NotificationController extends GetxController {
         },
       );
 
+      log("Notifications API Response [${response.statusCode}]: ${response.body}");
+
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
         notifications.value = data.map((json) => NotificationModel.fromJson(json)).toList();
       } else {
-        // Handle API error
         log("Failed to load notifications: ${response.statusCode}");
       }
     } catch (e) {
@@ -47,21 +46,31 @@ class NotificationController extends GetxController {
     }
   }
 
-  // Updates UI locally when tapped, you can also add an HTTP PATCH request
-  // here if your API requires updating the read status on the server
-  void markAsRead(String id) {
+  void markAsRead(String id) async {
     int index = notifications.indexWhere((n) => n.id == id);
     if (index != -1 && !notifications[index].isRead) {
       notifications[index] = notifications[index].copyWith(isRead: true);
 
-      // Example server update:
-      // http.patch(Uri.parse('https://fastapi-crud-y254.onrender.com/api/v1/notifications/$id/read'), ...);
+      try {
+        final token = AuthServices.getAccessToken();
+        await http.patch(
+          Uri.parse('${AppUrl.notification}/$id/read'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        );
+      } catch (e) {
+        log("Error marking notification read on server: $e");
+      }
     }
   }
 
   void markAllAsRead() {
     for (int i = 0; i < notifications.length; i++) {
-      notifications[i] = notifications[i].copyWith(isRead: true);
+      if (!notifications[i].isRead) {
+        markAsRead(notifications[i].id);
+      }
     }
   }
 }

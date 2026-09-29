@@ -87,13 +87,13 @@ class AllRoute {
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 600),
     ),
-    GetPage(
-      name: updateProfile,
-      page: () => UpdateProfileScreen(),
-      binding: AllBinding(),
-      transition: Transition.cupertino,
-      transitionDuration: const Duration(milliseconds: 600),
-    ),
+    // GetPage(
+    //   name: updateProfile,
+    //   page: () => UpdateProfileScreen(),
+    //   binding: AllBinding(),
+    //   transition: Transition.cupertino,
+    //   transitionDuration: const Duration(milliseconds: 600),
+    // ),
     GetPage(
       name: notification,
       page: () => NotificationScreen(),
