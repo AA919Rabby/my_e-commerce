@@ -28,7 +28,6 @@ class PendingServices extends StatelessWidget {
     final parts = fullAddress.split(',');
 
     if (parts.length > 3) {
-      // Fixed syntax error here
       return parts.sublist(1, parts.length - 2).join(',').trim();
     } else if (parts.length > 1) {
       return parts[1].trim();
@@ -41,7 +40,6 @@ class PendingServices extends StatelessWidget {
     final parts = fullAddress.split(',');
 
     if (parts.length >= 3) {
-      // Fixed syntax error here
       return parts[parts.length - 2].trim();
     }
     return 'N/A';
@@ -74,9 +72,7 @@ class PendingServices extends StatelessWidget {
           await controller.fetchPendingServices();
         },
         child: ListView.separated(
-          // Prevents the "Blank Screen" exception if nested in a Column
           shrinkWrap: true,
-          // Ensures the list is always scrollable for the RefreshIndicator to work
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(16.0),
           itemCount: controller.pendingServicesList.length,
@@ -215,26 +211,31 @@ class PendingServices extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: Obx(() => CustomButton(
-                          text: controller.isLoading.value ? "Loading..." : "Pay Now",
-                          backgroundColor: AppColor.primary,
-                          textColor: Colors.white,
-                          // Fixed: Logic simplified to actually trigger the payment gateway
-                          onPressed: () {
-                            if (controller.isLoading.value) return; // Prevent double-clicks
+                        child: Obx(() {
+                          final bool isThisItemPaying = controller.payingOrderId.value == service.id.toString();
+                          final bool isAnyPaymentInProgress = controller.payingOrderId.isNotEmpty;
 
-                            if (service.id != null) {
-                              controller.initiatePayment(service.id.toString());
-                            } else {
-                              CustomSnackbar(
-                                Get.context!,
-                                title: "Error",
-                                message: "Order ID missing",
-                                isError: true,
-                              );
-                            }
-                          },
-                        )),
+                          return CustomButton(
+                            text: isThisItemPaying ? "Loading..." : "Pay Now",
+                            backgroundColor: AppColor.primary,
+                            textColor: Colors.white,
+                            onPressed: () {
+                              // Prevent action if payment is currently running
+                              if (isAnyPaymentInProgress) return;
+
+                              if (service.id != null) {
+                                controller.initiatePayment(service.id.toString());
+                              } else {
+                                CustomSnackbar(
+                                  Get.context!,
+                                  title: "Error",
+                                  message: "Order ID missing",
+                                  isError: true,
+                                );
+                              }
+                            },
+                          );
+                        }),
                       ),
                       const Gap(8),
 

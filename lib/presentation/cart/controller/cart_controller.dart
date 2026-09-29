@@ -23,6 +23,9 @@ class CartController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isFetchingPending = false.obs;
 
+  // Track the specific order ID currently processing payment
+  RxString payingOrderId = ''.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -138,10 +141,14 @@ class CartController extends GetxController {
     }
   }
 
+  // --- Updated Initiate Payment ---
   Future<void> initiatePayment(String orderId) async {
-    isLoading.value = true;
+    payingOrderId.value = orderId; // Set loading ONLY for this order ID
     try {
       final token = AuthServices.getAccessToken();
+
+      // Convert orderId to int if possible, otherwise keep string
+      final dynamic parsedOrderId = int.tryParse(orderId) ?? orderId;
 
       final response = await http.post(
         Uri.parse(AppUrl.makePayment),
@@ -150,11 +157,14 @@ class CartController extends GetxController {
           'Authorization': 'Bearer $token',
         },
         body: jsonEncode({
-          'order_id': orderId,
+          'order_id': parsedOrderId,
         }),
       );
 
-      if (response.statusCode == 200) {
+      print("Payment Response Status: ${response.statusCode}");
+      print("Payment Response Body: ${response.body}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
 
         String? paymentUrl = data['url'] ?? data['GatewayPageURL'] ?? data['payment_session_url'];
@@ -169,15 +179,18 @@ class CartController extends GetxController {
             CustomSnackbar(Get.context!, title: "Failed", message: "Payment was cancelled or failed.", isError: true);
           }
         } else {
-          CustomSnackbar(Get.context!, title: "Error", message: "Could not retrieve payment URL from server.", isError: true);
+          CustomSnackbar(Get.context!, title: "Error", message: "Could not retrieve payment URL.", isError: true);
         }
       } else {
-        CustomSnackbar(Get.context!, title: "Failed", message: "Could not initiate payment.", isError: true);
+        final errorData = jsonDecode(response.body);
+        String errorMessage = errorData['detail'] ?? errorData['message'] ?? "Status code: ${response.statusCode}";
+        CustomSnackbar(Get.context!, title: "Payment Error", message: errorMessage, isError: true);
       }
     } catch (e) {
+      print("Payment Error: $e");
       CustomSnackbar(Get.context!, title: "Error", message: "Something went wrong with the payment.", isError: true);
     } finally {
-      isLoading.value = false;
+      payingOrderId.value = ''; // Reset payment loading state
     }
   }
 }
