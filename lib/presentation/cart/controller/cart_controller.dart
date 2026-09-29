@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:mye_commerce/presentation/cart/ui/widget/payment_web_view.dart';
 import '../../../core/config/app_url.dart';
 import '../../../global/custom_snackbar.dart';
 import '../../../local_db/auth_services.dart';
 import '../data/pending_service_model.dart';
+
 
 class CartController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -112,7 +114,6 @@ class CartController extends GetxController {
 
   Future<void> cancelServiceOrder(String orderId) async {
     try {
-      // ⚡ Optimistic UI Update: Instantly remove it matching by 'id'
       pendingServicesList.removeWhere((item) => item.id.toString() == orderId);
 
       final token = AuthServices.getAccessToken();
@@ -127,16 +128,60 @@ class CartController extends GetxController {
 
       if (response.statusCode == 200) {
         CustomSnackbar(Get.context!, title: "Success", message: "Order cancelled successfully.");
-        // Fetch to repopulate the cancel list with the newly cancelled item
         fetchPendingServices();
       } else {
-        // If API fails, fetch again to restore the item to the pending list
         fetchPendingServices();
         CustomSnackbar(Get.context!, title: "Failed", message: "Could not cancel order.", isError: true);
       }
     } catch (e) {
       fetchPendingServices();
       CustomSnackbar(Get.context!, title: "Error", message: "Something went wrong.", isError: true);
+    }
+  }
+
+  // --- NEW: Initiate SSLCommerz Payment ---
+  Future<void> initiatePayment(String orderId) async {
+    isLoading.value = true;
+    try {
+      final token = AuthServices.getAccessToken();
+
+      final response = await http.post(
+        Uri.parse(AppUrl.makePayment),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'order_id': orderId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        // Note: Change 'url' below if your API returns the link under a different key (like 'GatewayPageURL' or 'payment_url')
+        String? paymentUrl = data['url'] ?? data['GatewayPageURL'];
+
+        if (paymentUrl != null && paymentUrl.isNotEmpty) {
+          // Open the In-App WebView
+          final result = await Get.to(() => PaymentWebView(url: paymentUrl));
+
+          if (result == 'success') {
+            CustomSnackbar(Get.context!, title: "Success", message: "Payment completed successfully!");
+            fetchPendingServices(); // Refresh list to move it to complete
+          } else if (result == 'fail') {
+            CustomSnackbar(Get.context!, title: "Failed", message: "Payment was cancelled or failed.", isError: true);
+          }
+        } else {
+          CustomSnackbar(Get.context!, title: "Error", message: "Could not retrieve payment URL from server.", isError: true);
+        }
+      } else {
+        CustomSnackbar(Get.context!, title: "Failed", message: "Could not initiate payment.", isError: true);
+      }
+    } catch (e) {
+      CustomSnackbar(Get.context!, title: "Error", message: "Something went wrong with the payment.", isError: true);
+    } finally {
+      isLoading.value = false;
     }
   }
 }

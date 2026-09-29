@@ -209,14 +209,20 @@ class PendingServices extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: CustomButton(
-                          text: "Pay Now",
-                          backgroundColor: AppColor.primary,
-                          textColor: Colors.white,
-                          onPressed: () {
-                            // Implement Payment Logic
-                          },
-                        ),
+                        child: Obx(() => CustomButton(
+                          text: controller.isLoading.value ? "Loading..." : "Pay Now",
+                          backgroundColor: AppColor.drawerGradient1,
+                          textColor: AppColor.text,
+                          onPressed: (){
+                            controller.isLoading.value ? null : () {
+                              if (service.id != null) {
+                                controller.initiatePayment(service.id.toString());
+                              } else {
+                                CustomSnackbar(Get.context!, title: "Error", message: "Order ID missing", isError: true);
+                              }
+                            };
+                          }
+                        )),
                       ),
                       const Gap(8),
 

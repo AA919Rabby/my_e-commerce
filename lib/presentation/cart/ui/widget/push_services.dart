@@ -123,7 +123,15 @@ class PushServices extends StatelessWidget {
                 // Submit Button / Loader
                 Obx(() {
                   if (controller.isLoading.value) {
-                    return const Center(child: CustomText(text: "processing"));
+                    return CustomButton(
+                      text: "Processing",
+
+                      textColor: AppColor.text,
+                      onPressed: () {
+
+                      },
+                      backgroundColor: AppColor.drawerGradient1 ,
+                    );
                   }
 
                   // Uses the CustomButton with your preferred colors
