@@ -16,6 +16,10 @@ class AppUrl {
   static String get pendingServices => '$baseUrl/api/v1/services/order/history';
   static String cancelServices(String orderId) => '$baseUrl/api/v1/services/order/$orderId/cancel';
   static String get makePayment => '$baseUrl/api/v1/payment/initiate';
+
+  static String get userProfile => '$baseUrl/api/v1/profile';
+  static String get getProfile => '$baseUrl/api/v1/profile';
+
   //static String get addReview => '$baseUrl/api/v1/services/reviews';
   //static String get getReview => '$baseUrl/api/v1/services/1/reviews';
   static String get addReview => '$baseUrl/api/v1/services/reviews';
@@ -25,6 +29,10 @@ class AppUrl {
  //websockets
   static String get servicesWs => '${baseUrl.replaceFirst('https://', 'wss://').replaceFirst('http://', 'ws://')}/api/v1/services/ws';
   static String get slotsWs => '${baseUrl.replaceFirst('https://', 'wss://').replaceFirst('http://', 'ws://')}/api/v1/slots/ws';
+
+
+
+
 
   /// /
   //static String get registerOtpVerify => '$baseUrl/users/create';

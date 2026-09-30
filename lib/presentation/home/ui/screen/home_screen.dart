@@ -7,6 +7,7 @@ import 'package:mye_commerce/presentation/home/ui/widget/home_product.dart';
 import '../../../../core/theme/app_color.dart';
 import '../../../../global/custom_text.dart';
 import '../../../notificatioon/controller/notification_controller.dart';
+import '../../../profile/controller/profile_controller.dart';
 import '../../controller/home_controller.dart';
 import '../widget/home_search_bar.dart';
 
@@ -50,9 +51,10 @@ class HomeScreen extends StatelessWidget {
                           fontWeight: FontWeight.w500,
                         ),
                         const Gap(4),
+                        // Line 51 in HomeScreen:
                         Obx(
                               () => CustomText(
-                            text: homeController.userName.value,
+                            text: ProfileController.to.displayName,  // Shows combined First Name + Last Name from ProfileController!
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                             color: AppColor.black,

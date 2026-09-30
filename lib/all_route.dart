@@ -12,6 +12,7 @@ import 'package:mye_commerce/presentation/home/ui/screen/home_product_details_sc
 import 'package:mye_commerce/presentation/home/ui/widget/product_all_screen.dart';
 import 'package:mye_commerce/presentation/intro/ui/screen/intro_screen.dart';
 import 'package:mye_commerce/presentation/notificatioon/ui/screen/notification_screen.dart';
+import 'package:mye_commerce/presentation/profile/ui/screen/profile_screen.dart';
 import 'package:mye_commerce/presentation/profile/ui/screen/update_profile_screen.dart';
 
 import 'all_binding.dart';
@@ -25,6 +26,7 @@ class AllRoute {
   static const String enterNewPassword= '/enter-new-password';
   static const String bottomNav= '/bottom-nav';
   static const String productDetails= '/productDetails';
+  static const String myProfile= '/myProfile';
   static const String updateProfile= '/updateProfile';
   static const String notification= '/notification';
   static const String pushServices= '/pushServices';
@@ -87,13 +89,13 @@ class AllRoute {
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 600),
     ),
-    // GetPage(
-    //   name: updateProfile,
-    //   page: () => UpdateProfileScreen(),
-    //   binding: AllBinding(),
-    //   transition: Transition.cupertino,
-    //   transitionDuration: const Duration(milliseconds: 600),
-    // ),
+    GetPage(
+      name: updateProfile,
+      page: () => UpdateProfileScreen(),
+      binding: AllBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 600),
+    ),
     GetPage(
       name: notification,
       page: () => NotificationScreen(),
@@ -119,6 +121,13 @@ class AllRoute {
     GetPage(
       name: viewAll,
       page: () =>ProductAllScreen(), // Receives URL from arguments
+      binding: AllBinding(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 600),
+    ),
+    GetPage(
+      name: myProfile,
+      page: () =>ProfileScreen(), // Receives URL from arguments
       binding: AllBinding(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 600),

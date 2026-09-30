@@ -71,12 +71,12 @@ class WebSocketService extends GetxService {
         );
       }
 
-      // 2. Live Profile Update Event -> Reload Profile Data
-      // if (event == 'PROFILE_UPDATED') {
-      //   if (Get.isRegistered<ProfileController>()) {
-      //     Get.find<ProfileController>().fetchProfile();
-      //   }
-      // }
+    //  2. Live Profile Update Event -> Reload Profile Data
+      if (event == 'PROFILE_UPDATED') {
+        if (Get.isRegistered<ProfileController>()) {
+          Get.find<ProfileController>().fetchProfile();
+        }
+      }
 
       // 3. Orders, Payments, & Reviews Live Events
       if (Get.isRegistered<CartController>()) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// Make sure to import your AllRoute file here
-// import 'package:mye_commerce/routes/all_route.dart';
+import 'package:mye_commerce/local_db/auth_services.dart'; // Import AuthServices
+import 'package:mye_commerce/all_route.dart'; // Import your routes
 
 class IntroController extends GetxController with GetSingleTickerProviderStateMixin {
   late AnimationController animationController;
@@ -25,9 +25,19 @@ class IntroController extends GetxController with GetSingleTickerProviderStateMi
       ),
     );
 
-    // ADDED: 3 second timer to route to the login screen
+    // 3. Check login status after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
-      Get.offAllNamed('/login'); // Routes to login and removes IntroScreen from memory
+      final token = AuthServices.getAccessToken();
+
+      // If token exists and isn't empty, user is already logged in
+      if (token != null && token.isNotEmpty) {
+        // Route to your Bottom Navigation Screen
+        // Note: Make sure 'AllRoute.bottomNav' matches your exact variable name in all_route.dart
+        Get.offAllNamed(AllRoute.bottomNav);
+      } else {
+        // Not logged in, route to Login Screen
+        Get.offAllNamed(AllRoute.login);
+      }
     });
   }
 

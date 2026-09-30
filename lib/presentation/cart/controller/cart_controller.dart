@@ -297,7 +297,7 @@ class CartController extends GetxController {
             CustomSnackbar(
               Get.context!,
               title: "Failed",
-              message: "Payment was cancelled or failed.",
+              message: "Payment was cancelled or failed. ${response.body}",
               isError: true,
             );
           }

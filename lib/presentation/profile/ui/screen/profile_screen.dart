@@ -2,50 +2,197 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:get/get.dart';
-import 'package:mye_commerce/all_route.dart'; // Ensure AllRoute.updateProfile exists
 import 'package:mye_commerce/core/theme/app_color.dart';
-import 'package:mye_commerce/global/custom_button.dart';
+import 'package:mye_commerce/global/custom_loader.dart';
+import 'package:mye_commerce/global/custom_text.dart';
+import 'package:mye_commerce/presentation/profile/controller/profile_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: double.infinity,
-      width: double.infinity,
-      color: AppColor.text,
-      child: SafeArea(
-        child: Column(
-          children: [
-            const Gap(50),
-            Center(
-              child: Container(
-                height: 140.h,
-                width: 140.w,
-                decoration: BoxDecoration(
-                    color: AppColor.drawerGradient1.withOpacity(0.8), // Fixed syntax
-                    shape: BoxShape.circle
-                ),
-                child: const Icon(Icons.person, size: 70, color: Colors.white),
+    final ProfileController controller = Get.isRegistered<ProfileController>()
+        ? Get.find<ProfileController>()
+        : Get.put(ProfileController());
+
+    // Fetch live profile as soon as the screen builds
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchProfile();
+    });
+
+    return Scaffold(
+      backgroundColor: AppColor.text,
+      appBar: AppBar(
+        backgroundColor: AppColor.text,
+        scrolledUnderElevation: 0,
+        elevation: 0,
+        title: const CustomText(
+          text: "Profile",
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: AppColor.black,
+        ),
+        leading: InkWell(
+          onTap: () => Get.back(),
+          child: const Icon(Icons.arrow_back),
+        ),
+      ),
+      body: SafeArea(
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(child: CustomLoader());
+          }
+
+          return RefreshIndicator(
+            color: AppColor.drawerGradient1,
+            onRefresh: () => controller.fetchProfile(),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Gap(20),
+
+                  // ================= USER IMAGE =================
+                  Center(
+                    child: Container(
+                      height: 110.h,
+                      width: 110.w,
+                      decoration: BoxDecoration(
+                        color: AppColor.drawerGradient1.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColor.drawerGradient1,
+                          width: 2,
+                        ),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100.r),
+                        child: controller.displayImageUrl.isNotEmpty
+                            ? Image.network(
+                          controller.displayImageUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => Icon(
+                            Icons.person,
+                            size: 60.sp,
+                            color: AppColor.drawerGradient1,
+                          ),
+                        )
+                            : Icon(
+                          Icons.person,
+                          size: 60.sp,
+                          color: AppColor.drawerGradient1,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Gap(16),
+
+                  // ================= FULL NAME =================
+                  CustomText(
+                    text: controller.displayName,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColor.black,
+                  ),
+                  const Gap(6),
+
+                  // ================= REAL EMAIL ADDRESS =================
+                  CustomText(
+                    text: controller.displayEmail,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w400,
+                    color: AppColor.secondaryText,
+                  ),
+                  const Gap(8),
+
+                  // ================= MEMBER SINCE DATE =================
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+                    decoration: BoxDecoration(
+                      color: AppColor.drawerGradient1.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(20.r),
+                    ),
+                    child: CustomText(
+                      text: controller.memberSinceFormatted,
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColor.drawerGradient1,
+                    ),
+                  ),
+
+                  const Gap(30),
+
+                  // ================= TOTAL COMPLETED SERVICES CONTAINER =================
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(16.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16.r),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          spreadRadius: 2,
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: Colors.green.withOpacity(0.12),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.check_circle_outline,
+                                color: Colors.green,
+                                size: 24,
+                              ),
+                            ),
+                            const Gap(12),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: const [
+                                CustomText(
+                                  text: "Total Completed Services",
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColor.black,
+                                ),
+                                Gap(2),
+                                CustomText(
+                                  text: "Successfully finished",
+                                  fontSize: 12,
+                                  color: AppColor.secondaryText,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        CustomText(
+                          text: "${controller.totalCompletedServices}",
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const Gap(40),
+                ],
               ),
             ),
-            const Gap(40),
-
-            // Navigate to Update Profile Screen
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: CustomButton(
-                text: "Edit Profile",
-                backgroundColor: AppColor.drawerGradient1,
-                onPressed: () {
-                  // NAVIGATION USING Get.toNamed
-                  Get.toNamed(AllRoute.updateProfile);
-                }, textColor: AppColor.black,
-              ),
-            )
-          ],
-        ),
+          );
+        }),
       ),
     );
   }

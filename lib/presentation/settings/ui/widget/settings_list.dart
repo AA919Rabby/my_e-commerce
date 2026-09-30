@@ -55,7 +55,7 @@ class SettingsList extends StatelessWidget {
           color: textColor ?? AppColor.black,
         ),
         trailing: Icon(
-          Icons.arrow_forward_ios_rounded,
+          Icons.arrow_forward,
           size: 16.sp,
           color: isDanger ? AppColor.danger : AppColor.secondaryText,
         ),
@@ -126,7 +126,7 @@ class SettingsList extends StatelessWidget {
               CustomText(
                 text: content,
                 fontSize: 13,
-                color: AppColor.secondaryText,
+                color: AppColor.black.withValues(alpha: 0.5),
                 maxLines: 15,
               ),
               const Gap(20),
@@ -157,7 +157,7 @@ class SettingsList extends StatelessWidget {
           icon: Icons.person_outline_rounded,
           title: "Profile",
           onTap: () {
-            //Get.toNamed(AllRoute.profile);
+            Get.toNamed(AllRoute.myProfile);
           },
         ),
 

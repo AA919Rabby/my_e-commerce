@@ -127,7 +127,7 @@ class _CustomButtonState extends State<CustomButton> {
                 duration: const Duration(milliseconds: 150),
                 style: TextStyle(
                   color: widget.textColor,
-                  fontSize: 14.sp,
+                  fontSize: 15.sp,
                   fontWeight: FontWeight.w600,
                 ),
                 child: Text(widget.text),
