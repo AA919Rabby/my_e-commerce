@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/services.dart';
@@ -10,7 +11,7 @@ import 'package:mye_commerce/local_db/auth_services.dart';
 import '../data/notification_model.dart';
 
 class NotificationController extends GetxController {
-  // Makes sure the controller is permanent and always accessible anywhere in the app
+  // Permanent instance accessible anywhere in the app
   static NotificationController get to {
     if (Get.isRegistered<NotificationController>()) {
       return Get.find<NotificationController>();
@@ -28,7 +29,10 @@ class NotificationController extends GetxController {
   // Track notifications already shown to avoid duplicate popups
   final Set<String> _shownNotificationIds = <String>{};
 
-  // Badge count: dynamically counts only unread notifications (1, 2, ...)
+  // Timer for automatic periodic fetching in background
+  Timer? _pollingTimer;
+
+  // Badge count: dynamically counts unread notifications
   int get unreadCount => notifications.where((n) => !n.isRead).length;
 
   @override
@@ -36,15 +40,23 @@ class NotificationController extends GetxController {
     super.onInit();
     initLocalNotifications();
     fetchNotifications();
+
+    // Periodically fetch every 10 seconds to detect new notifications automatically
+    _pollingTimer = Timer.periodic(const Duration(seconds: 10), (_) {
+      fetchNotifications(isBackground: true);
+    });
   }
 
-  /// Initialize Flutter Local Notification and request permissions
-
+  @override
+  void onClose() {
+    _pollingTimer?.cancel();
+    super.onClose();
+  }
 
   /// Initialize Flutter Local Notification and register Channel on Android OS
   Future<void> initLocalNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+    AndroidInitializationSettings('@mipmap/launcher_icon');
 
     const DarwinInitializationSettings initializationSettingsDarwin =
     DarwinInitializationSettings(
@@ -66,7 +78,7 @@ class NotificationController extends GetxController {
       },
     );
 
-    // CRUCIAL FOR ANDROID: Explicitly create and register the high-importance channel with the OS
+    // Explicitly create and register high-importance channel with Android OS
     final androidImplementation = flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
@@ -75,12 +87,12 @@ class NotificationController extends GetxController {
       // 1. Request Android 13+ runtime permission
       await androidImplementation.requestNotificationsPermission();
 
-      // 2. Create the OS Channel
+      // 2. Create OS Channel (Using v2 to bypass cached OS channel settings)
       const AndroidNotificationChannel channel = AndroidNotificationChannel(
-        'high_importance_channel', // channel id
-        'High Importance Notifications', // channel name
+        'high_importance_channel_v2', // Updated Channel ID
+        'High Importance Notifications',
         description: 'This channel is used for important notification alerts.',
-        importance: Importance.max, // MUST be max for heads-up drop down!
+        importance: Importance.max, // MUST be max for heads-up banner
         playSound: true,
         enableVibration: true,
         showBadge: true,
@@ -109,13 +121,15 @@ class NotificationController extends GetxController {
     // Heads-up drop down notification configuration
     AndroidNotificationDetails androidNotificationDetails =
     AndroidNotificationDetails(
-      'high_importance_channel', // MUST match the channel ID created in initLocalNotifications
+      'high_importance_channel_v2', // MUST match initLocalNotifications channel ID
       'High Importance Notifications',
-      channelDescription: 'This channel is used for important notification alerts.',
+      channelDescription:
+      'This channel is used for important notification alerts.',
       importance: Importance.max,
       priority: Priority.high,
       playSound: true,
       enableVibration: true,
+      icon: '@mipmap/launcher_icon',
       largeIcon: largeIconBitmap,
       styleInformation: BigTextStyleInformation(
         body,
@@ -136,6 +150,7 @@ class NotificationController extends GetxController {
     );
 
     try {
+      // Fixed syntax error: parameters passed using named syntax
       await flutterLocalNotificationsPlugin.show(
         id: id,
         title: title,
@@ -149,11 +164,14 @@ class NotificationController extends GetxController {
     }
   }
 
+  Future<void> fetchNotifications({bool isBackground = false}) async {
+    if (!isBackground && notifications.isEmpty) {
+      isLoading.value = true;
+    }
 
-  Future<void> fetchNotifications() async {
-    isLoading.value = true;
     try {
       final token = AuthServices.getAccessToken();
+      if (token == null || token.isEmpty) return;
 
       final response = await http.get(
         Uri.parse(AppUrl.notification),
@@ -170,12 +188,12 @@ class NotificationController extends GetxController {
         List<NotificationModel> fetchedList =
         data.map((json) => NotificationModel.fromJson(json)).toList();
 
-        // Check for new incoming notifications and trigger local banner
+        // Check for new incoming notifications and trigger top banner
         for (var noti in fetchedList) {
           if (!_shownNotificationIds.contains(noti.id)) {
             _shownNotificationIds.add(noti.id);
 
-            // Pop up banner if unread
+            // Trigger top drop-down banner if unread
             if (!noti.isRead) {
               showLocalNotification(
                 id: noti.id.hashCode,
@@ -187,7 +205,7 @@ class NotificationController extends GetxController {
           }
         }
 
-        // assignAll() notifies GetX to rebuild the badge count immediately
+        // assignAll notifies GetX to update the badge count immediately
         notifications.assignAll(fetchedList);
       } else {
         log("Failed to load notifications: ${response.statusCode}");
@@ -195,7 +213,9 @@ class NotificationController extends GetxController {
     } catch (e) {
       log("Error fetching notifications: $e");
     } finally {
-      isLoading.value = false;
+      if (!isBackground) {
+        isLoading.value = false;
+      }
     }
   }
 
