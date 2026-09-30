@@ -97,7 +97,7 @@ class AuthController extends GetxController {
         final detailMsg = data["detail"] ?? "Email already exists.";
         CustomSnackbar(Get.context!, title: "Error", message: detailMsg, isError: true);
       } else {
-        CustomSnackbar(Get.context!, title: "Error", message: "Failed to create account.", isError: true);
+        CustomSnackbar(Get.context!, title: "Error", message: "Failed to create account. ${response.body} ${response.statusCode}", isError: true);
       }
     } catch (e) {
       log("Error in the register is: $e");
