@@ -100,7 +100,7 @@ class AuthController extends GetxController {
         CustomSnackbar(Get.context!, title: "Error", message: "Failed to create account.", isError: true);
       }
     } catch (e) {
-      log("Error in the register: $e");
+      log("Error in the register is: $e");
       CustomSnackbar(Get.context!, title: "Error", message: "Network connection error.", isError: true);
     } finally {
       isLoading.value = false;
