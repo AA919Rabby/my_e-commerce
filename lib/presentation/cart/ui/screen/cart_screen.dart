@@ -18,9 +18,10 @@ class CartScreen extends StatelessWidget {
           backgroundColor: AppColor.text,
           elevation: 0,
           scrolledUnderElevation: 0,
-           centerTitle: true, // Align title to the left
+
           title: const CustomText(
             text: "Orders",
+
             fontSize: 22,
             fontWeight: FontWeight.bold,
             color: AppColor.black,
