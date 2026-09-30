@@ -53,25 +53,14 @@ class WebSocketService extends GetxService {
       final Map<String, dynamic> data = jsonDecode(rawMessage);
       final String event = data['event'] ?? '';
 
-      // 1. Live Notification Event -> Instantly fetch & update UI badge + trigger drop-down banner
+      // 1. Live Notification Event -> Only trigger fetch!
+      // (NotificationController will handle the drop-down banner safely so it doesn't double trigger)
       if (event == 'NEW_NOTIFICATION') {
         final notiController = NotificationController.to;
         notiController.fetchNotifications();
-
-        // Also trigger the local drop-down notification banner directly from WS payload
-        final String title = data['title'] ?? 'Notification';
-        final String body = data['body'] ?? 'You have a new notification';
-        final int id = data['notification_id'] ?? DateTime.now().millisecondsSinceEpoch ~/ 1000;
-
-        notiController.showLocalNotification(
-          id: id,
-          title: title,
-          body: body,
-          payload: id.toString(),
-        );
       }
 
-    //  2. Live Profile Update Event -> Reload Profile Data
+      // 2. Live Profile Update Event -> Reload Profile Data
       if (event == 'PROFILE_UPDATED') {
         if (Get.isRegistered<ProfileController>()) {
           Get.find<ProfileController>().fetchProfile();

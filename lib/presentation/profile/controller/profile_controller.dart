@@ -57,7 +57,7 @@ class ProfileController extends GetxController {
     if (name != null && name.isNotEmpty) return name;
     final email = profile.value?.email?.trim();
     if (email != null && email.isNotEmpty) return email.split('@').first;
-    return "User";
+    return "User Name";
   }
 
   String get displayEmail {
@@ -115,10 +115,7 @@ class ProfileController extends GetxController {
     isLoading.value = true;
     try {
       final token = AuthServices.getAccessToken();
-      if (token == null || token.isEmpty) {
-        log("Cannot fetch profile: Token is null or empty");
-        return;
-      }
+      if (token == null || token.isEmpty) return;
 
       final response = await http.get(
         Uri.parse(AppUrl.userProfile),
@@ -150,6 +147,15 @@ class ProfileController extends GetxController {
   }
 
   Future<void> updateProfile() async {
+    if (profileImage.value == null) {
+      CustomSnackbar(
+        Get.context!,
+        title: "Error",
+        message: "Select a profile image.",
+        isError: true, // Assuming this triggers a warning/error style
+      );
+      return;
+    }
     if (!updateProfileFormKey.currentState!.validate()) {
       return;
     }
@@ -171,8 +177,11 @@ class ProfileController extends GetxController {
         "address": addressController.text.trim(),
       };
 
+      // Strip trailing slash cleanly
+      final url = Uri.parse(AppUrl.userProfile.replaceAll(RegExp(r'/$'), ''));
+
       final response = await http.put(
-        Uri.parse(AppUrl.userProfile),
+        url,
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -183,7 +192,7 @@ class ProfileController extends GetxController {
 
       log("Update Profile Response [${response.statusCode}]: ${response.body}");
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         profile.value = ProfileModel.fromJson(data);
 
@@ -194,23 +203,32 @@ class ProfileController extends GetxController {
         );
         Get.back();
       } else {
+        // ONLY SHOW FAILURE IF STATUS CODE IS NOT 200/201
         CustomSnackbar(
           Get.context!,
           title: "Failed",
-          message: "Could not update profile.",
+          message: "Could not update profile (${response.statusCode}).",
           isError: true,
         );
       }
     } catch (e) {
       log("Error updating profile: $e");
-      CustomSnackbar(
-        Get.context!,
-        title: "Error",
-        message: "Something went wrong.",
-        isError: true,
-      );
+      // If error happens, check if profile was actually updated in the background
+      await fetchProfile();
+      if (profile.value?.fullName == nameController.text.trim()) {
+        Get.back();
+      } else {
+        CustomSnackbar(
+          Get.context!,
+          title: "Error",
+          message: "Network error. Please try again.",
+          isError: true,
+        );
+      }
     } finally {
       isUpdating.value = false;
     }
   }
+
+
 }

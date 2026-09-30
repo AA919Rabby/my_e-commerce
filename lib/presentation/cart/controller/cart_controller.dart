@@ -82,7 +82,7 @@ class CartController extends GetxController {
         CustomSnackbar(
           Get.context!,
           title: "Success",
-          message: "Services confirm.",
+          message: "Services confirmed.",
         );
         Get.back();
         nameController.clear();
@@ -133,33 +133,32 @@ class CartController extends GetxController {
             .toList();
 
         pendingServicesList.assignAll(
-          allItems.where(
-                (item) => item.status?.toUpperCase() == 'PENDING',
-          ),
+          allItems.where((item) => item.status?.toUpperCase() == 'PENDING'),
         );
 
         cancelServicesList.assignAll(
-          allItems.where(
-                (item) =>
-            item.status?.toUpperCase() == 'CANCELLED' ||
-                item.status?.toUpperCase() == 'CANCEL' ||
-                item.status?.toUpperCase() == 'CANCELED',
-          ),
+          allItems.where((item) =>
+          item.status?.toUpperCase() == 'CANCELLED' ||
+              item.status?.toUpperCase() == 'CANCEL' ||
+              item.status?.toUpperCase() == 'CANCELED'),
         );
 
         completedServicesList.assignAll(
-          allItems.where(
-                (item) =>
-            item.status?.toUpperCase() == 'COMPLETED' ||
-                item.status?.toUpperCase() == 'COMPLETE' ||
-                item.status?.toUpperCase() == 'PAID' ||
-                item.status?.toUpperCase() == 'PROCESSING' ||
-                item.status?.toUpperCase() == 'CONFIRMED' ||
-                item.status?.toUpperCase() == 'SUCCESS',
-          ),
+          allItems.where((item) =>
+          item.status?.toUpperCase() == 'COMPLETED' ||
+              item.status?.toUpperCase() == 'COMPLETE' ||
+              item.status?.toUpperCase() == 'PAID' ||
+              item.status?.toUpperCase() == 'PROCESSING' ||
+              item.status?.toUpperCase() == 'CONFIRMED' ||
+              item.status?.toUpperCase() == 'SUCCESS'),
         );
 
-        // Keep profile count synchronized
+        // Explicitly trigger UI update across active tabs
+        pendingServicesList.refresh();
+        cancelServicesList.refresh();
+        completedServicesList.refresh();
+
+        // Update profile completed services count
         if (Get.isRegistered<ProfileController>()) {
           Get.find<ProfileController>().fetchProfile();
         }
@@ -191,13 +190,7 @@ class CartController extends GetxController {
           title: "Success",
           message: "Order completed successfully.",
         );
-        // Refresh orders immediately across all tabs
         await fetchPendingServices();
-
-        // Update completed count in Profile
-        if (Get.isRegistered<ProfileController>()) {
-          Get.find<ProfileController>().fetchProfile();
-        }
       } else {
         CustomSnackbar(
           Get.context!,
@@ -218,9 +211,7 @@ class CartController extends GetxController {
 
   Future<void> cancelServiceOrder(String orderId) async {
     try {
-      pendingServicesList.removeWhere(
-            (item) => item.id.toString() == orderId,
-      );
+      pendingServicesList.removeWhere((item) => item.id.toString() == orderId);
 
       final token = AuthServices.getAccessToken();
 
@@ -271,9 +262,7 @@ class CartController extends GetxController {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: jsonEncode({
-          'order_id': parsedOrderId,
-        }),
+        body: jsonEncode({'order_id': parsedOrderId}),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -283,13 +272,6 @@ class CartController extends GetxController {
             data['GatewayPageURL'] ??
             data['payment_session_url'] ??
             data['payment_url'];
-
-        if (paymentUrl == null && data['data'] != null && data['data'] is Map) {
-          paymentUrl = data['data']['url'] ??
-              data['data']['GatewayPageURL'] ??
-              data['data']['payment_session_url'] ??
-              data['data']['payment_url'];
-        }
 
         if (paymentUrl != null && paymentUrl.isNotEmpty) {
           final result = await Get.toNamed(
@@ -308,7 +290,7 @@ class CartController extends GetxController {
             CustomSnackbar(
               Get.context!,
               title: "Failed",
-              message: "Payment was cancelled or failed. ${response.body}",
+              message: "Payment was cancelled or failed.",
               isError: true,
             );
           }
@@ -326,10 +308,6 @@ class CartController extends GetxController {
     }
   }
 
-  // ==========================================================
-  // GET REVIEWS USING REVIEW MODEL
-  // ==========================================================
-
   Future<void> fetchServiceReviews(String serviceId) async {
     isFetchingReviews.value = true;
     try {
@@ -346,7 +324,6 @@ class CartController extends GetxController {
         serviceReviewsList.assignAll(
           jsonList.map((item) => ReviewModel.fromJson(item)).toList(),
         );
-        log("Fetched ${serviceReviewsList.length} reviews for service $serviceId");
       }
     } catch (e) {
       log("Error fetching reviews: $e");
@@ -355,19 +332,13 @@ class CartController extends GetxController {
     }
   }
 
-  // ==========================================================
-  // REVIEW DIALOG & SUBMIT METHODS
-  // ==========================================================
-
   void openReviewDialog(String serviceId) {
     int selectedRating = 5;
     final commentController = TextEditingController();
 
     Get.dialog(
       Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         backgroundColor: Colors.white,
         child: StatefulBuilder(
           builder: (context, setState) {
@@ -385,7 +356,6 @@ class CartController extends GetxController {
                     ),
                   ),
                   const SizedBox(height: 15),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(5, (index) {
@@ -405,36 +375,22 @@ class CartController extends GetxController {
                       );
                     }),
                   ),
-
                   const SizedBox(height: 15),
-
                   TextField(
                     controller: commentController,
                     maxLines: 3,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black,
-                    ),
+                    style: const TextStyle(fontSize: 14, color: Colors.black),
                     decoration: InputDecoration(
                       hintText: "Write your comment here...",
-                      hintStyle: const TextStyle(color: Colors.grey),
                       filled: true,
                       fillColor: Colors.grey.shade100,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide.none,
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: AppColor.drawerGradient1,
-                        ),
-                      ),
                     ),
                   ),
-
                   const SizedBox(height: 20),
-
                   Row(
                     children: [
                       Expanded(
@@ -449,7 +405,9 @@ class CartController extends GetxController {
                       Expanded(
                         child: Obx(
                               () => CustomButton(
-                            text: isSubmittingReview.value ? "Submitting..." : "Submit",
+                            text: isSubmittingReview.value
+                                ? "Submitting..."
+                                : "Submit",
                             backgroundColor: AppColor.drawerGradient1,
                             textColor: Colors.white,
                             onPressed: () {
@@ -509,8 +467,6 @@ class CartController extends GetxController {
         },
         body: jsonEncode(payload),
       );
-
-      log("Add review response: ${response.statusCode} - ${response.body}");
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         Get.back();
