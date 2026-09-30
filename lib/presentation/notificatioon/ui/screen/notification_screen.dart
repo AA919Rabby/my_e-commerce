@@ -9,7 +9,6 @@ import '../../controller/notification_controller.dart';
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
 
-  // Helper function to format the DateTime string dynamically
   String _formatDate(String? dateStr) {
     if (dateStr == null || dateStr.isEmpty) return '';
 
@@ -17,7 +16,6 @@ class NotificationScreen extends StatelessWidget {
       DateTime date = DateTime.parse(dateStr);
       DateTime now = DateTime.now();
 
-      // Remove time for pure date comparisons
       DateTime today = DateTime(now.year, now.month, now.day);
       DateTime notiDate = DateTime(date.year, date.month, date.day);
 
@@ -36,13 +34,11 @@ class NotificationScreen extends StatelessWidget {
       } else if (now.year - date.year == 1) {
         return 'Last year';
       } else {
-        // Fallback Specific Date format: DD/MM/YY (e.g., 26/9/24)
         String year = date.year.toString();
         String shortYear = year.length >= 2 ? year.substring(year.length - 2) : year;
         return '${date.day}/${date.month}/$shortYear';
       }
     } catch (e) {
-      // If the date string is invalid, return empty (or original string)
       return '';
     }
   }
@@ -172,7 +168,6 @@ class NotificationScreen extends StatelessWidget {
                                   ),
                                 ),
                                 const Gap(8),
-                                // HERE: Apply the formatting logic to the nullable createdAt string
                                 CustomText(
                                   text: _formatDate(noti.createdAt),
                                   fontSize: 11,

@@ -8,6 +8,7 @@ import '../../presentation/notificatioon/controller/notification_controller.dart
 import '../../presentation/profile/controller/profile_controller.dart';
 import '../core/config/app_url.dart';
 
+
 class WebSocketService extends GetxService {
   WebSocketChannel? _channel;
   bool isConnected = false;
@@ -52,19 +53,30 @@ class WebSocketService extends GetxService {
       final Map<String, dynamic> data = jsonDecode(rawMessage);
       final String event = data['event'] ?? '';
 
-      // 1. Live Notification Event -> Reload Notifications List
+      // 1. Live Notification Event -> Instantly fetch & update UI badge + trigger drop-down banner
       if (event == 'NEW_NOTIFICATION') {
-        if (Get.isRegistered<NotificationController>()) {
-          Get.find<NotificationController>().fetchNotifications();
-        }
+        final notiController = NotificationController.to;
+        notiController.fetchNotifications();
+
+        // Also trigger the local drop-down notification banner directly from WS payload
+        final String title = data['title'] ?? 'Notification';
+        final String body = data['body'] ?? 'You have a new notification';
+        final int id = data['notification_id'] ?? DateTime.now().millisecondsSinceEpoch ~/ 1000;
+
+        notiController.showLocalNotification(
+          id: id,
+          title: title,
+          body: body,
+          payload: id.toString(),
+        );
       }
 
       // 2. Live Profile Update Event -> Reload Profile Data
-      if (event == 'PROFILE_UPDATED') {
-        if (Get.isRegistered<ProfileController>()) {
-          //Get.find<ProfileController>().fetchProfile();
-        }
-      }
+      // if (event == 'PROFILE_UPDATED') {
+      //   if (Get.isRegistered<ProfileController>()) {
+      //     Get.find<ProfileController>().fetchProfile();
+      //   }
+      // }
 
       // 3. Orders, Payments, & Reviews Live Events
       if (Get.isRegistered<CartController>()) {

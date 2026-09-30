@@ -20,7 +20,6 @@ class HomeScreen extends StatelessWidget {
     return Container(
       height: double.infinity,
       width: double.infinity,
-      // Using AppColor.text (#F3F5FA) provides a beautiful light-mode background
       color: AppColor.text,
       child: SafeArea(
         bottom: false,
@@ -29,7 +28,6 @@ class HomeScreen extends StatelessWidget {
           backgroundColor: Colors.white,
           onRefresh: () async {
             await homeController.onRefreshHome();
-            // Optional: Also refresh notifications when pulling down
             NotificationController.to.fetchNotifications();
           },
           child: SingleChildScrollView(
@@ -38,9 +36,7 @@ class HomeScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // ==========================================================
-                // 1. TOP HEADER (GREETING & NOTIFICATION)
-                // ==========================================================
+                // 1. TOP HEADER (GREETING & NOTIFICATION BADGE)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -65,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                       ],
                     ),
 
-                    // Notification / Profile Icon Mockup
+                    // Notification Icon with dynamic badge count
                     Obx(() {
                       final count = NotificationController.to.unreadCount;
 
@@ -123,9 +119,7 @@ class HomeScreen extends StatelessWidget {
 
                 const Gap(10),
 
-                // ==========================================================
                 // 2. LOCATION PILL
-                // ==========================================================
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
@@ -161,9 +155,7 @@ class HomeScreen extends StatelessWidget {
 
                 const Gap(14),
 
-                // ==========================================================
                 // 3. SEARCH BAR
-                // ==========================================================
                 HomeSearchBar(
                   controller: homeController.searchController,
                   onChanged: (query) {
@@ -173,9 +165,7 @@ class HomeScreen extends StatelessWidget {
 
                 const Gap(13),
 
-                // ==========================================================
                 // 4. CATEGORIES SECTION
-                // ==========================================================
                 const CustomText(
                   text: "Categories",
                   fontSize: 18,
@@ -191,9 +181,7 @@ class HomeScreen extends StatelessWidget {
 
                 const Gap(15),
 
-                // ==========================================================
                 // 5. TODAY'S DEAL SECTION
-                // ==========================================================
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -204,7 +192,7 @@ class HomeScreen extends StatelessWidget {
                       color: AppColor.black,
                     ),
                     InkWell(
-                      onTap: (){
+                      onTap: () {
                         Get.toNamed(AllRoute.viewAll);
                       },
                       child: CustomText(
@@ -221,7 +209,7 @@ class HomeScreen extends StatelessWidget {
 
                 const HomeProduct(),
 
-                const Gap(30), // Bottom padding
+                const Gap(30),
               ],
             ),
           ),

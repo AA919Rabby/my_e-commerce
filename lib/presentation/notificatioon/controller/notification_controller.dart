@@ -10,7 +10,7 @@ import 'package:mye_commerce/local_db/auth_services.dart';
 import '../data/notification_model.dart';
 
 class NotificationController extends GetxController {
-  // Makes sure the controller is not deleted from memory when leaving the screen
+  // Makes sure the controller is permanent and always accessible anywhere in the app
   static NotificationController get to {
     if (Get.isRegistered<NotificationController>()) {
       return Get.find<NotificationController>();
@@ -82,7 +82,6 @@ class NotificationController extends GetxController {
   }) async {
     ByteArrayAndroidBitmap? largeIconBitmap;
     try {
-      // Load png image directly from your asset folder
       final ByteData byteData = await rootBundle.load('asset/toolbox.png');
       final Uint8List bytes = byteData.buffer.asUint8List();
       largeIconBitmap = ByteArrayAndroidBitmap(bytes);
@@ -90,14 +89,16 @@ class NotificationController extends GetxController {
       log("Error loading asset/toolbox.png: $e");
     }
 
-    // Creating channel with MAX importance so it drops down from top
+    // Creating channel with MAX importance so it drops down from top of the screen
     AndroidNotificationDetails androidNotificationDetails =
     AndroidNotificationDetails(
-      'high_importance_channel', // Channel ID
-      'High Importance Notifications', // Channel Name
+      'high_importance_channel',
+      'High Importance Notifications',
       channelDescription: 'Notifications alerts channel',
       importance: Importance.max,
       priority: Priority.high,
+      playSound: true,
+      enableVibration: true,
       largeIcon: largeIconBitmap,
       styleInformation: BigTextStyleInformation(
         body,
@@ -163,7 +164,7 @@ class NotificationController extends GetxController {
           }
         }
 
-        // FIX: assignAll() notifies the GetX UI to rebuild the badge count immediately
+        // assignAll() notifies GetX to rebuild the badge count immediately
         notifications.assignAll(fetchedList);
       } else {
         log("Failed to load notifications: ${response.statusCode}");
@@ -179,9 +180,8 @@ class NotificationController extends GetxController {
   void markAsRead(String id) async {
     int index = notifications.indexWhere((n) => n.id == id);
     if (index != -1 && !notifications[index].isRead) {
-      // Mark as read locally so badge immediately updates (e.g. 2 -> 1 -> 0)
       notifications[index] = notifications[index].copyWith(isRead: true);
-      notifications.refresh(); // Triggers UI update
+      notifications.refresh();
 
       try {
         final token = AuthServices.getAccessToken();
