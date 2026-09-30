@@ -11,7 +11,6 @@ import '../../../local_db/auth_services.dart';
 import '../data/profile_model.dart';
 
 class ProfileController extends GetxController {
-  // Static getter so other screens (like HomeScreen) can access it easily
   static ProfileController get to {
     if (Get.isRegistered<ProfileController>()) {
       return Get.find<ProfileController>();
@@ -50,10 +49,9 @@ class ProfileController extends GetxController {
   }
 
   // ==========================================
-  // GETTERS FOR THE UI (ALL LOGIC IS IN CONTROLLER)
+  // GETTERS FOR THE UI (NO LOGIC IN UI SCREEN)
   // ==========================================
 
-  // Combined First + Last Name (from profile model)
   String get displayName {
     final name = profile.value?.fullName?.trim();
     if (name != null && name.isNotEmpty) return name;
@@ -78,15 +76,17 @@ class ProfileController extends GetxController {
 
   String get memberSinceFormatted {
     final rawDate = profile.value?.createdAt;
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+
     if (rawDate == null || rawDate.isEmpty || rawDate == 'null') {
-      return "Member since 2026";
+      final now = DateTime.now();
+      return "Member since ${months[now.month - 1]} ${now.year}";
     }
     try {
       final date = DateTime.parse(rawDate);
-      const months = [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-      ];
       return "Member since ${months[date.month - 1]} ${date.year}";
     } catch (_) {
       return "Member since $rawDate";
@@ -115,12 +115,16 @@ class ProfileController extends GetxController {
     isLoading.value = true;
     try {
       final token = AuthServices.getAccessToken();
-      if (token == null || token.isEmpty) return;
+      if (token == null || token.isEmpty) {
+        log("Cannot fetch profile: Token is null or empty");
+        return;
+      }
 
       final response = await http.get(
         Uri.parse(AppUrl.userProfile),
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         },
       );
@@ -171,6 +175,7 @@ class ProfileController extends GetxController {
         Uri.parse(AppUrl.userProfile),
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         },
         body: jsonEncode(payload),

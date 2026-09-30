@@ -12,6 +12,7 @@ import '../../../local_db/auth_services.dart';
 import '../data/pending_service_model.dart';
 import '../../../core/theme/app_color.dart';
 import '../../home/data/review_model.dart';
+import '../../profile/controller/profile_controller.dart';
 
 class CartController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -26,7 +27,6 @@ class CartController extends GetxController {
   RxList<PendingService> cancelServicesList = <PendingService>[].obs;
   RxList<PendingService> completedServicesList = <PendingService>[].obs;
 
-  // Observable list of reviews parsed using ReviewModel
   RxList<ReviewModel> serviceReviewsList = <ReviewModel>[].obs;
   RxBool isFetchingReviews = false.obs;
 
@@ -91,7 +91,7 @@ class CartController extends GetxController {
         postcodeController.clear();
         phoneController.clear();
 
-        fetchPendingServices();
+        await fetchPendingServices();
       } else {
         CustomSnackbar(
           Get.context!,
@@ -158,6 +158,11 @@ class CartController extends GetxController {
                 item.status?.toUpperCase() == 'SUCCESS',
           ),
         );
+
+        // Keep profile count synchronized
+        if (Get.isRegistered<ProfileController>()) {
+          Get.find<ProfileController>().fetchProfile();
+        }
       } else {
         log("Failed to fetch pending services: ${response.statusCode}");
       }
@@ -186,7 +191,13 @@ class CartController extends GetxController {
           title: "Success",
           message: "Order completed successfully.",
         );
-        fetchPendingServices();
+        // Refresh orders immediately across all tabs
+        await fetchPendingServices();
+
+        // Update completed count in Profile
+        if (Get.isRegistered<ProfileController>()) {
+          Get.find<ProfileController>().fetchProfile();
+        }
       } else {
         CustomSnackbar(
           Get.context!,
@@ -227,9 +238,9 @@ class CartController extends GetxController {
           title: "Success",
           message: "Order cancelled successfully.",
         );
-        fetchPendingServices();
+        await fetchPendingServices();
       } else {
-        fetchPendingServices();
+        await fetchPendingServices();
         CustomSnackbar(
           Get.context!,
           title: "Failed",
@@ -238,7 +249,7 @@ class CartController extends GetxController {
         );
       }
     } catch (e) {
-      fetchPendingServices();
+      await fetchPendingServices();
       CustomSnackbar(
         Get.context!,
         title: "Error",
@@ -292,7 +303,7 @@ class CartController extends GetxController {
               title: "Success",
               message: "Payment completed successfully!",
             );
-            fetchPendingServices();
+            await fetchPendingServices();
           } else if (result == 'fail') {
             CustomSnackbar(
               Get.context!,
@@ -482,8 +493,6 @@ class CartController extends GetxController {
     isSubmittingReview.value = true;
     try {
       final token = AuthServices.getAccessToken();
-
-      // Ensure service_id is sent as an integer
       final int parsedServiceId = int.tryParse(serviceId) ?? 1;
 
       final payload = {
@@ -512,7 +521,6 @@ class CartController extends GetxController {
           message: "Review submitted successfully.",
         );
 
-        // Refresh reviews for this service
         fetchServiceReviews(serviceId);
       } else {
         final data = jsonDecode(response.body);
