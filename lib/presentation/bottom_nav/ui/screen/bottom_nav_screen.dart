@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:mye_commerce/presentation/cart/ui/screen/cart_screen.dart';
 import 'package:mye_commerce/presentation/home/ui/screen/home_screen.dart';
 import 'package:mye_commerce/presentation/profile/ui/screen/profile_screen.dart';
+import 'package:mye_commerce/presentation/settings/ui/screen/settings_screen.dart';
 import '../../../../core/theme/app_color.dart';
 import '../../../../global/custom_text.dart';
 import '../../controller/bottom_nav_controller.dart';
@@ -23,7 +24,7 @@ class BottomNavScreen extends StatelessWidget {
      // CartScreen(),
      // FavouriteScreen(),
       CartScreen(),
-
+      SettingsScreen()
       // const Center(child: Text("Home")),
       // const Center(child: Text("Cart")),
       // const Center(child: Text("Favourite")),

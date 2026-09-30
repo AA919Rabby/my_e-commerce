@@ -11,11 +11,9 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # build by specifying --build-name and --build-number, respectively.
 # In Android, build-name is used as versionName while build-number used as versionCode.
 # Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
-# Read more about iOS versioning at
-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-# In Windows, build-name is used as the major, minor, and patch parts
-# of the product and file versions while build-number is used as the build suffix.
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# In Windows, build-name is used as the major, minor, and patch parts of the
+# product and file versions while build-number will be used as the build suffix.
 version: 1.0.0+1
 
 environment:
@@ -48,6 +46,7 @@ dependencies:
   geocoding: ^4.0.0
   webview_flutter: ^4.14.1
   web_socket_channel: ^3.0.3
+  flutter_local_notifications: ^22.3.1
 
 
 dev_dependencies:
@@ -57,9 +56,9 @@ dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
+  # package.
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -75,18 +74,19 @@ flutter:
   # To add asset to your application, add an asset section, like this:
   assets:
     - .env
+    - asset/toolbox.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
   # For details regarding adding asset from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
+  # https://flutter.dev/to/font-from-package
 
   # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
+  # in this `flutter` section. Each entry in this list should have a
+  # `family` key with the font family name and a `fonts` key with a
+  # list given the asset and other descriptors for the font. For
   # example:
   # fonts:
   #   - family: Schyler
@@ -100,5 +100,12 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
+  # For details regarding fonts from package dependencies, see
+  # https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  remove_alpha_ios: true
+  image_path: "asset/toolbox.png"
+  min_sdk_android: 21

@@ -4,25 +4,62 @@ import 'package:get/get.dart';
 import 'package:mye_commerce/core/theme/app_color.dart';
 import 'package:mye_commerce/global/custom_loader.dart';
 import 'package:mye_commerce/global/custom_text.dart';
-
 import '../../controller/notification_controller.dart';
-
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
 
+  // Helper function to format the DateTime string dynamically
+  String _formatDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return '';
+
+    try {
+      DateTime date = DateTime.parse(dateStr);
+      DateTime now = DateTime.now();
+
+      // Remove time for pure date comparisons
+      DateTime today = DateTime(now.year, now.month, now.day);
+      DateTime notiDate = DateTime(date.year, date.month, date.day);
+
+      Duration diff = today.difference(notiDate);
+
+      if (diff.inDays == 0) {
+        return 'Today';
+      } else if (diff.inDays == 1) {
+        return 'Yesterday';
+      } else if (diff.inDays > 1 && diff.inDays <= 7) {
+        return 'This week';
+      } else if (now.year == date.year && now.month == date.month) {
+        return 'This month';
+      } else if (now.year == date.year) {
+        return 'This year';
+      } else if (now.year - date.year == 1) {
+        return 'Last year';
+      } else {
+        // Fallback Specific Date format: DD/MM/YY (e.g., 26/9/24)
+        String year = date.year.toString();
+        String shortYear = year.length >= 2 ? year.substring(year.length - 2) : year;
+        return '${date.day}/${date.month}/$shortYear';
+      }
+    } catch (e) {
+      // If the date string is invalid, return empty (or original string)
+      return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<NotificationController>();
+    final controller = NotificationController.to;
 
     return Scaffold(
       backgroundColor: AppColor.text,
       appBar: AppBar(
         leading: InkWell(
-            onTap: (){
-              Get.back();
-            },
-            child: Icon(Icons.arrow_back_outlined)),
+          onTap: () {
+            Get.back();
+          },
+          child: const Icon(Icons.arrow_back_outlined),
+        ),
         backgroundColor: AppColor.text,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -85,13 +122,15 @@ class NotificationScreen extends StatelessWidget {
                           ? Colors.transparent
                           : AppColor.drawerGradient1.withOpacity(0.5),
                     ),
-                    boxShadow: noti.isRead ? [
+                    boxShadow: noti.isRead
+                        ? [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.03),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       )
-                    ] : [],
+                    ]
+                        : [],
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,21 +144,41 @@ class NotificationScreen extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
-                          noti.isRead ? Icons.notifications_none_rounded : Icons.notifications_active_rounded,
-                          color: noti.isRead ? AppColor.secondaryText : AppColor.drawerGradient1,
+                          noti.isRead
+                              ? Icons.notifications_none_rounded
+                              : Icons.notifications_active_rounded,
+                          color: noti.isRead
+                              ? AppColor.secondaryText
+                              : AppColor.drawerGradient1,
                         ),
                       ),
                       const Gap(16),
-
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CustomText(
-                              text: noti.title,
-                              fontSize: 16,
-                              fontWeight: noti.isRead ? FontWeight.w600 : FontWeight.bold,
-                              color: AppColor.black,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: CustomText(
+                                    text: noti.title,
+                                    fontSize: 16,
+                                    fontWeight: noti.isRead
+                                        ? FontWeight.w600
+                                        : FontWeight.bold,
+                                    color: AppColor.black,
+                                  ),
+                                ),
+                                const Gap(8),
+                                // HERE: Apply the formatting logic to the nullable createdAt string
+                                CustomText(
+                                  text: _formatDate(noti.createdAt),
+                                  fontSize: 11,
+                                  color: AppColor.secondaryText,
+                                ),
+                              ],
                             ),
                             const Gap(6),
                             CustomText(
@@ -131,10 +190,9 @@ class NotificationScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-
                       if (!noti.isRead)
                         Container(
-                          margin: const EdgeInsets.only(top: 8),
+                          margin: const EdgeInsets.only(left: 8, top: 4),
                           width: 10,
                           height: 10,
                           decoration: const BoxDecoration(

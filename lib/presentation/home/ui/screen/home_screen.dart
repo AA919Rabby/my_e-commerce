@@ -6,6 +6,7 @@ import 'package:mye_commerce/presentation/home/ui/widget/home_categories.dart';
 import 'package:mye_commerce/presentation/home/ui/widget/home_product.dart';
 import '../../../../core/theme/app_color.dart';
 import '../../../../global/custom_text.dart';
+import '../../../notificatioon/controller/notification_controller.dart';
 import '../../controller/home_controller.dart';
 import '../widget/home_search_bar.dart';
 
@@ -28,6 +29,8 @@ class HomeScreen extends StatelessWidget {
           backgroundColor: Colors.white,
           onRefresh: () async {
             await homeController.onRefreshHome();
+            // Optional: Also refresh notifications when pulling down
+            NotificationController.to.fetchNotifications();
           },
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -63,30 +66,58 @@ class HomeScreen extends StatelessWidget {
                     ),
 
                     // Notification / Profile Icon Mockup
-                    InkWell(
-                      onTap: (){
-                        Get.toNamed(AllRoute.notification);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
+                    Obx(() {
+                      final count = NotificationController.to.unreadCount;
+
+                      return GestureDetector(
+                        onTap: () {
+                          Get.toNamed(AllRoute.notification);
+                        },
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.notifications_none_rounded,
+                                color: Colors.black87,
+                                size: 24,
+                              ),
                             ),
+                            if (count > 0)
+                              Positioned(
+                                right: 0,
+                                top: 0,
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 18,
+                                    minHeight: 18,
+                                  ),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      count > 9 ? '9+' : '$count',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
-                        child: const Icon(
-                          Icons.notifications_none_rounded,
-                          color: AppColor.black,
-                          size: 24,
-                        ),
-                      ),
-                    ),
+                      );
+                    })
                   ],
                 ),
 
