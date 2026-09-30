@@ -20,7 +20,6 @@ class ProfileController extends GetxController {
   }
 
   final updateProfileFormKey = GlobalKey<FormState>();
-
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
   final addressController = TextEditingController();
@@ -28,8 +27,11 @@ class ProfileController extends GetxController {
 
   Rx<ProfileModel?> profile = Rx<ProfileModel?>(null);
   Rx<File?> profileImage = Rx<File?>(null);
+
   RxBool isLoading = false.obs;
   RxBool isUpdating = false.obs;
+
+  RxInt localCompletedCount = 0.obs;
 
   final ImagePicker _picker = ImagePicker();
 
@@ -47,10 +49,6 @@ class ProfileController extends GetxController {
     photoUrlController.dispose();
     super.onClose();
   }
-
-  // ==========================================
-  // GETTERS FOR THE UI (NO LOGIC IN UI SCREEN)
-  // ==========================================
 
   String get displayName {
     final name = profile.value?.fullName?.trim();
@@ -71,6 +69,9 @@ class ProfileController extends GetxController {
   }
 
   int get totalCompletedServices {
+    if (localCompletedCount.value > 0) {
+      return localCompletedCount.value;
+    }
     return profile.value?.totalCompletedServices ?? 0;
   }
 
@@ -85,6 +86,7 @@ class ProfileController extends GetxController {
       final now = DateTime.now();
       return "Member since ${months[now.month - 1]} ${now.year}";
     }
+
     try {
       final date = DateTime.parse(rawDate);
       return "Member since ${months[date.month - 1]} ${date.year}";
@@ -92,10 +94,6 @@ class ProfileController extends GetxController {
       return "Member since $rawDate";
     }
   }
-
-  // ==========================================
-  // API CALLS
-  // ==========================================
 
   Future<void> pickImage(ImageSource source) async {
     try {
@@ -156,6 +154,7 @@ class ProfileController extends GetxController {
       );
       return;
     }
+
     if (!updateProfileFormKey.currentState!.validate()) {
       return;
     }
@@ -164,7 +163,6 @@ class ProfileController extends GetxController {
     try {
       final token = AuthServices.getAccessToken();
 
-      // If network URL is provided use it, otherwise keep existing picture URL so JSON does not send raw local file path
       final String? photoUrl = (photoUrlController.text.trim().isNotEmpty)
           ? photoUrlController.text.trim()
           : (profile.value?.profilePictureUrl ?? "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200");
@@ -199,7 +197,6 @@ class ProfileController extends GetxController {
         );
         Get.back();
       } else {
-        // ONLY SHOW FAILURE IF STATUS CODE IS NOT 200/201
         CustomSnackbar(
           Get.context!,
           title: "Failed",
@@ -219,6 +216,4 @@ class ProfileController extends GetxController {
       isUpdating.value = false;
     }
   }
-
-
 }

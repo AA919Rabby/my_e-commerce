@@ -6,6 +6,7 @@ import 'package:mye_commerce/core/theme/app_color.dart';
 import 'package:mye_commerce/global/custom_loader.dart';
 import 'package:mye_commerce/global/custom_text.dart';
 import 'package:mye_commerce/presentation/profile/controller/profile_controller.dart';
+import 'package:mye_commerce/presentation/cart/controller/cart_controller.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -16,9 +17,14 @@ class ProfileScreen extends StatelessWidget {
         ? Get.find<ProfileController>()
         : Get.put(ProfileController());
 
-    // Fetch live profile as soon as the screen builds
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchProfile();
+
+      if (Get.isRegistered<CartController>()) {
+        Get.find<CartController>().fetchPendingServices();
+      } else {
+        Get.put(CartController()).fetchPendingServices();
+      }
     });
 
     return Scaffold(
@@ -55,7 +61,6 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   const Gap(20),
 
-                  // ================= USER IMAGE =================
                   Center(
                     child: Container(
                       height: 110.h,
@@ -90,7 +95,6 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const Gap(16),
 
-                  // ================= FULL NAME =================
                   CustomText(
                     text: controller.displayName,
                     fontSize: 20.sp,
@@ -99,7 +103,6 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const Gap(6),
 
-                  // ================= REAL EMAIL ADDRESS =================
                   CustomText(
                     text: controller.displayEmail,
                     fontSize: 14.sp,
@@ -108,7 +111,6 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const Gap(8),
 
-                  // ================= MEMBER SINCE DATE =================
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
                     decoration: BoxDecoration(
@@ -125,7 +127,6 @@ class ProfileScreen extends StatelessWidget {
 
                   const Gap(30),
 
-                  // ================= TOTAL COMPLETED SERVICES CONTAINER =================
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.all(16.w),

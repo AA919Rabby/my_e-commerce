@@ -16,7 +16,6 @@ import '../../profile/controller/profile_controller.dart';
 
 class CartController extends GetxController {
   final formKey = GlobalKey<FormState>();
-
   final nameController = TextEditingController();
   final ageController = TextEditingController();
   final addressController = TextEditingController();
@@ -26,14 +25,12 @@ class CartController extends GetxController {
   RxList<PendingService> pendingServicesList = <PendingService>[].obs;
   RxList<PendingService> cancelServicesList = <PendingService>[].obs;
   RxList<PendingService> completedServicesList = <PendingService>[].obs;
-
   RxList<ReviewModel> serviceReviewsList = <ReviewModel>[].obs;
-  RxBool isFetchingReviews = false.obs;
 
+  RxBool isFetchingReviews = false.obs;
   RxBool isLoading = false.obs;
   RxBool isFetchingPending = false.obs;
   RxBool isSubmittingReview = false.obs;
-
   RxString payingOrderId = ''.obs;
 
   @override
@@ -58,8 +55,7 @@ class CartController extends GetxController {
     isLoading.value = true;
     try {
       final token = AuthServices.getAccessToken();
-      String fullAddress =
-          "${nameController.text.trim()}, ${addressController.text.trim()}, ${postcodeController.text.trim()}, ${ageController.text.trim()}";
+      String fullAddress = "${nameController.text.trim()}, ${addressController.text.trim()}, ${postcodeController.text.trim()}, ${ageController.text.trim()}";
 
       final int? parsedServiceId = int.tryParse(productId);
 
@@ -153,13 +149,13 @@ class CartController extends GetxController {
               item.status?.toUpperCase() == 'SUCCESS'),
         );
 
-        // Explicitly trigger UI update across active tabs
         pendingServicesList.refresh();
         cancelServicesList.refresh();
         completedServicesList.refresh();
 
-        // Update profile completed services count
+        // Pass the actual length of completed items to the ProfileController
         if (Get.isRegistered<ProfileController>()) {
+          Get.find<ProfileController>().localCompletedCount.value = completedServicesList.length;
           Get.find<ProfileController>().fetchProfile();
         }
       } else {
