@@ -39,6 +39,9 @@ class NotificationController extends GetxController {
   }
 
   /// Initialize Flutter Local Notification and request permissions
+
+
+  /// Initialize Flutter Local Notification and register Channel on Android OS
   Future<void> initLocalNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -59,21 +62,35 @@ class NotificationController extends GetxController {
     await flutterLocalNotificationsPlugin.initialize(
       settings: initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        // When notification pop-up banner is clicked, open NotificationScreen
         Get.toNamed(AllRoute.notification);
       },
     );
 
-    // Request Android 13+ Notification Permission
+    // CRUCIAL FOR ANDROID: Explicitly create and register the high-importance channel with the OS
     final androidImplementation = flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
+
     if (androidImplementation != null) {
+      // 1. Request Android 13+ runtime permission
       await androidImplementation.requestNotificationsPermission();
+
+      // 2. Create the OS Channel
+      const AndroidNotificationChannel channel = AndroidNotificationChannel(
+        'high_importance_channel', // channel id
+        'High Importance Notifications', // channel name
+        description: 'This channel is used for important notification alerts.',
+        importance: Importance.max, // MUST be max for heads-up drop down!
+        playSound: true,
+        enableVibration: true,
+        showBadge: true,
+      );
+
+      await androidImplementation.createNotificationChannel(channel);
     }
   }
 
-  /// Show Local Notification with Title, Description and asset/toolbox.png
+  /// Show Local Notification Banner that drops down from the top
   Future<void> showLocalNotification({
     required int id,
     required String title,
@@ -86,15 +103,15 @@ class NotificationController extends GetxController {
       final Uint8List bytes = byteData.buffer.asUint8List();
       largeIconBitmap = ByteArrayAndroidBitmap(bytes);
     } catch (e) {
-      log("Error loading asset/toolbox.png: $e");
+      log("Note: asset/toolbox.png not loaded, using default icon. Error: $e");
     }
 
-    // Creating channel with MAX importance so it drops down from top of the screen
+    // Heads-up drop down notification configuration
     AndroidNotificationDetails androidNotificationDetails =
     AndroidNotificationDetails(
-      'high_importance_channel',
+      'high_importance_channel', // MUST match the channel ID created in initLocalNotifications
       'High Importance Notifications',
-      channelDescription: 'Notifications alerts channel',
+      channelDescription: 'This channel is used for important notification alerts.',
       importance: Importance.max,
       priority: Priority.high,
       playSound: true,
@@ -118,14 +135,20 @@ class NotificationController extends GetxController {
       iOS: darwinNotificationDetails,
     );
 
-    await flutterLocalNotificationsPlugin.show(
-      id: id,
-      title: title,
-      body: body,
-      notificationDetails: notificationDetails,
-      payload: payload,
-    );
+    try {
+      await flutterLocalNotificationsPlugin.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: notificationDetails,
+        payload: payload,
+      );
+      log("🔔 Heads-up drop-down banner displayed: $title");
+    } catch (e) {
+      log("Error showing local notification banner: $e");
+    }
   }
+
 
   Future<void> fetchNotifications() async {
     isLoading.value = true;
