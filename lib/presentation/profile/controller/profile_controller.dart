@@ -147,12 +147,12 @@ class ProfileController extends GetxController {
   }
 
   Future<void> updateProfile() async {
-    if (profileImage.value == null) {
+    if (profileImage.value == null && (profile.value?.profilePictureUrl == null || profile.value!.profilePictureUrl!.isEmpty)) {
       CustomSnackbar(
         Get.context!,
         title: "Error",
         message: "Select a profile image.",
-        isError: true, // Assuming this triggers a warning/error style
+        isError: true,
       );
       return;
     }
@@ -164,11 +164,10 @@ class ProfileController extends GetxController {
     try {
       final token = AuthServices.getAccessToken();
 
-      final String? photoUrl = profileImage.value != null
-          ? profileImage.value!.path
-          : (photoUrlController.text.trim().isNotEmpty
+      // If network URL is provided use it, otherwise keep existing picture URL so JSON does not send raw local file path
+      final String? photoUrl = (photoUrlController.text.trim().isNotEmpty)
           ? photoUrlController.text.trim()
-          : null);
+          : (profile.value?.profilePictureUrl ?? "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200");
 
       final Map<String, dynamic> payload = {
         "full_name": nameController.text.trim(),
@@ -177,11 +176,8 @@ class ProfileController extends GetxController {
         "address": addressController.text.trim(),
       };
 
-      // Strip trailing slash cleanly
-      final url = Uri.parse(AppUrl.userProfile.replaceAll(RegExp(r'/$'), ''));
-
       final response = await http.put(
-        url,
+        Uri.parse(AppUrl.userProfile),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -207,24 +203,18 @@ class ProfileController extends GetxController {
         CustomSnackbar(
           Get.context!,
           title: "Failed",
-          message: "Could not update profile (${response.statusCode}).",
+          message: "Could not update profile (${response.body}) ${response.statusCode}.",
           isError: true,
         );
       }
     } catch (e) {
       log("Error updating profile: $e");
-      // If error happens, check if profile was actually updated in the background
-      await fetchProfile();
-      if (profile.value?.fullName == nameController.text.trim()) {
-        Get.back();
-      } else {
-        CustomSnackbar(
-          Get.context!,
-          title: "Error",
-          message: "Network error. Please try again.",
-          isError: true,
-        );
-      }
+      CustomSnackbar(
+        Get.context!,
+        title: "Error",
+        message: "Network error. Please try again.",
+        isError: true,
+      );
     } finally {
       isUpdating.value = false;
     }
