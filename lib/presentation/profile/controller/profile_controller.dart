@@ -11,6 +11,7 @@ import '../../../global/custom_snackbar.dart';
 import '../../../local_db/auth_services.dart';
 import '../data/profile_model.dart';
 
+
 class ProfileController extends GetxController {
   static ProfileController get to {
     if (Get.isRegistered<ProfileController>()) {

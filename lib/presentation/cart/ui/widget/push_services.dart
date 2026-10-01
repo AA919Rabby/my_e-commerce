@@ -19,8 +19,18 @@ class PushServices extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF121421),
       appBar: AppBar(
-        leading: InkWell(onTap: () { Get.back(); }, child: const Icon(Icons.arrow_back_outlined, color: Colors.white)),
-        title: const CustomText(text: "Book Service", fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+        leading: InkWell(
+          onTap: () {
+            Get.back();
+          },
+          child: const Icon(Icons.arrow_back_outlined, color: Colors.white),
+        ),
+        title: const CustomText(
+          text: "Book Service",
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -33,52 +43,108 @@ class PushServices extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CustomText(text: "Full Name", color: Colors.white, fontWeight: FontWeight.bold),
+                const CustomText(
+                  text: "Full Name",
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
                 const Gap(8),
                 CustomTextField(
                   controller: controller.nameController,
                   hintText: "Full Name",
-                  validator: (value) { if (value == null || value.isEmpty || value.length < 4) return "Required"; return null; },
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.length < 4)
+                      return "Required";
+                    return null;
+                  },
                 ),
                 const Gap(16),
-                const CustomText(text: "Age", color: Colors.white, fontWeight: FontWeight.bold),
+                const CustomText(
+                  text: "Age",
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
                 const Gap(8),
                 CustomTextField(
                   controller: controller.ageController,
                   hintText: "Age",
                   keyboardType: TextInputType.number,
-                  validator: (value) { if (value == null || value.isEmpty) return "Required"; final age = int.tryParse(value); if (age == null || age < 10) return "Minimum 10"; return null; },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) return "Required";
+                    final age = int.tryParse(value);
+                    if (age == null || age < 10) return "Minimum 10";
+                    return null;
+                  },
                 ),
                 const Gap(16),
-                const CustomText(text: "Address", color: Colors.white, fontWeight: FontWeight.bold),
+                const CustomText(
+                  text: "Address",
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
                 const Gap(8),
                 CustomTextField(
                   controller: controller.addressController,
                   hintText: "Street address",
-                  validator: (value) { if (value == null || value.isEmpty || value.length < 4) return "Required"; return null; },
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.length < 4)
+                      return "Required";
+                    return null;
+                  },
                 ),
                 const Gap(16),
-                const CustomText(text: "Postcode", color: Colors.white, fontWeight: FontWeight.bold),
+                const CustomText(
+                  text: "Postcode",
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
                 const Gap(8),
                 CustomTextField(
                   controller: controller.postcodeController,
                   hintText: "Postcode",
                   keyboardType: TextInputType.number,
-                  validator: (value) { if (value == null || value.isEmpty || value.length < 4) return "Required"; return null; },
+                  validator: (value) {
+                    if (value == null || value.isEmpty || value.length < 4)
+                      return "Required";
+                    return null;
+                  },
                 ),
                 const Gap(16),
-                const CustomText(text: "Phone Number", color: Colors.white, fontWeight: FontWeight.bold),
+                const CustomText(
+                  text: "Phone Number",
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
                 const Gap(8),
                 CustomTextField(
                   controller: controller.phoneController,
                   hintText: "Phone number",
                   keyboardType: TextInputType.phone,
-                  validator: (value) { if (value == null || value.isEmpty) return "Required"; final num = int.tryParse(value); if (num == null || num < 11) return "Minimum 11"; return null; },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) return "Required";
+                    final num = int.tryParse(value);
+                    if (num == null || num < 11) return "Minimum 11";
+                    return null;
+                  },
                 ),
                 const Gap(40),
                 Obx(() {
-                  if (controller.isLoading.value) { return CustomButton(text: "Processing...", textColor: Colors.white, onPressed: () {}, backgroundColor: AppColor.drawerGradient1 ); }
-                  return CustomButton(text: "Confirm Booking", textColor: Colors.white, onPressed: () { controller.submitServiceOrder(productId); }, backgroundColor: AppColor.drawerGradient1 );
+                  if (controller.isLoading.value) {
+                    return CustomButton(
+                      text: "Processing...",
+                      textColor: Colors.white,
+                      onPressed: () {},
+                      backgroundColor: AppColor.drawerGradient1,
+                    );
+                  }
+                  return CustomButton(
+                    text: "Confirm Booking",
+                    textColor: Colors.white,
+                    onPressed: () {
+                      controller.submitServiceOrder(productId);
+                    },
+                    backgroundColor: AppColor.drawerGradient1,
+                  );
                 }),
                 const Gap(20),
               ],

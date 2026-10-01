@@ -1,9 +1,12 @@
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_gap/flutter_gap.dart';
 import 'package:flutter_screenutil_plus/flutter_screenutil_plus.dart';
 import 'package:get/get.dart';
 import 'package:mye_commerce/all_route.dart';
 import 'package:mye_commerce/core/theme/app_color.dart';
+import 'package:mye_commerce/core/config/app_url.dart';
 import 'package:mye_commerce/global/custom_button.dart';
 import 'package:mye_commerce/global/custom_loader.dart';
 import 'package:mye_commerce/global/custom_text.dart';
@@ -37,6 +40,40 @@ class _HomeProductDetailsScreenState extends State<HomeProductDetailsScreen> {
     }
   }
 
+  // Helper to render reviewer profile picture (Supports Base64 & Network URLs)
+  Widget _buildReviewAvatar(String? profilePic) {
+    if (profilePic == null || profilePic.trim().isEmpty || profilePic.trim() == 'null') {
+      return Icon(Icons.person, size: 16.sp, color: AppColor.drawerGradient1);
+    }
+
+    try {
+      // 1. If Base64 string -> Render with Image.memory
+      if (profilePic.startsWith('data:image') || profilePic.length > 300) {
+        final cleanBase64 = profilePic.contains(',') ? profilePic.split(',').last : profilePic;
+        final Uint8List bytes = base64Decode(cleanBase64.trim());
+        return Image.memory(
+          bytes,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => Icon(Icons.person, size: 16.sp, color: AppColor.drawerGradient1),
+        );
+      }
+
+      // 2. If Network URL -> Render with Image.network
+      String finalUrl = profilePic.trim();
+      if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+        finalUrl = '${AppUrl.baseUrl}$finalUrl';
+      }
+
+      return Image.network(
+        finalUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => Icon(Icons.person, size: 16.sp, color: AppColor.drawerGradient1),
+      );
+    } catch (_) {
+      return Icon(Icons.person, size: 16.sp, color: AppColor.drawerGradient1);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +84,7 @@ class _HomeProductDetailsScreenState extends State<HomeProductDetailsScreen> {
         elevation: 0,
         leading: InkWell(
             onTap: () => Get.back(),
-            child: const Icon(Icons.arrow_back,color: AppColor.text,)),
+            child: const Icon(Icons.arrow_back, color: AppColor.text)),
         title: CustomText(
           text: product.title ?? "Service Details",
           fontSize: 16,
@@ -90,14 +127,14 @@ class _HomeProductDetailsScreenState extends State<HomeProductDetailsScreen> {
                   errorBuilder: (context, error, stackTrace) {
                     return Icon(
                       Icons.image_outlined,
-                      size: 60.sp,
+                      size: 60.r,
                       color: Colors.grey,
                     );
                   },
                 )
                     : Icon(
                   Icons.image_outlined,
-                  size: 60.sp,
+                  size: 60.r,
                   color: Colors.grey,
                 ),
               ),
@@ -280,7 +317,7 @@ class _HomeProductDetailsScreenState extends State<HomeProductDetailsScreen> {
             ),
             const Gap(22),
 
-            // 10. CUSTOMER REVIEWS (LIVE OBSERVABLE WITH OBX)
+            // 10. CUSTOMER REVIEWS
             CustomText(
               text: "Customer Reviews",
               fontSize: 16,
@@ -294,12 +331,11 @@ class _HomeProductDetailsScreenState extends State<HomeProductDetailsScreen> {
                 return Center(
                   child: Padding(
                     padding: EdgeInsets.all(20.0.r),
-                    child: CustomLoader(),
+                    child: const CustomLoader(),
                   ),
                 );
               }
 
-              // Use live fetched reviews if available, otherwise check product.reviews
               List<dynamic> displayReviews = [];
               if (cartController.serviceReviewsList.isNotEmpty) {
                 displayReviews = cartController.serviceReviewsList;
@@ -308,7 +344,7 @@ class _HomeProductDetailsScreenState extends State<HomeProductDetailsScreen> {
               }
 
               if (displayReviews.isEmpty) {
-                return CustomText(
+                return const CustomText(
                   text: "No reviews yet.",
                   fontSize: 13,
                   color: AppColor.secondaryText,
@@ -355,15 +391,17 @@ class _HomeProductDetailsScreenState extends State<HomeProductDetailsScreen> {
                       children: [
                         Row(
                           children: [
-                            CircleAvatar(
-                              radius: 14.r,
-                              backgroundColor: AppColor.drawerGradient1.withOpacity(0.15),
-                              backgroundImage: (profilePic != null && profilePic.isNotEmpty)
-                                  ? NetworkImage(profilePic)
-                                  : null,
-                              child: (profilePic == null || profilePic.isEmpty)
-                                  ? Icon(Icons.person, size: 16.sp, color: AppColor.drawerGradient1)
-                                  : null,
+                            Container(
+                              height: 28.r,
+                              width: 28.r,
+                              decoration: BoxDecoration(
+                                color: AppColor.drawerGradient1.withOpacity(0.15),
+                                shape: BoxShape.circle,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100.r),
+                                child: _buildReviewAvatar(profilePic),
+                              ),
                             ),
                             const Gap(8),
                             Expanded(
