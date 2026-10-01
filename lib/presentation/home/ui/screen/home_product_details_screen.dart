@@ -43,16 +43,16 @@ class _HomeProductDetailsScreenState extends State<HomeProductDetailsScreen> {
       backgroundColor: AppColor.text,
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColor.drawerGradient1,
         elevation: 0,
         leading: InkWell(
             onTap: () => Get.back(),
-            child: const Icon(Icons.arrow_back)),
+            child: const Icon(Icons.arrow_back,color: AppColor.text,)),
         title: CustomText(
           text: product.title ?? "Service Details",
           fontSize: 16,
           fontWeight: FontWeight.bold,
-          color: AppColor.black,
+          color: AppColor.text,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

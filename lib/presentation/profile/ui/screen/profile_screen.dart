@@ -63,18 +63,18 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColor.text,
       appBar: AppBar(
-        backgroundColor: AppColor.text,
+        backgroundColor: AppColor.drawerGradient1,
         scrolledUnderElevation: 0,
         elevation: 0,
         title: const CustomText(
           text: "Profile",
           fontSize: 22,
           fontWeight: FontWeight.bold,
-          color: AppColor.black,
+          color: AppColor.text,
         ),
         leading: InkWell(
           onTap: () => Get.back(),
-          child: const Icon(Icons.arrow_back),
+          child: const Icon(Icons.arrow_back,color: AppColor.text),
         ),
       ),
       body: SafeArea(

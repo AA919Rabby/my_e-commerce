@@ -15,16 +15,15 @@ class CartScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: AppColor.text,
         appBar: AppBar(
-          backgroundColor: AppColor.text,
+          backgroundColor: AppColor.drawerGradient1,
           elevation: 0,
           scrolledUnderElevation: 0,
 
           title: const CustomText(
             text: "Orders",
-
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: AppColor.black,
+            color: AppColor.text,
           ),
           bottom: const TabBar(
             dividerColor: Colors.transparent, // Removes the grey bottom underline

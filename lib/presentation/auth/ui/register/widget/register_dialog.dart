@@ -17,7 +17,8 @@ class RegisterDialog extends StatelessWidget {
     final authController = Get.find<AuthController>();
 
     return Dialog(
-      backgroundColor: Colors.transparent,
+      // backgroundColor: Colors.transparent,
+      backgroundColor: const Color(0xFF121421),
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
       child: Stack(
         alignment: Alignment.center,
@@ -51,10 +52,10 @@ class RegisterDialog extends StatelessWidget {
               height: 130,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColor.primary.withOpacity(0.35),
+                color: AppColor.primary.withValues(alpha: 0.35),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColor.primary.withOpacity(0.3),
+                    color: AppColor.primary.withValues(alpha: 0.3),
                     blurRadius: 80,
                   ),
                 ],

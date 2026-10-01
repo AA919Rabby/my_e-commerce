@@ -16,7 +16,8 @@ class RegisterScreen extends StatelessWidget {
     final authController = Get.find<AuthController>();
 
     return Scaffold(
-      backgroundColor: AppColor.background,
+      //backgroundColor: AppColor.background,
+      backgroundColor: const Color(0xFF121421),
       body: Stack(
         children: [
           // Ambient Glow Background Circles

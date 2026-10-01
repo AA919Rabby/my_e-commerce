@@ -171,7 +171,7 @@ class HomeProduct extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                       Icon(
-                        Icons.shopping_cart_outlined,
+                        Icons.home_repair_service_rounded,
                         color: AppColor.drawerGradient2,
                       ),
                     ],

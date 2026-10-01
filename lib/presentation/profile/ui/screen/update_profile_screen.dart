@@ -57,18 +57,18 @@ class UpdateProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColor.text,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColor.drawerGradient1,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: InkWell(
           onTap: () => Get.back(),
-          child: const Icon(Icons.arrow_back),
+          child:  Icon(Icons.arrow_back,color:AppColor.text,),
         ),
         title: const CustomText(
           text: "Update Profile",
-          fontSize: 18,
+          fontSize: 20,
           fontWeight: FontWeight.bold,
-          color: AppColor.black,
+          color: AppColor.text,
         ),
       ),
       body: SingleChildScrollView(

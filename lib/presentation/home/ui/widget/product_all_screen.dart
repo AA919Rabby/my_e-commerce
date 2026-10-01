@@ -21,13 +21,14 @@ class ProductAllScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
+        backgroundColor: AppColor.drawerGradient1,
         elevation: 0,
         scrolledUnderElevation: 0,
         leading: InkWell(
            onTap: (){
              Get.back();
            },
-            child: Icon(Icons.arrow_back)),
+            child: Icon(Icons.arrow_back,color: AppColor.text,)),
       ),
       body: Obx(() {
         if (homeController.isLoading2.value) {
@@ -163,7 +164,7 @@ class ProductAllScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                         Icon(
-                          Icons.shopping_cart_outlined,
+                          Icons.home_repair_service_rounded,
                           color: AppColor.drawerGradient2,
                         ),
                       ],

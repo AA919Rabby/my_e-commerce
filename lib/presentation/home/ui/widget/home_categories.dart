@@ -20,23 +20,22 @@ class HomeCategories extends StatelessWidget {
       final String selectedId = controller.selectedCategoryId.value;
 
       return SizedBox(
-        height: 67.h,
+        height: 82.h,
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: 2.w),
           itemCount: categories.length + 1,
           separatorBuilder: (context, index) {
-            return const Gap(12);
+            return Gap(14.w);
           },
           itemBuilder: (context, index) {
-            // ALL - MANUAL CATEGORY
             if (index == 0) {
               final bool isSelected = selectedId == 'All';
 
               return _CategoryItem(
                 title: 'All',
-                icon: Icons.shopify_outlined,
+                icon: Icons.apps_rounded,
                 isSelected: isSelected,
                 onTap: () {
                   controller.selectCategory('All');
@@ -44,11 +43,8 @@ class HomeCategories extends StatelessWidget {
               );
             }
 
-            // API CATEGORY
             final Result category = categories[index - 1];
 
-            // Note: If your API filters categories by their ID instead of their Name,
-            // you might need to change this to: `category.id?.toString() ?? ''`
             final String categoryId = category.name ?? '';
             final bool isSelected = selectedId == categoryId;
 
@@ -73,8 +69,7 @@ class HomeCategories extends StatelessWidget {
       return Icons.content_cut_rounded;
     }
 
-    if (value.contains('makeup') ||
-        value.contains('beauty')) {
+    if (value.contains('makeup') || value.contains('beauty')) {
       return Icons.face_retouching_natural;
     }
 
@@ -90,9 +85,6 @@ class HomeCategories extends StatelessWidget {
   }
 }
 
-// ============================================================================
-// CATEGORY ITEM
-// ============================================================================
 class _CategoryItem extends StatelessWidget {
   final String title;
   final IconData icon;
@@ -109,50 +101,56 @@ class _CategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      child: AnimatedContainer(
-        padding: EdgeInsets.all(2.sp),
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeInOut,
-        width: 67.w,
-        height: 67.h,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: isSelected ? AppColor.drawerGradient1 : Colors.white,
-          border: Border.all(
-            color: isSelected
-                ? AppColor.drawerGradient1
-                : AppColor.drawerGradient1.withOpacity(0.30),
-            width: isSelected ? 2 : 1,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: isSelected
-                  ? AppColor.drawerGradient1.withOpacity(0.35)
-                  : Colors.black.withOpacity(0.06),
-              blurRadius: isSelected ? 12 : 5,
-              spreadRadius: isSelected ? 1 : 0,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
+      child: SizedBox(
+        width: 68.w,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Icon(
-              icon,
-              size: 25,
-              color: isSelected ? Colors.white : AppColor.drawerGradient1,
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeOut,
+              height: 52.h,
+              width: 52.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isSelected
+                    ? AppColor.drawerGradient1
+                    : Colors.white,
+                border: Border.all(
+                  color: isSelected
+                      ? AppColor.drawerGradient1
+                      : AppColor.drawerGradient1.withOpacity(0.18),
+                  width: 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: isSelected
+                        ? AppColor.drawerGradient1.withOpacity(0.20)
+                        : Colors.black.withOpacity(0.05),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Icon(
+                icon,
+                size: 21.sp,
+                color: isSelected
+                    ? Colors.white
+                    : AppColor.drawerGradient1,
+              ),
             ),
-            const Gap(5),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+
+            Gap(5.h),
+
+            SizedBox(
+              width: 68.w,
               child: CustomText(
                 text: title,
-                fontSize: 10,
+                fontSize: 9.sp,
                 fontWeight: FontWeight.w600,
-                color: isSelected ? Colors.white : AppColor.black,
+                color: AppColor.black,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
