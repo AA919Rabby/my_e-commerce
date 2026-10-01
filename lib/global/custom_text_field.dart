@@ -87,7 +87,7 @@ class CustomTextField extends StatelessWidget {
           child: Text(
             icon,
             style: TextStyle(
-              fontSize: 12.sp,
+              fontSize: 14.sp,
               color: hintColor ?? Colors.grey,
             ),
           ),
@@ -119,7 +119,7 @@ class CustomTextField extends StatelessWidget {
       autocorrect: autocorrect,
       enableSuggestions: enableSuggestions,
       style: TextStyle(
-        fontSize: fontSize ?? 12.sp,
+        fontSize: fontSize ?? 14.sp,
         fontWeight: fontWeight ?? FontWeight.w400,
         color: textColor ?? Colors.black,
       ),
@@ -130,11 +130,11 @@ class CustomTextField extends StatelessWidget {
         filled: filled,
         fillColor: fillColor ?? Colors.grey.shade100,
         hintStyle: TextStyle(
-          fontSize: fontSize ?? 12.sp,
+          fontSize: fontSize ?? 14.sp,
           color: hintColor ?? Colors.grey,
         ),
         labelStyle: TextStyle(
-          fontSize: fontSize ?? 12.sp,
+          fontSize: fontSize ?? 14.sp,
           color: hintColor ?? Colors.grey,
         ),
         prefixIcon: _buildIcon(prefixIcon),
