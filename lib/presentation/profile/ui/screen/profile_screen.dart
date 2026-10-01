@@ -8,9 +8,41 @@ import 'package:mye_commerce/global/custom_text.dart';
 import 'package:mye_commerce/presentation/profile/controller/profile_controller.dart';
 import 'package:mye_commerce/presentation/cart/controller/cart_controller.dart';
 
-
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
+
+  Widget _buildProfileAvatar(ProfileController controller) {
+    final bytes = controller.memoryImageBytes;
+    final imageUrl = controller.displayImageUrl;
+
+    if (bytes != null) {
+      return Image.memory(
+        bytes,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => Icon(
+          Icons.person,
+          size: 60.sp,
+          color: AppColor.drawerGradient1,
+        ),
+      );
+    } else if (imageUrl.isNotEmpty && imageUrl.startsWith('http')) {
+      return Image.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => Icon(
+          Icons.person,
+          size: 60.sp,
+          color: AppColor.drawerGradient1,
+        ),
+      );
+    }
+
+    return Icon(
+      Icons.person,
+      size: 60.sp,
+      color: AppColor.drawerGradient1,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +94,7 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   const Gap(20),
 
+                  // ================= USER IMAGE (BASE64 + NETWORK SUPPORT) =================
                   Center(
                     child: Container(
                       height: 110.h,
@@ -76,21 +109,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(100.r),
-                        child: controller.displayImageUrl.isNotEmpty
-                            ? Image.network(
-                          controller.displayImageUrl,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Icon(
-                            Icons.person,
-                            size: 60.sp,
-                            color: AppColor.drawerGradient1,
-                          ),
-                        )
-                            : Icon(
-                          Icons.person,
-                          size: 60.sp,
-                          color: AppColor.drawerGradient1,
-                        ),
+                        child: _buildProfileAvatar(controller),
                       ),
                     ),
                   ),

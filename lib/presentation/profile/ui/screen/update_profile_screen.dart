@@ -12,6 +12,42 @@ import 'package:mye_commerce/presentation/profile/controller/profile_controller.
 class UpdateProfileScreen extends StatelessWidget {
   const UpdateProfileScreen({super.key});
 
+  Widget _buildAvatarWidget(ProfileController controller) {
+    if (controller.profileImage.value != null) {
+      return Image.file(
+        controller.profileImage.value!,
+        fit: BoxFit.cover,
+      );
+    }
+
+    final bytes = controller.memoryImageBytes;
+    if (bytes != null) {
+      return Image.memory(
+        bytes,
+        fit: BoxFit.cover,
+      );
+    }
+
+    final imageUrl = controller.displayImageUrl;
+    if (imageUrl.isNotEmpty && imageUrl.startsWith('http')) {
+      return Image.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => Icon(
+          Icons.person,
+          size: 60.sp,
+          color: AppColor.drawerGradient1,
+        ),
+      );
+    }
+
+    return Icon(
+      Icons.person,
+      size: 60.sp,
+      color: AppColor.drawerGradient1,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final ProfileController controller = Get.isRegistered<ProfileController>()
@@ -44,6 +80,7 @@ class UpdateProfileScreen extends StatelessWidget {
             children: [
               const Gap(20),
 
+              // ================= IMAGE PICKER SECTION =================
               Center(
                 child: GestureDetector(
                   onTap: () {
@@ -54,7 +91,6 @@ class UpdateProfileScreen extends StatelessWidget {
                     );
                   },
                   child: Obx(() {
-                    final networkUrl = controller.displayImageUrl;
                     return Stack(
                       alignment: Alignment.bottomRight,
                       children: [
@@ -71,26 +107,7 @@ class UpdateProfileScreen extends StatelessWidget {
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(100.r),
-                            child: controller.profileImage.value != null
-                                ? Image.file(
-                              controller.profileImage.value!,
-                              fit: BoxFit.cover,
-                            )
-                                : (networkUrl.isNotEmpty
-                                ? Image.network(
-                              networkUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Icon(
-                                Icons.person,
-                                size: 60.sp,
-                                color: AppColor.drawerGradient1,
-                              ),
-                            )
-                                : Icon(
-                              Icons.person,
-                              size: 60.sp,
-                              color: AppColor.drawerGradient1,
-                            )),
+                            child: _buildAvatarWidget(controller),
                           ),
                         ),
                         Container(

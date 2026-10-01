@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -28,9 +29,11 @@ class ProfileController extends GetxController {
   Rx<ProfileModel?> profile = Rx<ProfileModel?>(null);
   Rx<File?> profileImage = Rx<File?>(null);
 
+  // Holds Base64 string of the selected image
+  RxString base64ImageString = ''.obs;
+
   RxBool isLoading = false.obs;
   RxBool isUpdating = false.obs;
-
   RxInt localCompletedCount = 0.obs;
 
   final ImagePicker _picker = ImagePicker();
@@ -65,13 +68,23 @@ class ProfileController extends GetxController {
   }
 
   String get displayImageUrl {
-    String rawUrl = profile.value?.profilePictureUrl?.trim() ?? '';
-    if (rawUrl.isEmpty || rawUrl == 'null') return '';
+    return profile.value?.profilePictureUrl?.trim() ?? '';
+  }
 
-    if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
-      return '${AppUrl.baseUrl}$rawUrl';
+  // Decodes raw Base64 string for memory rendering
+  Uint8List? get memoryImageBytes {
+    final raw = displayImageUrl;
+    if (raw.isEmpty || raw == 'null') return null;
+    try {
+      if (raw.startsWith('data:image')) {
+        final cleanBase64 = raw.split(',').last;
+        return base64Decode(cleanBase64);
+      }
+      // If pure base64 without prefix
+      return base64Decode(raw);
+    } catch (_) {
+      return null;
     }
-    return rawUrl;
   }
 
   int get totalCompletedServices {
@@ -101,14 +114,21 @@ class ProfileController extends GetxController {
     }
   }
 
+  // Converts selected image to compressed Base64 format
   Future<void> pickImage(ImageSource source) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
         source: source,
-        imageQuality: 80,
+        imageQuality: 50, // Keep compressed so database string stays light
+        maxWidth: 400,
+        maxHeight: 400,
       );
       if (pickedFile != null) {
         profileImage.value = File(pickedFile.path);
+
+        // Convert to Base64 String
+        final bytes = await pickedFile.readAsBytes();
+        base64ImageString.value = "data:image/jpeg;base64,${base64Encode(bytes)}";
       }
     } catch (e) {
       log("Error picking image: $e");
@@ -121,8 +141,10 @@ class ProfileController extends GetxController {
       final token = AuthServices.getAccessToken();
       if (token == null || token.isEmpty) return;
 
+      final safeUrl = AppUrl.userProfile.replaceAll(RegExp(r'/$'), '');
+
       final response = await http.get(
-        Uri.parse(AppUrl.userProfile),
+        Uri.parse(safeUrl),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -150,7 +172,6 @@ class ProfileController extends GetxController {
     }
   }
 
-
   Future<void> updateProfile() async {
     if (!updateProfileFormKey.currentState!.validate()) {
       return;
@@ -160,19 +181,27 @@ class ProfileController extends GetxController {
     try {
       final token = AuthServices.getAccessToken();
 
-      // If you are using a network URL string in photoUrlController (not a local File), use it.
-      // If you have local file logic, ensure the backend gives you a URL back to save.
-      final String photoUrl = photoUrlController.text.trim();
+      // Use newly selected base64 image, or keep existing profile picture
+      String finalPhotoUrl = '';
+      if (base64ImageString.value.isNotEmpty) {
+        finalPhotoUrl = base64ImageString.value;
+      } else if (photoUrlController.text.trim().isNotEmpty) {
+        finalPhotoUrl = photoUrlController.text.trim();
+      } else if (profile.value?.profilePictureUrl != null && profile.value!.profilePictureUrl!.isNotEmpty) {
+        finalPhotoUrl = profile.value!.profilePictureUrl!;
+      }
 
       final Map<String, dynamic> payload = {
         "full_name": nameController.text.trim(),
         "phone_number": phoneController.text.trim(),
-        "profile_picture_url": photoUrl, // Send the URL string
+        "profile_picture_url": finalPhotoUrl,
         "address": addressController.text.trim(),
       };
 
+      final safeUrl = AppUrl.userProfile.replaceAll(RegExp(r'/$'), '');
+
       final response = await http.put(
-        Uri.parse(AppUrl.userProfile),
+        Uri.parse(safeUrl),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -187,17 +216,22 @@ class ProfileController extends GetxController {
         final Map<String, dynamic> data = jsonDecode(response.body);
         profile.value = ProfileModel.fromJson(data);
 
+        // Reset temporary file picker state
+        profileImage.value = null;
+        base64ImageString.value = '';
+
         CustomSnackbar(
           Get.context!,
           title: "Success",
           message: "Profile updated successfully!",
         );
         Get.back();
+        await fetchProfile();
       } else {
         CustomSnackbar(
           Get.context!,
           title: "Failed",
-          message: "Server error: ${response.statusCode}",
+          message: "Could not update profile (${response.statusCode}).",
           isError: true,
         );
       }
@@ -206,57 +240,11 @@ class ProfileController extends GetxController {
       CustomSnackbar(
         Get.context!,
         title: "Error",
-        message: "Something went wrong.",
+        message: "Network error. Please try again.",
         isError: true,
       );
     } finally {
       isUpdating.value = false;
-    }
-  }
-
-
-  Future<void> _updateProfileJson(String? token) async {
-    final String? photoUrl = (photoUrlController.text.trim().isNotEmpty)
-        ? photoUrlController.text.trim()
-        : (profile.value?.profilePictureUrl ?? "");
-
-    final Map<String, dynamic> payload = {
-      "full_name": nameController.text.trim(),
-      "phone_number": phoneController.text.trim(),
-      "profile_picture_url": photoUrl,
-      "address": addressController.text.trim(),
-    };
-
-    final response = await http.put(
-      Uri.parse(AppUrl.userProfile),
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(payload),
-    );
-
-    log("Update Profile (JSON) Response [${response.statusCode}]: ${response.body}");
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      profile.value = ProfileModel.fromJson(data);
-
-      CustomSnackbar(
-        Get.context!,
-        title: "Success",
-        message: "Profile updated successfully!",
-      );
-      Get.back();
-      await fetchProfile();
-    } else {
-      CustomSnackbar(
-        Get.context!,
-        title: "Failed",
-        message: "Could not update profile (${response.statusCode}).",
-        isError: true,
-      );
     }
   }
 }
