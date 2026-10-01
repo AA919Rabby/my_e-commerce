@@ -9,8 +9,6 @@ import 'package:mye_commerce/global/custom_text.dart';
 import 'package:mye_commerce/global/custom_text_field.dart';
 import 'package:mye_commerce/presentation/profile/controller/profile_controller.dart';
 
-
-
 class UpdateProfileScreen extends StatelessWidget {
   const UpdateProfileScreen({super.key});
 
@@ -36,7 +34,6 @@ class UpdateProfileScreen extends StatelessWidget {
           fontWeight: FontWeight.bold,
           color: AppColor.black,
         ),
-
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
@@ -47,7 +44,6 @@ class UpdateProfileScreen extends StatelessWidget {
             children: [
               const Gap(20),
 
-              // ================= IMAGE PICKER SECTION =================
               Center(
                 child: GestureDetector(
                   onTap: () {
@@ -58,7 +54,7 @@ class UpdateProfileScreen extends StatelessWidget {
                     );
                   },
                   child: Obx(() {
-                    final networkUrl = controller.profile.value?.profilePictureUrl ?? '';
+                    final networkUrl = controller.displayImageUrl;
                     return Stack(
                       alignment: Alignment.bottomRight,
                       children: [
@@ -113,7 +109,6 @@ class UpdateProfileScreen extends StatelessWidget {
               ),
               const Gap(30),
 
-              // ================= FULL NAME WITH FORM VALIDATION =================
               const CustomText(
                 text: "Full Name",
                 fontSize: 14,
@@ -140,7 +135,6 @@ class UpdateProfileScreen extends StatelessWidget {
               ),
               const Gap(20),
 
-              // ================= PHONE NUMBER WITH FORM VALIDATION =================
               const CustomText(
                 text: "Phone Number",
                 fontSize: 14,
@@ -168,7 +162,6 @@ class UpdateProfileScreen extends StatelessWidget {
               ),
               const Gap(20),
 
-              // ================= ADDRESS WITH FORM VALIDATION =================
               const CustomText(
                 text: "Address",
                 fontSize: 14,
@@ -196,7 +189,6 @@ class UpdateProfileScreen extends StatelessWidget {
 
               const Gap(40),
 
-              // ================= UPDATE BUTTON =================
               Obx(() {
                 if (controller.isUpdating.value) {
                   return Center(

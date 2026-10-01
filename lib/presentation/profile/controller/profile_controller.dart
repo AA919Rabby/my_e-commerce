@@ -65,7 +65,13 @@ class ProfileController extends GetxController {
   }
 
   String get displayImageUrl {
-    return profile.value?.profilePictureUrl ?? '';
+    String rawUrl = profile.value?.profilePictureUrl?.trim() ?? '';
+    if (rawUrl.isEmpty || rawUrl == 'null') return '';
+
+    if (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
+      return '${AppUrl.baseUrl}$rawUrl';
+    }
+    return rawUrl;
   }
 
   int get totalCompletedServices {
@@ -145,7 +151,9 @@ class ProfileController extends GetxController {
   }
 
   Future<void> updateProfile() async {
-    if (profileImage.value == null && (profile.value?.profilePictureUrl == null || profile.value!.profilePictureUrl!.isEmpty)) {
+    if (profileImage.value == null &&
+        (profile.value?.profilePictureUrl == null ||
+            profile.value!.profilePictureUrl!.isEmpty)) {
       CustomSnackbar(
         Get.context!,
         title: "Error",
@@ -163,46 +171,50 @@ class ProfileController extends GetxController {
     try {
       final token = AuthServices.getAccessToken();
 
-      final String? photoUrl = (photoUrlController.text.trim().isNotEmpty)
-          ? photoUrlController.text.trim()
-          : (profile.value?.profilePictureUrl ?? "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200");
+      if (profileImage.value != null) {
+        var request = http.MultipartRequest(
+          'PUT',
+          Uri.parse(AppUrl.userProfile),
+        );
 
-      final Map<String, dynamic> payload = {
-        "full_name": nameController.text.trim(),
-        "phone_number": phoneController.text.trim(),
-        "profile_picture_url": photoUrl,
-        "address": addressController.text.trim(),
-      };
-
-      final response = await http.put(
-        Uri.parse(AppUrl.userProfile),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
+        request.headers.addAll({
           'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode(payload),
-      );
+          'Accept': 'application/json',
+        });
 
-      log("Update Profile Response [${response.statusCode}]: ${response.body}");
+        request.fields['full_name'] = nameController.text.trim();
+        request.fields['phone_number'] = phoneController.text.trim();
+        request.fields['address'] = addressController.text.trim();
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
-        profile.value = ProfileModel.fromJson(data);
-
-        CustomSnackbar(
-          Get.context!,
-          title: "Success",
-          message: "Profile updated successfully!",
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'profile_picture',
+            profileImage.value!.path,
+          ),
         );
-        Get.back();
+
+        final streamedResponse = await request.send();
+        final response = await http.Response.fromStream(streamedResponse);
+
+        log("Update Profile (Multipart) Response [${response.statusCode}]: ${response.body}");
+
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          final Map<String, dynamic> data = jsonDecode(response.body);
+          profile.value = ProfileModel.fromJson(data);
+          profileImage.value = null;
+
+          CustomSnackbar(
+            Get.context!,
+            title: "Success",
+            message: "Profile updated successfully!",
+          );
+          Get.back();
+          await fetchProfile();
+        } else {
+          await _updateProfileJson(token);
+        }
       } else {
-        CustomSnackbar(
-          Get.context!,
-          title: "Failed",
-          message: "Could not update profile (${response.body}) ${response.statusCode}.",
-          isError: true,
-        );
+        await _updateProfileJson(token);
       }
     } catch (e) {
       log("Error updating profile: $e");
@@ -214,6 +226,51 @@ class ProfileController extends GetxController {
       );
     } finally {
       isUpdating.value = false;
+    }
+  }
+
+  Future<void> _updateProfileJson(String? token) async {
+    final String? photoUrl = (photoUrlController.text.trim().isNotEmpty)
+        ? photoUrlController.text.trim()
+        : (profile.value?.profilePictureUrl ?? "");
+
+    final Map<String, dynamic> payload = {
+      "full_name": nameController.text.trim(),
+      "phone_number": phoneController.text.trim(),
+      "profile_picture_url": photoUrl,
+      "address": addressController.text.trim(),
+    };
+
+    final response = await http.put(
+      Uri.parse(AppUrl.userProfile),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(payload),
+    );
+
+    log("Update Profile (JSON) Response [${response.statusCode}]: ${response.body}");
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      profile.value = ProfileModel.fromJson(data);
+
+      CustomSnackbar(
+        Get.context!,
+        title: "Success",
+        message: "Profile updated successfully!",
+      );
+      Get.back();
+      await fetchProfile();
+    } else {
+      CustomSnackbar(
+        Get.context!,
+        title: "Failed",
+        message: "Could not update profile (${response.statusCode}).",
+        isError: true,
+      );
     }
   }
 }
