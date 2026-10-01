@@ -250,29 +250,59 @@ class CartController extends GetxController {
     payingOrderId.value = orderId;
     try {
       final token = AuthServices.getAccessToken();
-      final dynamic parsedOrderId = int.tryParse(orderId) ?? orderId;
+      if (token == null || token.isEmpty) {
+        CustomSnackbar(
+          Get.context!,
+          title: "Authentication Error",
+          message: "Please login again to pay.",
+          isError: true,
+        );
+        return;
+      }
+
+      final int? parsedOrderId = int.tryParse(orderId);
+      if (parsedOrderId == null) {
+        CustomSnackbar(
+          Get.context!,
+          title: "Error",
+          message: "Invalid Order ID: $orderId",
+          isError: true,
+        );
+        return;
+      }
+
+      log("Initiating payment for Order ID: $parsedOrderId with token: ${token.substring(0, 15)}...");
 
       final response = await http.post(
         Uri.parse(AppUrl.makePayment),
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: jsonEncode({'order_id': parsedOrderId}),
+        body: jsonEncode({
+          'order_id': parsedOrderId,
+        }),
       );
 
+      log("Initiate Payment Response Code: ${response.statusCode}");
+      log("Initiate Payment Response Body: ${response.body}");
+
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final data = jsonDecode(response.body);
+        final Map<String, dynamic> data = jsonDecode(response.body);
 
-        String? paymentUrl = data['url'] ??
+        // Extract payment_url
+        String? paymentUrl = data['payment_url'] ??
+            data['url'] ??
             data['GatewayPageURL'] ??
-            data['payment_session_url'] ??
-            data['payment_url'];
+            data['payment_session_url'];
 
-        if (paymentUrl != null && paymentUrl.isNotEmpty) {
+        if (paymentUrl != null && paymentUrl.trim().isNotEmpty) {
+          log("Successfully received Payment URL: $paymentUrl");
+
           final result = await Get.toNamed(
             AllRoute.paymentWebView,
-            arguments: paymentUrl,
+            arguments: paymentUrl.trim(),
           );
 
           if (result == 'success') {
@@ -285,18 +315,43 @@ class CartController extends GetxController {
           } else if (result == 'fail') {
             CustomSnackbar(
               Get.context!,
-              title: "Failed",
+              title: "Cancelled",
               message: "Payment was cancelled or failed.",
               isError: true,
             );
+            await fetchPendingServices();
           }
+        } else {
+          CustomSnackbar(
+            Get.context!,
+            title: "Gateway Error",
+            message: "Server did not provide a valid payment link.",
+            isError: true,
+          );
         }
+      } else {
+        // Show exact error detail returned by FastAPI
+        String errorMsg = "Payment initiation failed (${response.statusCode})";
+        try {
+          final errJson = jsonDecode(response.body);
+          if (errJson['detail'] != null) {
+            errorMsg = errJson['detail'].toString();
+          }
+        } catch (_) {}
+
+        CustomSnackbar(
+          Get.context!,
+          title: "Cannot Proceed",
+          message: errorMsg,
+          isError: true,
+        );
       }
     } catch (e) {
+      log("Exception in initiatePayment: $e");
       CustomSnackbar(
         Get.context!,
         title: "Error",
-        message: "Something went wrong with the payment.",
+        message: "Network error during payment initiation: $e",
         isError: true,
       );
     } finally {

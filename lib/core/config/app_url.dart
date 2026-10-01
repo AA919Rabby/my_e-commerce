@@ -16,7 +16,6 @@ class AppUrl {
   static String get pendingServices => '$baseUrl/api/v1/services/order/history';
   static String cancelServices(String orderId) => '$baseUrl/api/v1/services/order/$orderId/cancel';
   static String get makePayment => '$baseUrl/api/v1/payment/initiate';
-
   // static String get userProfile => '$baseUrl/api/v1/profile';
   // static String get getProfile => '$baseUrl/api/v1/profile';
  ///cors

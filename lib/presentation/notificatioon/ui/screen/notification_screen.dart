@@ -54,9 +54,9 @@ class NotificationScreen extends StatelessWidget {
           onTap: () {
             Get.back();
           },
-          child: const Icon(Icons.arrow_back_outlined),
+          child: const Icon(Icons.arrow_back_outlined,color: AppColor.text),
         ),
-        backgroundColor: AppColor.text,
+        backgroundColor: AppColor.drawerGradient1,
         elevation: 0,
         scrolledUnderElevation: 0,
         iconTheme: const IconThemeData(color: AppColor.black),
@@ -64,13 +64,13 @@ class NotificationScreen extends StatelessWidget {
           text: "Notifications",
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          color: AppColor.black,
+          color: AppColor.text,
         ),
         actions: [
           IconButton(
             onPressed: () => controller.markAllAsRead(),
             tooltip: "Mark all as read",
-            icon: const Icon(Icons.done_all, color: AppColor.drawerGradient1),
+            icon: const Icon(Icons.done_all, color: AppColor.drawerGradient3),
           ),
           const Gap(10),
         ],

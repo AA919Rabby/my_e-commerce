@@ -17,7 +17,7 @@ class PushServices extends StatelessWidget {
     final controller = Get.find<CartController>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFF121421),
+      backgroundColor: AppColor.text,
       appBar: AppBar(
         leading: InkWell(
           onTap: () {
@@ -31,7 +31,7 @@ class PushServices extends StatelessWidget {
           fontWeight: FontWeight.bold,
           color: Colors.white,
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColor.drawerGradient1,
         elevation: 0,
         scrolledUnderElevation: 0,
       ),
@@ -44,8 +44,9 @@ class PushServices extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const CustomText(
+                  fontSize: 14,
                   text: "Full Name",
-                  color: Colors.white,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
                 const Gap(8),
@@ -60,8 +61,9 @@ class PushServices extends StatelessWidget {
                 ),
                 const Gap(16),
                 const CustomText(
+                  fontSize: 14,
                   text: "Age",
-                  color: Colors.white,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
                 const Gap(8),
@@ -78,8 +80,9 @@ class PushServices extends StatelessWidget {
                 ),
                 const Gap(16),
                 const CustomText(
+                  fontSize: 14,
                   text: "Address",
-                  color: Colors.white,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
                 const Gap(8),
@@ -94,8 +97,9 @@ class PushServices extends StatelessWidget {
                 ),
                 const Gap(16),
                 const CustomText(
+                  fontSize: 14,
                   text: "Postcode",
-                  color: Colors.white,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
                 const Gap(8),
@@ -111,8 +115,9 @@ class PushServices extends StatelessWidget {
                 ),
                 const Gap(16),
                 const CustomText(
+                  fontSize: 14,
                   text: "Phone Number",
-                  color: Colors.white,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
                 const Gap(8),
