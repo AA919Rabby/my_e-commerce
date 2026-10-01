@@ -8,6 +8,7 @@ import 'package:mye_commerce/global/custom_text.dart';
 import 'package:mye_commerce/presentation/profile/controller/profile_controller.dart';
 import 'package:mye_commerce/presentation/cart/controller/cart_controller.dart';
 
+
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
@@ -66,7 +67,7 @@ class ProfileScreen extends StatelessWidget {
                       height: 110.h,
                       width: 110.w,
                       decoration: BoxDecoration(
-                        color: AppColor.drawerGradient1.withOpacity(0.2),
+                        color: AppColor.drawerGradient1.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: AppColor.drawerGradient1,
@@ -114,7 +115,7 @@ class ProfileScreen extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
                     decoration: BoxDecoration(
-                      color: AppColor.drawerGradient1.withOpacity(0.15),
+                      color: AppColor.drawerGradient1.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(20.r),
                     ),
                     child: CustomText(
@@ -135,7 +136,7 @@ class ProfileScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(16.r),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                           blurRadius: 10,
                           spreadRadius: 2,
                         ),
@@ -149,7 +150,7 @@ class ProfileScreen extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                color: Colors.green.withOpacity(0.12),
+                                color: Colors.green.withValues(alpha: 0.12),
                                 shape: BoxShape.circle,
                               ),
                               child: const Icon(

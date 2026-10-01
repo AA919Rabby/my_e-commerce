@@ -150,19 +150,8 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> updateProfile() async {
-    if (profileImage.value == null &&
-        (profile.value?.profilePictureUrl == null ||
-            profile.value!.profilePictureUrl!.isEmpty)) {
-      CustomSnackbar(
-        Get.context!,
-        title: "Error",
-        message: "Select a profile image.",
-        isError: true,
-      );
-      return;
-    }
 
+  Future<void> updateProfile() async {
     if (!updateProfileFormKey.currentState!.validate()) {
       return;
     }
@@ -171,63 +160,60 @@ class ProfileController extends GetxController {
     try {
       final token = AuthServices.getAccessToken();
 
-      if (profileImage.value != null) {
-        var request = http.MultipartRequest(
-          'PUT',
-          Uri.parse(AppUrl.userProfile),
-        );
+      // If you are using a network URL string in photoUrlController (not a local File), use it.
+      // If you have local file logic, ensure the backend gives you a URL back to save.
+      final String photoUrl = photoUrlController.text.trim();
 
-        request.headers.addAll({
-          'Authorization': 'Bearer $token',
+      final Map<String, dynamic> payload = {
+        "full_name": nameController.text.trim(),
+        "phone_number": phoneController.text.trim(),
+        "profile_picture_url": photoUrl, // Send the URL string
+        "address": addressController.text.trim(),
+      };
+
+      final response = await http.put(
+        Uri.parse(AppUrl.userProfile),
+        headers: {
+          'Content-Type': 'application/json',
           'Accept': 'application/json',
-        });
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(payload),
+      );
 
-        request.fields['full_name'] = nameController.text.trim();
-        request.fields['phone_number'] = phoneController.text.trim();
-        request.fields['address'] = addressController.text.trim();
+      log("Update Profile Response [${response.statusCode}]: ${response.body}");
 
-        request.files.add(
-          await http.MultipartFile.fromPath(
-            'profile_picture',
-            profileImage.value!.path,
-          ),
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        profile.value = ProfileModel.fromJson(data);
+
+        CustomSnackbar(
+          Get.context!,
+          title: "Success",
+          message: "Profile updated successfully!",
         );
-
-        final streamedResponse = await request.send();
-        final response = await http.Response.fromStream(streamedResponse);
-
-        log("Update Profile (Multipart) Response [${response.statusCode}]: ${response.body}");
-
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          final Map<String, dynamic> data = jsonDecode(response.body);
-          profile.value = ProfileModel.fromJson(data);
-          profileImage.value = null;
-
-          CustomSnackbar(
-            Get.context!,
-            title: "Success",
-            message: "Profile updated successfully!",
-          );
-          Get.back();
-          await fetchProfile();
-        } else {
-          await _updateProfileJson(token);
-        }
+        Get.back();
       } else {
-        await _updateProfileJson(token);
+        CustomSnackbar(
+          Get.context!,
+          title: "Failed",
+          message: "Server error: ${response.statusCode}",
+          isError: true,
+        );
       }
     } catch (e) {
       log("Error updating profile: $e");
       CustomSnackbar(
         Get.context!,
         title: "Error",
-        message: "Network error. Please try again.",
+        message: "Something went wrong.",
         isError: true,
       );
     } finally {
       isUpdating.value = false;
     }
   }
+
 
   Future<void> _updateProfileJson(String? token) async {
     final String? photoUrl = (photoUrlController.text.trim().isNotEmpty)
