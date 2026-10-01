@@ -624,12 +624,13 @@ class PendingServices extends StatelessWidget {
                                   Expanded(
                                     child: CustomButton(
                                       text: "No",
-                                      backgroundColor: Colors.grey.shade300, // Light grey for "No"
+                                      backgroundColor: Colors.grey.shade300,
                                       textColor: AppColor.black,
                                       height: 44,
                                       borderRadius: 8,
                                       onPressed: () {
                                         Navigator.pop(context);
+                                        // Get.back();
                                       },
                                     ),
                                   ),

@@ -317,7 +317,6 @@ class CartController extends GetxController {
               Get.context!,
               title: "Success",
               message: "Payment completed successfully!",
-              isError: true,
             );
             await fetchPendingServices();
           }
