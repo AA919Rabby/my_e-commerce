@@ -17,7 +17,6 @@ class NotificationModel {
     return NotificationModel(
       id: json['id']?.toString() ?? '',
       title: json['title'] ?? 'Notification',
-      // Maps 'body' from FastAPI to 'subtitle' for the Flutter UI
       subtitle: json['body'] ?? json['subtitle'] ?? 'No details provided.',
       isRead: json['is_read'] ?? json['isRead'] ?? false,
       createdAt: json['created_at']?.toString(),

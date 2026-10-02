@@ -12,7 +12,6 @@ import 'package:mye_commerce/local_db/auth_services.dart';
 class SettingsList extends StatelessWidget {
   const SettingsList({super.key});
 
-  // Reusable tile widget matching your app theme
   Widget _buildSettingTile({
     required IconData icon,
     required String title,
@@ -64,7 +63,6 @@ class SettingsList extends StatelessWidget {
     );
   }
 
-  // Logout Confirmation Dialog
   void _showLogoutDialog(BuildContext context) {
     CustomConfirmDialog.show(
       context: context,
@@ -93,9 +91,7 @@ class SettingsList extends StatelessWidget {
               borderRadius: 8,
               onPressed: () async {
                 Navigator.pop(context);
-                // Clear saved auth credentials
                 await AuthServices.clearAll();
-                // Navigate back to login
                 Get.offAllNamed(AllRoute.login);
               },
             ),
@@ -105,7 +101,6 @@ class SettingsList extends StatelessWidget {
     );
   }
 
-  // Simple Info Dialog for Terms of Service & About Us
   void _showInfoDialog(String title, String content) {
     Get.dialog(
       Dialog(
@@ -152,7 +147,6 @@ class SettingsList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // 1. Profile
         _buildSettingTile(
           icon: Icons.person_outline_rounded,
           title: "Profile",
@@ -161,7 +155,6 @@ class SettingsList extends StatelessWidget {
           },
         ),
 
-        // 2. Update Profile
         _buildSettingTile(
           icon: Icons.edit_note_rounded,
           title: "Update Profile",
@@ -170,7 +163,6 @@ class SettingsList extends StatelessWidget {
           },
         ),
 
-        // 3. Terms of Service
         _buildSettingTile(
           icon: Icons.description_outlined,
           title: "Terms of Service",
@@ -185,7 +177,6 @@ class SettingsList extends StatelessWidget {
           },
         ),
 
-        // 4. About Us
         _buildSettingTile(
           icon: Icons.info_outline_rounded,
           title: "About Us",
@@ -201,7 +192,6 @@ class SettingsList extends StatelessWidget {
 
         const Gap(10),
 
-        // 5. Logout
         _buildSettingTile(
           icon: Icons.logout_rounded,
           title: "Logout",

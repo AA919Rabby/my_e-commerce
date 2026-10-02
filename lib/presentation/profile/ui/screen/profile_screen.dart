@@ -74,7 +74,7 @@ class ProfileScreen extends StatelessWidget {
         ),
         leading: InkWell(
           onTap: () => Get.back(),
-          child: const Icon(Icons.arrow_back,color: AppColor.text),
+          child: const Icon(Icons.arrow_back, color: AppColor.text),
         ),
       ),
       body: SafeArea(
@@ -94,7 +94,6 @@ class ProfileScreen extends StatelessWidget {
                 children: [
                   const Gap(20),
 
-                  // ================= USER IMAGE (BASE64 + NETWORK SUPPORT) =================
                   Center(
                     child: Container(
                       height: 110.h,

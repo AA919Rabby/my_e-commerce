@@ -315,8 +315,9 @@ class CartController extends GetxController {
           } else if (result == 'fail') {
             CustomSnackbar(
               Get.context!,
-              title: "Success",
-              message: "Payment completed successfully!",
+              title: "Failed",
+              message: "Payment not completed!",
+              isError:true
             );
             await fetchPendingServices();
           }

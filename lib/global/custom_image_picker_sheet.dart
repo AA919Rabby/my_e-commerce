@@ -44,7 +44,7 @@ class CustomImagePickerSheet {
                   icon: Icons.camera_alt,
                   label: "Camera",
                   onTap: () {
-                    Get.back(); // Close sheet
+                    Get.back();
                     onPick(ImageSource.camera);
                   },
                 ),
@@ -52,7 +52,7 @@ class CustomImagePickerSheet {
                   icon: Icons.photo_library,
                   label: "Gallery",
                   onTap: () {
-                    Get.back(); // Close sheet
+                    Get.back();
                     onPick(ImageSource.gallery);
                   },
                 ),

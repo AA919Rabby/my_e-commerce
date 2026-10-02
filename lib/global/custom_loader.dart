@@ -22,7 +22,6 @@ class CustomLoader extends StatelessWidget {
       color: color ?? Colors.orange,
       size: size ?? 40.r,
       duration: duration ?? const Duration(milliseconds: 1500),
-      //  shape: shape ?? BoxShape.circle,
     );
   }
 }

@@ -30,7 +30,6 @@ class ProfileController extends GetxController {
   Rx<ProfileModel?> profile = Rx<ProfileModel?>(null);
   Rx<File?> profileImage = Rx<File?>(null);
 
-  // Holds Base64 string of the selected image
   RxString base64ImageString = ''.obs;
 
   RxBool isLoading = false.obs;
@@ -72,7 +71,6 @@ class ProfileController extends GetxController {
     return profile.value?.profilePictureUrl?.trim() ?? '';
   }
 
-  // Decodes raw Base64 string for memory rendering
   Uint8List? get memoryImageBytes {
     final raw = displayImageUrl;
     if (raw.isEmpty || raw == 'null') return null;
@@ -81,7 +79,6 @@ class ProfileController extends GetxController {
         final cleanBase64 = raw.split(',').last;
         return base64Decode(cleanBase64);
       }
-      // If pure base64 without prefix
       return base64Decode(raw);
     } catch (_) {
       return null;
@@ -115,19 +112,17 @@ class ProfileController extends GetxController {
     }
   }
 
-  // Converts selected image to compressed Base64 format
   Future<void> pickImage(ImageSource source) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
         source: source,
-        imageQuality: 50, // Keep compressed so database string stays light
+        imageQuality: 50,
         maxWidth: 400,
         maxHeight: 400,
       );
       if (pickedFile != null) {
         profileImage.value = File(pickedFile.path);
 
-        // Convert to Base64 String
         final bytes = await pickedFile.readAsBytes();
         base64ImageString.value = "data:image/jpeg;base64,${base64Encode(bytes)}";
       }
@@ -182,7 +177,6 @@ class ProfileController extends GetxController {
     try {
       final token = AuthServices.getAccessToken();
 
-      // Use newly selected base64 image, or keep existing profile picture
       String finalPhotoUrl = '';
       if (base64ImageString.value.isNotEmpty) {
         finalPhotoUrl = base64ImageString.value;
@@ -217,7 +211,6 @@ class ProfileController extends GetxController {
         final Map<String, dynamic> data = jsonDecode(response.body);
         profile.value = ProfileModel.fromJson(data);
 
-        // Reset temporary file picker state
         profileImage.value = null;
         base64ImageString.value = '';
 

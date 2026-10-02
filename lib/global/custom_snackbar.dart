@@ -9,7 +9,6 @@ void CustomSnackbar(
       bool isError = false,
     }) {
 
-  // Dismiss any currently visible snackbar before showing a new one
   Get.closeCurrentSnackbar();
 
   Get.snackbar(

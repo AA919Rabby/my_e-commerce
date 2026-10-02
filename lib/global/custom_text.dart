@@ -28,7 +28,6 @@ class CustomText extends StatelessWidget {
   final bool softWrap;
   final String? semanticsLabel;
   final TextScaler? textScaler;
-  //final SelectionRegistrar? selectionRegistrar;
   final bool? spellOut;
 
   const CustomText({
@@ -58,7 +57,6 @@ class CustomText extends StatelessWidget {
     this.softWrap = true,
     this.semanticsLabel,
     this.textScaler,
-    //this.selectionRegistrar,
     this.spellOut,
   });
 
@@ -89,8 +87,6 @@ class CustomText extends StatelessWidget {
       softWrap: softWrap,
       semanticsLabel: semanticsLabel,
       textScaler: textScaler,
-      // selectionRegistrar: selectionRegistrar,
-      // spellOut: spellOut,
       locale: locale,
       strutStyle: strutStyle,
       textWidthBasis: textWidthBasis,

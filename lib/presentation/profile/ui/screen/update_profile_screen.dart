@@ -62,7 +62,7 @@ class UpdateProfileScreen extends StatelessWidget {
         scrolledUnderElevation: 0,
         leading: InkWell(
           onTap: () => Get.back(),
-          child:  Icon(Icons.arrow_back,color:AppColor.text,),
+          child: Icon(Icons.arrow_back, color: AppColor.text),
         ),
         title: const CustomText(
           text: "Update Profile",
@@ -80,7 +80,6 @@ class UpdateProfileScreen extends StatelessWidget {
             children: [
               const Gap(20),
 
-              // ================= IMAGE PICKER SECTION =================
               Center(
                 child: GestureDetector(
                   onTap: () {

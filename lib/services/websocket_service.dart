@@ -8,7 +8,6 @@ import '../../presentation/notificatioon/controller/notification_controller.dart
 import '../../presentation/profile/controller/profile_controller.dart';
 import '../core/config/app_url.dart';
 
-
 class WebSocketService extends GetxService {
   WebSocketChannel? _channel;
   bool isConnected = false;
@@ -27,7 +26,7 @@ class WebSocketService extends GetxService {
       log("🟢 WebSocket Connected to: ${AppUrl.servicesWs}");
 
       _channel!.stream.listen(
-            (message) {
+        (message) {
           log("⚡ [LIVE WS EVENT RECEIVED]: $message");
           _handleIncomingEvent(message);
         },
@@ -53,21 +52,17 @@ class WebSocketService extends GetxService {
       final Map<String, dynamic> data = jsonDecode(rawMessage);
       final String event = data['event'] ?? '';
 
-      // 1. Live Notification Event -> Only trigger fetch!
-      // (NotificationController will handle the drop-down banner safely so it doesn't double trigger)
       if (event == 'NEW_NOTIFICATION') {
         final notiController = NotificationController.to;
         notiController.fetchNotifications();
       }
 
-      // 2. Live Profile Update Event -> Reload Profile Data
       if (event == 'PROFILE_UPDATED') {
         if (Get.isRegistered<ProfileController>()) {
           Get.find<ProfileController>().fetchProfile();
         }
       }
 
-      // 3. Orders, Payments, & Reviews Live Events
       if (Get.isRegistered<CartController>()) {
         final cartController = Get.find<CartController>();
 

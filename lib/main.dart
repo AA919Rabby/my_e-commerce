@@ -8,22 +8,18 @@ import 'package:mye_commerce/services/websocket_service.dart';
 import 'app.dart';
 import 'package:get/get.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AuthServices.init();
   Get.put(WebSocketService());
   try {
-    // 1. Load Base url
     await dotenv.load(fileName: ".env");
 
-    // 2. CHECK IF KEY LOADED AND PRINT TO TERMINAL
     final baseUrl = dotenv.env['BASE_URL'];
 
     if (baseUrl != null && baseUrl.isNotEmpty) {
       print("==========================================");
       print("✅ SUCCESS: .env file loaded successfully!");
-      // Print just the first 3 characters for security
       print(" baseUrl found, starts with: ${baseUrl.length >= 3 ? baseUrl.substring(0, 3) : baseUrl}");
       print("==========================================");
     } else {

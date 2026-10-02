@@ -119,7 +119,7 @@ class CustomTextField extends StatelessWidget {
       autocorrect: autocorrect,
       enableSuggestions: enableSuggestions,
       style: TextStyle(
-        fontSize: fontSize ?? 16.sp, // Updated from 14.sp to 16.sp for larger input text
+        fontSize: fontSize ?? 16.sp,
         fontWeight: fontWeight ?? FontWeight.w400,
         color: textColor ?? Colors.black,
       ),
