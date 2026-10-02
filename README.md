@@ -123,9 +123,8 @@ flutter build apk --release
 ## Roadmap
 
 - Unit, widget, and integration tests
-- Push notifications (FCM) when the app is in the background
+- Push notifications 
 - Online payment integration
-- Play Store release
 
 ## License
 
