@@ -1,6 +1,6 @@
-# Mye Commerce
+# Mye Service
 
-A Flutter mobile app for commerce and on-demand home services. Users can browse services, manage a cart, place orders, update their profile, and receive live updates through real-time notifications.
+A Flutter mobile app for on-demand home services. Users can browse services, book them through a cart, place orders, update their profile, and receive live updates through real-time notifications.
 
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-0175C2?logo=dart&logoColor=white)](https://dart.dev)
@@ -13,13 +13,13 @@ A Flutter mobile app for commerce and on-demand home services. Users can browse 
 
 ## Overview
 
-Mye Commerce is a service marketplace app that makes everyday home-service bookings quick and easy. The Flutter frontend connects to a REST backend API for authentication, services, orders, notifications, and profile data, and uses a **WebSocket** connection to push live updates to the user.
+Mye Service is a service marketplace app that makes everyday home-service bookings quick and easy. The Flutter frontend connects to a REST backend API for authentication, services, orders, notifications, and profile data, and uses a **WebSocket** connection to push live updates to the user.
 
 ## Features
 
 - **Authentication and session handling**: secure login with persistent sessions.
 - **Service browsing**: explore available services from the home dashboard.
-- **Cart and orders**: view service details, add to cart, and place orders.
+- **Service booking and orders**: view service details, add services to the cart, and place orders.
 - **Profile management**: edit profile details and upload a profile image.
 - **Live notifications**: real-time notifications delivered over WebSocket.
 - **Real-time events**: profile and order updates reflected instantly in the app.
@@ -55,7 +55,7 @@ Mye Commerce is a service marketplace app that makes everyday home-service booki
 The code is organized into clear layers, with GetX bindings and routes registered centrally.
 
 ```
-mye_commerce/
+mye_service/
 ├── android/
 ├── ios/
 ├── asset/                 # Images and static assets
@@ -85,8 +85,8 @@ mye_commerce/
 
 ```bash
 # 1. Clone the repository and switch to the branch
-git clone https://github.com/your-username/mye_commerce.git
-cd mye_commerce
+git clone https://github.com/your-username/mye_service.git
+cd mye_service
 git checkout Service-name
 
 # 2. Install dependencies
@@ -123,7 +123,7 @@ flutter build apk --release
 ## Roadmap
 
 - Unit, widget, and integration tests
-- Push notifications 
+- Push notifications
 - Online payment integration
 
 ## License
